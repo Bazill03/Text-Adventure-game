@@ -51,10 +51,10 @@ let rags = {
   description: "You look over your 'rags' despairingly. You feel cold, and vulnerable."
 };
 
-let cultistRobe{
+let cultistRobe = {
   stats: 5,
   description: "The robes of the followers of Thaddius. Cultists will believe you are one of their brothers."
-}
+};
 
 let chainMail = {
   stats: 10,
