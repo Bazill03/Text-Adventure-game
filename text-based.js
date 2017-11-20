@@ -3,7 +3,7 @@ $(document).ready(function() {
 //todo add armor
 //todo add disguise
 //todo add conversation
-//todo stick play/pause buttons of bottom
+//todo stick play/pause buttons to bottom
 //todo convert usefireball and useweapon into single function
 
 
@@ -47,6 +47,7 @@ $(document).ready(function() {
   }
   //players equipped weapon
   let playerEquipped = fists;
+  let playerArmor = rags;
 
   var gameData = {
   // item and room objects
@@ -570,6 +571,7 @@ $(document).ready(function() {
       //checking what weapon is equipped
       if(input == "equipped"){
         print("You have " + playerEquipped.name + " equipped." + " It deals up do " + playerEquipped.stats + " damage. And has a damage type of " + playerEquipped.damageType + ".");
+        print(playerArmor.description + " You take " + playerArmor.stats + " less damage.");
       }
 
       //conversation testing
@@ -708,7 +710,7 @@ $(document).ready(function() {
       if(gameOverCheck() === false){
         enemyMove = calcEnemyMove(enemy);
         enemyDamage = calcDamage(enemy.moves[enemyMove][1], 1);
-        var enemyRealDamage = Math.floor(enemyDamage);
+        var enemyRealDamage = Math.floor(enemyDamage) - playerArmor.stats;
         player.health = player.health - enemyRealDamage;
         combatPrint(
           enemy.name +
