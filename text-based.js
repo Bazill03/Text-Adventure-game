@@ -1,12 +1,43 @@
 $(document).ready(function() {
+//sets up dialogue
+//todo add armor
+//todo add disguise
+//todo add conversation
+//todo stick play/pause buttons of bottom
+//todo convert usefireball and useweapon into single function
+
 
   $("#console").fadeIn(1500);
-  gameMusic.play();
-  withered.introSound.play();
-  //game data including items, rooms, and player objects
 
+      //Audio start
+      //intro sounds
+      withered.introSound.play();
+      steelMace.sound.play();
 
+      var currentSong = song1;
+      //Audio
+      setTimeout(function(){song1.play()}, 5000);
 
+      song1.addEventListener("ended", function(){
+        currentSong = song2;
+        song2.play();
+      });
+
+      song2.addEventListener("ended", function(){
+        currentSong = song1;
+        song1.play();
+      });
+
+      //audio controls
+      $("#play").click(function(){
+        currentSong.play();
+      });
+
+      $("#pause").click(function(){
+        currentSong.pause();
+      });
+
+//player object
   var player = {
     health: 100,
     mana: 100,
@@ -18,7 +49,7 @@ $(document).ready(function() {
   let playerEquipped = fists;
 
   var gameData = {
-  //player and enemy objects
+  // item and room objects
   items : [
   //Items
 
@@ -541,6 +572,17 @@ $(document).ready(function() {
         print("You have " + playerEquipped.name + " equipped." + " It deals up do " + playerEquipped.stats + " damage. And has a damage type of " + playerEquipped.damageType + ".");
       }
 
+      //conversation testing
+      if(input == "convo"){
+        $('#console').fadeOut(1500);
+        $(".conversationMenu").fadeIn(1500);
+        $(".conversation").fadeIn(1500);
+        //conversation with gnu
+        $("body").addClass("forrest-bg");
+        Dialogue.load("gnu", "dialogue_files/gnu.txt");
+        console.log(Dialogue.interact("gnu", "player", 2));
+      }
+
       //equipping weapons
       if(input == "equip old sword" && oldSword.owned === true){
           print("You fasten the old sheath to your belt and gently place the rusted blade inside.");
@@ -624,7 +666,8 @@ $(document).ready(function() {
       $(".combatMenu").fadeOut(1500);
       $(".combat").fadeOut(1500);
       battleMusic.pause();
-      gameMusic.play();
+      battleMusic.currentTime = 0;
+      currentSong.play();
     }
 
     //takes in the maxmum and minimum damage a given move can inflict and returns a random value between those ranges.
@@ -767,11 +810,10 @@ $(document).ready(function() {
       if (enemy.attackFirst === true) {
         enemyTurn();
       }
-      gameMusic.pause();
+      currentSong.pause();
       enemy.introSound.play();
       battleMusic.play();
       document.getElementById("enemyHealth").style.height = enemy.health + "px";
     }
     //COMBAT END
-
 });

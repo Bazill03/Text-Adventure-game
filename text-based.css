@@ -2,6 +2,13 @@ body {
   background-color: #000;
 }
 
+.forrest-bg{
+  background-image: url("background-images/forrest-bg.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 #title-text {
   color: red;
   border-color: black;
@@ -129,4 +136,44 @@ pre {
   float: right;
   margin-right: 5px;
   display: none;
+}
+
+
+/*begin conversation menus*/
+.conversation {
+  border: 1px solid white;
+  width: 50%;
+  height: 300px;
+  background: black;
+  margin: auto;
+  margin-top: 50px;
+  display: none;
+  overflow: auto;
+}
+
+.conversationMenu {
+  border: 1px solid white;
+  color: white;
+  width: 50%;
+  height: 100px;
+  background: black;
+  margin: auto;
+  margin-top: 50px;
+  display: none;
+}
+
+.convoButton{
+  background: black;
+  border: none;
+  margin-top: 5px;
+}
+.convoButton:hover{
+  border: 1px solid white;
+}
+
+/*audio controls*/
+footer {
+  display: fixed;
+  bottom: 0;
+  width: 100%;
 }

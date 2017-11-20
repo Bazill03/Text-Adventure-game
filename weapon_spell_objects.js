@@ -3,7 +3,8 @@
 var fists = {
   name: "fists",
   stats: 3,
-  damageType: "blunt"
+  damageType: "blunt",
+  sound: punchSound
 }
 
 var oldSword = {

@@ -12,6 +12,8 @@
 
   <!-- bootstrap JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <!-- imports dialoguejs -->
+  <script src="dialogue.js"></script>
   <!-- imports game functions -->
   <script src="sound_effects.js"></script>
   <script src="weapon_spell_objects.js"></script>
@@ -20,7 +22,7 @@
 </head>
 
 <body style="background-color: black">
-<!-- <pre class="text-center" id="title-text" style="background-color: black">
+<pre class="text-center" id="title-text" style="background-color: black">
   ███        ▄████████ ▀████    ▐████▀     ███               ▀█████████▄     ▄████████    ▄████████    ▄████████ ████████▄
 ▀█████████▄   ███    ███   ███▌   ████▀  ▀█████████▄             ███    ███   ███    ███   ███    ███   ███    ███ ███   ▀███
    ▀███▀▀██   ███    █▀     ███  ▐███       ▀███▀▀██             ███    ███   ███    ███   ███    █▀    ███    █▀  ███    ███
@@ -30,7 +32,7 @@
     ███       ███    ███  ▄███     ███▄      ███                 ███    ███   ███    ███    ▄█    ███   ███    ███ ███   ▄███
    ▄████▀     ██████████ ████       ███▄    ▄████▀             ▄█████████▀    ███    █▀   ▄████████▀    ██████████ ████████▀
 
-</pre> -->
+</pre>
 
 <div id="console">
 
@@ -65,4 +67,18 @@
      <button type="button" class="combatButton" id="backToGame">Back to game</button>
 
   </div>
+  <div class="conversation">
+    <div class="combatOutput">
+      <p class="text-center combatOutputText"><p>
+    </div>
+  </div>
+  <div class="conversationMenu text-center">
+    <!-- <button type="button" class"combatButton" id="goodbye">Good-Bye</button> -->
+  </div>
+<footer>
+  <div class="audioControls">
+    <button type="button" name="play" id="play">Play</button>
+    <button type="button" name="pause" id="pause">Pause</button>
+  </div>
+</footer>
 </body>
