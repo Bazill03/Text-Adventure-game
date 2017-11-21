@@ -5,36 +5,37 @@ $(document).ready(function() {
 //todo stick play/pause buttons to bottom
 //todo convert usefireball and useweapon into single function
 let player;
-  var dialogue = Dialogue;
+
+Dialogue.load("gnu", "dialogue_files/gnu.txt");
+
   $("#console").fadeIn(1500);
 
-      //Audio start
-      //intro sounds
-      withered.introSound.play();
-      steelMace.sound.play();
+  //Audio start
+  //intro sounds
+  withered.introSound.play();
+  steelMace.sound.play();
 
-      var currentSong = song1;
-      //Audio
-      setTimeout(function(){song1.play()}, 5000);
+  var currentSong = song1;
+  //Audio
+  setTimeout(function(){song1.play()}, 5000);
 
-      song1.addEventListener("ended", function(){
-        currentSong = song2;
-        song2.play();
-      });
+  song1.addEventListener("ended", function(){
+    currentSong = song2;
+    song2.play();
+  });
 
-      song2.addEventListener("ended", function(){
-        currentSong = song1;
-        song1.play();
-      });
+  song2.addEventListener("ended", function(){
+    currentSong = song1;
+    song1.play();
+  });
 
-      //audio controls
-      $("#play").click(function(){
-        currentSong.play();
-      });
-
-      $("#pause").click(function(){
-        currentSong.pause();
-      });
+  //audio controls
+  $("#play").click(function(){
+    currentSong.play();
+  });
+  $("#pause").click(function(){
+    currentSong.pause();
+  });
 
 //player object
   player = {
@@ -579,13 +580,7 @@ let player;
 
       //conversation testing
       if(input == "convo"){
-        $('#console').fadeOut(1500);
-        $(".conversationMenu").fadeIn(1500);
-        $(".conversation").fadeIn(1500);
-        //conversation with gnu
-        $("body").addClass("forrest-bg");
-        dialogue.load("gnu", "dialogue_files/gnu.txt");
-        combatPrint(dialogue.interact("gnu", "player")[0]);
+        conversation("gnu");
       }
 
       //equipping weapons
@@ -821,4 +816,59 @@ let player;
       document.getElementById("enemyHealth").style.height = enemy.health + "px";
     }
     //COMBAT END
+
+    //begin conversation
+
+    function conversation(actor){
+      $("#goodbye").fadeIn(1500);
+      $('#console').fadeOut(1500);
+      $(".conversationMenu").fadeIn(1500);
+      $(".conversation").fadeIn(1500);
+      //conversation with actor
+      $("body").addClass("forrest-bg");
+      //handles click events for player response buttons
+      $(".conversationMenu").on("click", ".convoButton", function(){
+        //prints out actor response to player
+        printActorResponse(actor, this.id);
+        //prints out next stage of conversation
+        combatPrint(Dialogue.interact(actor, "player").text);
+        //removes player response buttons
+        deleteButtons();
+        //prints out player repsonse buttons
+        conversationOptions(actor);
+
+      });
+      //prints out greeting
+      printActorResponse(actor);
+      conversationOptions(actor);
+    }
+
+    function printActorResponse(actor, response){
+      combatPrint(Dialogue.interact(actor, "player", response).text);
+    }
+
+    function conversationOptions(actor){
+      const responses = Dialogue.interact(actor, "player").responses;
+
+      for(var i = 0; i < responses.length; i++){
+        console.log(responses[i].text);
+        $(".conversationMenu").append("<button class='convoButton' id='" + responses[i].id + "'>" + responses[i].text + "</button>")
+        $(".conversationMenu").append("<br>");
+      }
+    }
+
+    function deleteButtons(){
+      $(".conversationMenu").html(" ");
+    }
+
+    //removes player from the conversation
+    $("#goodbye").click(function(){
+      $('#console').fadeIn(1500);
+      $(".conversationMenu").fadeOut(1500);
+      $(".conversation").fadeOut(1500);
+      $("body").removeClass("forrest-bg");
+      $("#goodbye").fadeOut(1500)
+    });
+
+    //END CONVERSATION
 });
