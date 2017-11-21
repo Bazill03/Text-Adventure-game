@@ -171,6 +171,13 @@ pre {
   border: 1px solid white;
 }
 
+#goodbye{
+  background: black;
+  margin: 0 auto;
+  color: white;
+  display: none;
+}
+
 /*audio controls*/
 footer {
   display: fixed;
