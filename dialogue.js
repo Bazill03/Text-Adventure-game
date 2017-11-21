@@ -208,6 +208,7 @@ Dialogue.load = function(actor, file) {
         url: file,
         async: true,
         success: function (data){
+            console.log(data);
             Dialogue.parse(actor, data.toString());
         },
         error: function (xhr, status, errorThrown) {
