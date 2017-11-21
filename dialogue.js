@@ -202,12 +202,16 @@ Dialogue.parse = function(actor, text){
 //     });
 // }
 
-Dialogue.load = function(actor, file){
+Dialogue.load = function(actor, file) {
     console.log(file);
-    $.get(file, function (err, data) {
-      if (err) {
-        throw err;
-      }
-      Dialogue.parse(actor, data.toString());
+    $.ajax({
+        url: file,
+        async: true,
+        success: function (data){
+            Dialogue.parse(actor, data.toString());
+        },
+        error: function (xhr, status, errorThrown) {
+            // handle error
+        }
     });
-}
+};

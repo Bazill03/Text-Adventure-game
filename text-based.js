@@ -1,12 +1,11 @@
 $(document).ready(function() {
 //sets up dialogue
-//todo add armor
 //todo add disguise
 //todo add conversation
 //todo stick play/pause buttons to bottom
 //todo convert usefireball and useweapon into single function
-
-
+let player;
+  var dialogue = Dialogue;
   $("#console").fadeIn(1500);
 
       //Audio start
@@ -38,12 +37,11 @@ $(document).ready(function() {
       });
 
 //player object
-  var player = {
-    health: 100,
-    mana: 100,
-    inventory: [],
-    travelHistory: [],
-    sound: swordAttackSound
+  player = {
+    health : 100,
+    mana : 100,
+    inventory : [],
+    travelHistory : []
   }
   //players equipped weapon
   let playerEquipped = fists;
@@ -57,6 +55,9 @@ $(document).ready(function() {
   oldSword = {
     name: "old sword",
     owned: false,
+    stats: 5,
+    damageType: "slash",
+    sound: swordAttackSound,
     condition: "Broken and mangled. You should find a replacement soon.",
     findText: "You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. What mighty warrior would cast aside a relic? What mighty foe made sure he didn't have a choice?",
     lookText: "You approach the table carefully. You see an old, rusted sword, chipped from years of battle. Any defense at all would help stave off the fear. Try 'take sword'.",
@@ -403,6 +404,8 @@ $(document).ready(function() {
         input: "look door leading east",
         result: function(){
             print("You peek through the keyhole and see a strange creature lumbering around a large room. In the center of the room looks to be a staircase leading down. The creature is tall, but hunched over, a large, glowing pack strapped to its back. Its arms stretch down to the floor and with every step the shackles on its wrist grind against the stone floor. Its mouth is agape and a blue fluid drips out slowly. Its clothes are tattered rags and whatever hair this creature may have once had has fallen out. It begins to move towards you, its glowing bright blue eyes seem fixated on the key hole. It lets out a long, low howl and tries to pick up its pace. You recoil in fear and hear the large thud of the creature slamming into the doorway.");
+            setTimeout(shardKeeper.shardKeeperIntroSound.play(), 5000);
+
           }
         },
         {
@@ -446,7 +449,7 @@ $(document).ready(function() {
        input: "take cipher",
        result: function(){
           gameData.items[5].owned = true;
-          gameData.player.inventory.push("cipher");
+          player.inventory.push("cipher");
           pickUpNew.play();
           print("You gently pick up the book. The text begins to glow a faint blue but subsides. You feel a strange courage welling up within you.");
           }
@@ -457,7 +460,7 @@ $(document).ready(function() {
           if(gameData.items[5].owned === true){
               print("These books somehow seem older than the other books you've seen thus far. Most are bound in an unfamiliar black leather that warms your hands when you hold them. None of the books seem to have titles on the spine, or on the front. After flipping through a few you find most to only have the first few pages written in, and the rest are blank. You decipher an excerpt from one: 'The demonic influence radiates from the shards. Nothing can contain them. If we are to protect this world from the cults that spring up around where these evil seeds are sown, we must destroy them. Only Rain knows how we'll break this curse.' You close the book.");
           } else {
-              print("These books somehow seem older than the other books you've seen thus far. Most are bound in an unfamiliar black leather that warms your hands when you hold them. None of the books seem to have titles on the spine, or on the front. After flipping through a few you find most to only have the first few pages written in, and the rest are blank.");
+              print("These books somehow seem older than the other books you've seen thus far. Most are bound in an unfamiliar black leather that warms your hands when you hold them. None of the books seem to have titles on the spine, or on the front. After flipping through a few you find most to only have the first few pages written in, and the rest are blank. You need some sort of cipher.");
           }
         }
      },
@@ -581,8 +584,8 @@ $(document).ready(function() {
         $(".conversation").fadeIn(1500);
         //conversation with gnu
         $("body").addClass("forrest-bg");
-        Dialogue.load("gnu", "dialogue_files/gnu.txt");
-        console.log(Dialogue.interact("gnu", "player", 2));
+        dialogue.load("gnu", "dialogue_files/gnu.txt");
+        combatPrint(dialogue.interact("gnu", "player")[0]);
       }
 
       //equipping weapons
