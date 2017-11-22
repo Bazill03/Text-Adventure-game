@@ -1,0 +1,15 @@
+0 Brother? Is that you? The crows seem to grow ever louder. [1,2]
+1 Yes Brother, I am here. How are you? -> 3
+2 Yes, it's me. Where's everyone else? -> 4
+3 I am fine, the attack is over for now. [5,6]
+4 They're recovering downstairs. I'm too shaken to stand with so many wounded. [5,6]
+5 I wasn't there for the attack, what happened? -> 7
+6 We all fought bravely, myself included. -> 10
+7 The bloodstains on your robe suggest otherwise. [8]
+8 I was helping others. I woke to the noise and came downstairs and found only injured brothers and rushed to help. -> 9
+9 I see. I'm sure many will remember your face as the face of a savior. [11]
+10 I'm sure many downstairs regard you as a hero. I must go now. [13]
+11 I hope not. I joined to be a Brother, not a hero. -> 12
+12 I as well. I must go now to tend to the others. [13]
+13 Wait! Do you know why the crows attacked? -> 14
+14 Just as Thaddius has foretold, just as the shards have glowed, just as evil unfolds, Umbril has returned. -> 14

@@ -1,12 +1,20 @@
 $(document).ready(function() {
 //sets up dialogue
-//todo add disguise
-//todo add conversation
-//todo stick play/pause buttons to bottom
-//todo convert usefireball and useweapon into single function
+//TODO add disguise
+//TODO Add strong tags to items that can be taken. Work on clarity.
+//TODO stick play/pause buttons to bottom
+//TODO convert usefireball and useweapon into single function
+
+
+//bugs
+//TODO FUCKS UP WITH THE HEALTH BARS MOVING?!?!?!
+//TODO make look text blue or post on left side of screen
+//TODO Fix barrel text after player has obtained health Potion
+//TODO player can open door without using listen
+
 let player;
 
-Dialogue.load("gnu", "dialogue_files/gnu.txt");
+Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
 
   $("#console").fadeIn(1500);
 
@@ -63,15 +71,6 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
     findText: "You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. What mighty warrior would cast aside a relic? What mighty foe made sure he didn't have a choice?",
     lookText: "You approach the table carefully. You see an old, rusted sword, chipped from years of battle. Any defense at all would help stave off the fear. Try 'take sword'.",
   },
-
-  steelMace = {
-    name: "Steel mace",
-    owned: false,
-    condition: "Candle light glints off of every polished surface. Truely a powerful weapon.",
-    findText: "You wrap your fingers around the leather hilt of the mace. Every possible angle seems impossibly polished. Judging by the condition of the weapon you guess that this mace is something someone is very proud of. It was well taken care of.",
-    lookText: "You notice from the corner of your eye a text the writer should redo once he knows where this mace is found."
-  },
-
   {
     name: "torch",
     combat: false,
@@ -103,6 +102,19 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
     name: "Cipher",
     owned: false,
     condition: "Old and bound in a deep black flesh. Theres a rune on the front you don't recongnize. Using the cipher you're able to determine that the text on the front reads 'Notes on the workings of Thaddius, the first shard keeper.",
+    },
+    {
+      //Cultist Disguide
+      name: "Cultist Disguise",
+      owned: false,
+      condition: "Bloody and full of stab wounds. No one should notice."
+    },
+    steelMace = {
+      name: "Steel mace",
+      owned: false,
+      condition: "Candle light glints off of every polished surface. Truely a powerful weapon.",
+      findText: "You wrap your fingers around the leather hilt of the mace. Every possible angle seems impossibly polished. Judging by the condition of the weapon you guess that this mace is something someone is very proud of. It was well taken care of.",
+      lookText: "You notice from the corner of your eye a text the writer should redo once he knows where this mace is found."
     },
     ],
     rooms: [
@@ -343,10 +355,14 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
         {
         input: "open door leading east",
         result: function(){
+          if(gameData.rooms[3].figuresSpoken === true){
              moveThroughDoor.play();
              currentRoom = gameData.rooms[4];
              print(gameData.rooms[4].description);
-          }
+           } else {
+             print("You can hear some figures speaking outside. Try 'listen' ");
+           }
+        }
         },
     ]
   },
@@ -429,7 +445,15 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
             print(gameData.rooms[5].description);
           }
         },
-      ] //end of commands
+        {
+        input: "speak",
+        result: function(){
+          if(playerArmor == cultistRobe){
+            conversation("Unknown Brother");
+          } else null;
+        }
+        },
+    ] //end of commands
   },
   {
     name: "Thaddius' Shrine",
@@ -456,6 +480,15 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
           }
      },
      {
+       input: "take robe",
+       result: function(){
+         gameData.items[6].owned = true;
+         player.inventory.push("Cultist Disguise");
+         pickUpNew.play();
+         print("You struggle to pull the robes off of the dead cultist. Luckly the robe's color is already one similar to the color of blood. No one should notice, you hope. Equip with 'equip cultist disguise'.")
+       }
+     },
+     {
         input: "look bookshelves",
         result: function(){
           if(gameData.items[5].owned === true){
@@ -480,7 +513,7 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
      {
       input: "look corpse",
       result: function(){
-       print("After examining the body you find that the corpse still seems fresh. Its eyes has yet to turn the blueish hue you'd seen in the birds eyes. Its hands are curled violently as if he'd been struggling to hold onto something during his demise. He is dressed in grey and red robes with multiple puncture marks in the chest, and back. It seems like whoever this was, he was assassinated.");
+       print("After examining the body you find that the corpse still seems fresh. Its eyes has yet to turn the blueish hue you'd seen in the birds eyes. Its hands are curled violently as if he'd been struggling to hold onto something during his demise. He is dressed in grey and red robes with multiple puncture marks in the chest, and back. It seems like whoever this was, he was assassinated. You wonder for a moment if the robe would be any use to you in case you run into any cultists that are living.");
        }
     },
     {
@@ -494,7 +527,11 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
      result: function(){
        moveThroughDoor.play();
        currentRoom = gameData.rooms[4];
-       print("You are back in the grand hall. The pounding against the door has yet to cease.");
+       if(playerArmor == cultistRobe){
+         print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. He is silent. (Try using speak.)");
+       } else if (playerArmor != cultistRobe){
+          print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. You draw away slowly, as not to rouse his attention. You close the door quietly, as not to rouse suspicion.");
+        }
       }
     },
     ]
@@ -580,7 +617,7 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
 
       //conversation testing
       if(input == "convo"){
-        conversation("gnu");
+        conversation("Unknown Brother");
       }
 
       //equipping weapons
@@ -596,6 +633,13 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
           playerEquipped = steelMace;
       } else if(input == "equip steel mace" && steelMace.owned === false) {
           print("You do not own the weapon 'steel mace'");
+        }
+
+      if(input == "equip cultist disguise" && gameData.items[6].owned === true){
+        print("You gently put on the disguise. Don't want to rip any extra holes into it.");
+        playerArmor = cultistRobe;
+      } else if(input == "equip cultist disguise" && gameData.items[6].owned === false) {
+          print("You do not own 'cultist disguise' ");
         }
 
 
@@ -618,6 +662,8 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
         print(gameData.items[4].condition);
       } else if (input == "consider cipher" && gameData.items[5].owned === true){
         print(gameData.items[5].condition);
+      } else if (input ===" consider robe" && gameData.items[6].owned === true){
+        print(gameData.items[6].condition)
       }
       //reset textbox
       $("#commandline").val("");
@@ -665,6 +711,7 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
       $('#console').fadeIn(1500);
       $(".combatMenu").fadeOut(1500);
       $(".combat").fadeOut(1500);
+      $(".combatOutput").html("");
       battleMusic.pause();
       battleMusic.currentTime = 0;
       currentSong.play();
@@ -820,7 +867,7 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
     //begin conversation
 
     function conversation(actor){
-      $("#goodbye").fadeIn(1500);
+      $(".backbutton").fadeIn(1500);
       $('#console').fadeOut(1500);
       $(".conversationMenu").fadeIn(1500);
       $(".conversation").fadeIn(1500);
@@ -831,7 +878,7 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
         //prints out actor response to player
         printActorResponse(actor, this.id);
         //prints out next stage of conversation
-        combatPrint(Dialogue.interact(actor, "player").text);
+        //combatPrint(Dialogue.interact(actor, "player").text);
         //removes player response buttons
         deleteButtons();
         //prints out player repsonse buttons
@@ -867,7 +914,7 @@ Dialogue.load("gnu", "dialogue_files/gnu.txt");
       $(".conversationMenu").fadeOut(1500);
       $(".conversation").fadeOut(1500);
       $("body").removeClass("forrest-bg");
-      $("#goodbye").fadeOut(1500)
+      $(".backbutton").fadeOut(1500)
     });
 
     //END CONVERSATION

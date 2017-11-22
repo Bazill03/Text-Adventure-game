@@ -171,11 +171,14 @@ pre {
   border: 1px solid white;
 }
 
+.backbutton{
+  display: none;
+}
+
 #goodbye{
   background: black;
   margin: 0 auto;
   color: white;
-  display: none;
 }
 
 /*audio controls*/
