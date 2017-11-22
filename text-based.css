@@ -9,6 +9,14 @@ body {
   background-size: cover;
 }
 
+.blue-text{
+  color: rgb(22, 100, 129);
+}
+
+.red-text{
+  color: rgb(144, 77, 68);
+}
+
 #title-text {
   color: red;
   border-color: black;

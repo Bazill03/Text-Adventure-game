@@ -22,7 +22,9 @@ var shardKeeper = {
   moveNum: 3,
   moves: [["slash", 30], ["charge", 50], ["fire breath", 12]],
   vulnerability: ["blunt", 50],
-  introSound: shardKeeperIntroSound
+  introSound: shardKeeperIntroSound,
+  sounds: shardKeeperAttackSounds
+  // death: shardKeeperDeathSound
 };
 
 

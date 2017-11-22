@@ -1,0 +1,17 @@
+0 What does he want now? [1,2]
+1 He wants you to keep looking. -> 3
+2 What are you looking for? -> 4
+3 Well it's not in here, okay? I've been in here for hours. I've searched every corner for that damned book. [5]
+4 That accursed tome. Some original manuscript from Rain himself. Supposedly it was hidden in here by the mad king from the before times. No one believes it's here but him. [6,7]
+5 What book? -> 4
+6 Rain? -> 8
+7 Have you tried the antechamber? -> 9
+8 Yes, Rain, the supposed savior of men who doomed us all to live without Umbrils embrace. He's a traitor to his species and anything he wrote isn't worth reading. [10]
+9 With that thing in there? Of course I haven't! What am I going to do? Shove my head in the chamber pot while some withered husk claws at my ass? [12]
+10 Your leader must want it for some reason, right? -> 11
+11 Oh he's obsessed with ancient knowledge, if someone from long, long ago told him to shove one of the shards up his ass and walk around the woods singing Rain's blessings and foraging for bilberries, he would.[15]
+12 I could take care of the withered. -> 13
+13 Yeah yeah, if it'll get ya off go ahead. But don't let it touch me! [14]
+14 Whose Rain? -> 8
+15 I'm sure that he would. -> 16
+16 Listen, we all can't be so obsessed with the past. The future is slamming it's tiny plummed head against our doors. We need to worry about the onslaught, not moldy books. -> 16

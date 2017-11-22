@@ -4,23 +4,26 @@ $(document).ready(function() {
 //TODO Add strong tags to items that can be taken. Work on clarity.
 //TODO stick play/pause buttons to bottom
 //TODO convert usefireball and useweapon into single function
-
+//TODO Impliment ice shard and mana potions
+//TODO if visted room before, different text
+//TODO streamline navigation
+//TODO streamline dialogue loading
 
 //bugs
 //TODO FUCKS UP WITH THE HEALTH BARS MOVING?!?!?!
-//TODO make look text blue or post on left side of screen
 //TODO Fix barrel text after player has obtained health Potion
-//TODO player can open door without using listen
 
-let player;
 
-Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
+
+
+  let player;
 
   $("#console").fadeIn(1500);
 
   //Audio start
   //intro sounds
   withered.introSound.play();
+  setTimeout(function(){shardKeeper.introSound.play()}, 2000);
   steelMace.sound.play();
 
   var currentSong = song1;
@@ -53,73 +56,14 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
     travelHistory : []
   }
   //players equipped weapon
-  let playerEquipped = fists;
-  let playerArmor = rags;
+  let playerEquipped = clayMore;
+  let playerArmor = cultistRobe;
 
   var gameData = {
-  // item and room objects
-  items : [
-  //Items
-
-  oldSword = {
-    name: "old sword",
-    owned: false,
-    stats: 5,
-    damageType: "slash",
-    sound: swordAttackSound,
-    condition: "Broken and mangled. You should find a replacement soon.",
-    findText: "You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. What mighty warrior would cast aside a relic? What mighty foe made sure he didn't have a choice?",
-    lookText: "You approach the table carefully. You see an old, rusted sword, chipped from years of battle. Any defense at all would help stave off the fear. Try 'take sword'.",
-  },
-  {
-    name: "torch",
-    combat: false,
-    owned: false,
-    condition: "The bright dancing flames warm you, giving you the feeling of safety",
-  },
-  {
-    name: "Skeleton Key",
-    combat: false,
-    owned: false,
-    condition: "You look over the key. It seems to be made of rusted copper. Bits and pieces of green flaking off to reveal the dull copper underneath. The notches seem worn down to almost nothing.",
-    findText: "You gently pick the key up off the table. The rusted key leaving flakes of dark green copper on the end table. Looking closer you see the that the notches are worn down to almost nothing. You wonder for a moment what use this key might be. (Try using the key on something.)"
-  },
-    {
-    //health potion
-    name: "Health Potion",
-    owned: false,
-    condition: "You hold the potion up to the torch. You can see small shimmers, almost thread-like floating in the solution.",
-    findText: "You reach in and grasp the bottle. You worry briefly how badly you might need it in the hours to come."
-    },
-    {
-    //Scroll
-    name: "Thaddius' scroll",
-    owned: false,
-    condition: "Yellowed with age and has the distinct smell of sage.",
-    },
-    {
-    //Cipher
-    name: "Cipher",
-    owned: false,
-    condition: "Old and bound in a deep black flesh. Theres a rune on the front you don't recongnize. Using the cipher you're able to determine that the text on the front reads 'Notes on the workings of Thaddius, the first shard keeper.",
-    },
-    {
-      //Cultist Disguide
-      name: "Cultist Disguise",
-      owned: false,
-      condition: "Bloody and full of stab wounds. No one should notice."
-    },
-    steelMace = {
-      name: "Steel mace",
-      owned: false,
-      condition: "Candle light glints off of every polished surface. Truely a powerful weapon.",
-      findText: "You wrap your fingers around the leather hilt of the mace. Every possible angle seems impossibly polished. Judging by the condition of the weapon you guess that this mace is something someone is very proud of. It was well taken care of.",
-      lookText: "You notice from the corner of your eye a text the writer should redo once he knows where this mace is found."
-    },
-    ],
+  //room objects
     rooms: [
     {
-    name: 'strange room',
+    name: 'strange room', //0
     look: ['old door, torch'],
     description: "You are back in the strange room.",
     commands: [
@@ -139,11 +83,11 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
         input: 'take torch',
         result: function(){
           print("Looking closer at the torch you find a flint and steel placed nearby, as if by a delicate hand. The hair on the back of your head stands up. You light the torch and the room blooms with light. Taking another look, you find that you're in a small, windowless room with one door on the western side. Try typing 'Look old door' to look closer. Or, try 'consider torch' to look at it.");
-        player.inventory.push("torch");
-        gameData.items[1].owned = true;
-        pickUpNew.play();
-        //not sure what this does anymore
-        //gameData.rooms[0].splice(0,1);
+          player.inventory.push("torch");
+          torch.owned = true;
+          pickUpNew.play();
+          //not sure what this does anymore
+          //gameData.rooms[0].splice(0,1);
         }
       },
       {
@@ -160,10 +104,10 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
 
   },//end of strange room
   {
-    name: 'Library',
+    name: 'Library', //1
     look: ["shining object", "bookshelves", "window", "door leading south", "back to starting room"],
     description: function(){
-      if(gameData.items[1].owned === false){
+      if(torch.owned === false){
             print("You arrive in the western corridor. Books line the walls top to bottom, the tomes old and rotten with age. The unmistakeable scent of old books makes the room feel humid and dense. The room is dimly lit by moonlight streaming in from arched windows between the bookcases. Birds flying outside cause shadows to play throughout the room making you feel threatened and small. Every skittering shadow makes you recoil in fear, too afraid to even breathe. You vaguely remember a torch in the north room.");
           } else {
             print("You arrive in the western corridor. Books line the walls top to bottom, the tomes old and rotten with age. The unmistakeable scent of old books makes the room feel humid and dense. The room is dimly lit by moonlight streaming in from arched windows between the bookcases. Birds flying outside cause shadows to play throughout the room, making you feel threatened, but prepared. With the light of your torch, you are able to make out a shining object laying on a table in the center of the room. You hesitantly move closer. Try your 'look' command.");
@@ -202,7 +146,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
       {
         input: "open door leading south",
         result: function(){
-          if(gameData.items[1].owned === true){
+          if(torch.owned === true){
           currentRoom = gameData.rooms[2];
           //player.travelHistory.push(currentRoom);
           print(currentRoom.description());
@@ -215,7 +159,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
         result: function(){
         print("You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. What mighty warrior would cast aside a relic? What mighty foe made sure he didn't have a choice?");
         player.inventory.push("old sword");
-        gameData.items[0].owned = true;
+        oldSword.owned = true;
         gameData.rooms[1].look.shift();
         gameData.rooms[1].look.push("empty table");
         pickUpNew.play();
@@ -224,11 +168,11 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
     ]
   },
   {
-    name: "Lounge",
+    name: "Lounge", //2
     look: ["end table", "chair", "bookshelves", "door leading east"],
     description: function(){
       print("You open the door and find yourself in a quiet room outfitted with chairs, a small end table, and even more bookshelves. The room seems to be unnaturally dark. Your torch doesn't throw as much light here.")
-      },
+    },
     lockedDoor: {
       locked: true
     },
@@ -240,7 +184,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
       {
         input: "look end table",
         result: function(){
-          if(gameData.items[2].owned === false){
+          if(skeleKey.owned === false){
             print("The round end table seems to be made of a dark, polished hardwood. You find an empty oil lantern with busted glass, and a key. You pick up the key for a moment and hold the torch up to it. The notches seem ground down to almost nothing. Try taking it.");
           } else {
             print("There's an indent in the wood the shape of the key. As if the key had been slowly burning it's way through the table. The key seems cool to the touch.");
@@ -266,7 +210,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
         result: function(){
         print("You gently pick the key up off the table. The rusted key leaving flakes of dark green copper on the end table. Looking closer you see the that the notches are worn down to almost nothing. You wonder for a moment what use this key might be. (Try using the key on something.)");
         player.inventory.push("skeleton key");
-        gameData.items[2].owned = true;
+        skeleKey.owned = true;
         pickUpNew.play();
         }
       },
@@ -295,7 +239,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
     ]
   },
   {
-    name: "small hallway",
+    name: "small hallway", //3
     look: ['barrel, dead enemy, small archway, door leading east'],
     description: "You are in a small hallway. Your torch seems to emit even less light here. The smell of rotting flesh tingles your nose and makes your stomach turn over. There's a small barrel in the corner of the otherwise dangerous but unimpressive room.",
     figuresSpoken: false,
@@ -304,7 +248,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
         {
         input: "look barrel",
         result: function(){
-          if(gameData.items[4].owned === false){
+          if(healthPot.owned === false){
             print("A large wooden barrel sits idly in the corner. The top seems slightly ajar. You wonder if you should try opening it.");
           } else {
             print("There is nothing left here but cobwebs and dust.");
@@ -367,8 +311,8 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
     ]
   },
   {
-    name: "Grand Hall",
-    look: ["throne", "column", "doors leading outside", "red aisle runner", "alter", "dead crow", "door leading east", 'small door'],
+    name: "Grand Hall", //4
+    look: ["throne", "column", "doors leading outside", "red aisle runner", "alter", "dead crow", "door leading east", 'stairs leading north', 'small door'],
     description: "You slowly peek open the door. On the other side looks to be a throne room. It's much brighter here compared to the other rooms. You quickly extinguish your torch and hide behind one of the many columns that line the room. The ceilings here are tall and even minute sounds echo profoundly. The throne at the end of the room is large, and made of materials you've yet seen. Outside the window, a murder of crows caws ominously, desparate for food. Suddenly, something seems to slam against the large, oak doors that make up the entrance to the throne room. You hide in fear but after some time a crow slams into the window hard enough to break a small hole in the glass, and falls dead to the throne room floor. The slamming on the door continues, picking up speed as more and more birds charge into the door. Soon the orchestra of birds is so loud it consumes you. You glance around hesitantly, waiting for the figures to return. After some time you become sure enough to get a better look around the room.",
     commands:[
         {
@@ -389,8 +333,8 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
         result: function(){
             print("You place the scroll delicately in your bag.");
             pickUpNew.play();
-            gameData.player.inventory.push("strange scroll");
-            gameData.items[4].owned = true;
+            player.inventory.push("strange scroll");
+            throneScroll.owned = true;
           }
         },
         {
@@ -421,8 +365,13 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
         input: "look door leading east",
         result: function(){
             print("You peek through the keyhole and see a strange creature lumbering around a large room. In the center of the room looks to be a staircase leading down. The creature is tall, but hunched over, a large, glowing pack strapped to its back. Its arms stretch down to the floor and with every step the shackles on its wrist grind against the stone floor. Its mouth is agape and a blue fluid drips out slowly. Its clothes are tattered rags and whatever hair this creature may have once had has fallen out. It begins to move towards you, its glowing bright blue eyes seem fixated on the key hole. It lets out a long, low howl and tries to pick up its pace. You recoil in fear and hear the large thud of the creature slamming into the doorway.");
-            setTimeout(shardKeeper.shardKeeperIntroSound.play(), 5000);
-
+            shardKeeper.introSound.play();
+            }
+        },
+        {
+          input: "look stairs leading north",
+          result: function(){
+            print("A grand marble staircase extends upwards from behind the throne. The granite walls are speckled with torches giving way to darkness as the stairs furl upwards inevitablly meeting in the middle, somewhere above.");
           }
         },
         {
@@ -446,6 +395,14 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
           }
         },
         {
+        input: "climb stairs leading north",
+        result: function(){
+          moveThroughStairs.play();
+          currentRoom = gameData.rooms[6];
+          gameData.rooms[6].description();
+        }
+        },
+        {
         input: "speak",
         result: function(){
           if(playerArmor == cultistRobe){
@@ -456,14 +413,14 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
     ] //end of commands
   },
   {
-    name: "Thaddius' Shrine",
+    name: "Thaddius' Shrine", //5
     look: ["pedestal", "bookshelves", "note", "wall writing","corpse", "sky light", "back to the grand hall"],
     description: "You find yourself in a large library, the walls lined with shelves. In the center of the room you see a bright light shining down upon a wooden pedestal. There seems to be no other lights or windows in the room other than the skylight. You move around the room slowly, scouting out enemies but find none. In the far corner of the room one of the bookshelves had been toppled over leaving a mess of books and loose pages. A corpse lays in a crumpled heap over top the shelf, papers below still drinking the blood oozing out.",
     commands: [
       {
       input: "look pedestal",
       result : function(){
-        if(gameData.items[4].owned === true){
+        if(cipher.owned === true){
         print("The pedestal seems to be made out of living wood. A vine curls along the stand ending in two small leaves basking in the moonlight streaming in from above. On the pedestal sits a dark book bound in a rough, black skin. A strange rune lays in the center of the book, with an unreadable text swirling below it. You reach over and open the book. On the first page you find a key to the strange text laid out in scrawled handwriting by some dutiful notetaker. It seems to be a cipher. The rest of the book is in the old writing you found in the scroll. ");
         } else {
             print("The pedestal seems to be made out of living wood. A vine curls along the stand ending in two small leaves basking in the moonlight streaming in from above. On the pedestal sits a dark book bound in a rough, black skin. A strange rune lays in the center of the book, with a strange text swirling below it. You reach over and open the book. On the first page you find a key to the strange text laid out in scrawled handwriting by some dutiful notetaker. It seems to be a cipher. You wonder what use this book might be.");
@@ -473,16 +430,16 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
      {
        input: "take cipher",
        result: function(){
-          gameData.items[5].owned = true;
+          cipher.owned = true;
           player.inventory.push("cipher");
           pickUpNew.play();
           print("You gently pick up the book. The text begins to glow a faint blue but subsides. You feel a strange courage welling up within you.");
-          }
+        }
      },
      {
        input: "take robe",
        result: function(){
-         gameData.items[6].owned = true;
+         cultistRobe.owned = true;
          player.inventory.push("Cultist Disguise");
          pickUpNew.play();
          print("You struggle to pull the robes off of the dead cultist. Luckly the robe's color is already one similar to the color of blood. No one should notice, you hope. Equip with 'equip cultist disguise'.")
@@ -491,7 +448,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
      {
         input: "look bookshelves",
         result: function(){
-          if(gameData.items[5].owned === true){
+          if(cipher.owned === true){
               print("These books somehow seem older than the other books you've seen thus far. Most are bound in an unfamiliar black leather that warms your hands when you hold them. None of the books seem to have titles on the spine, or on the front. After flipping through a few you find most to only have the first few pages written in, and the rest are blank. You decipher an excerpt from one: 'The demonic influence radiates from the shards. Nothing can contain them. If we are to protect this world from the cults that spring up around where these evil seeds are sown, we must destroy them. Only Rain knows how we'll break this curse.' You close the book.");
           } else {
               print("These books somehow seem older than the other books you've seen thus far. Most are bound in an unfamiliar black leather that warms your hands when you hold them. None of the books seem to have titles on the spine, or on the front. After flipping through a few you find most to only have the first few pages written in, and the rest are blank. You need some sort of cipher.");
@@ -528,27 +485,84 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
        moveThroughDoor.play();
        currentRoom = gameData.rooms[4];
        if(playerArmor == cultistRobe){
+         Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
          print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. He is silent. (Try using speak.)");
        } else if (playerArmor != cultistRobe){
-          print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. You draw away slowly, as not to rouse his attention. You close the door quietly, as not to rouse suspicion.");
+          print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. You draw away slowly and close the door quietly, as not to rouse suspicion.");
         }
       }
     },
     ]
+  },
+  {
+  name: "Ornate Chambers", //6
+  look: ["bed", "dresser", "vase", "stoic cultist", "painting", "small antechamber", "end table"],
+  description: function(){
+    if(playerArmor == cultistRobe){
+    Dialogue.load("Frantic_Cultist", "dialogue_files/frantic_cultist.txt");
+    print("You climb the stairs slowly, relighting your torch off of one of the wall sconces. The torch flares to life. As you round the curved stair case you notice a large, dark, oak door guarding the top. Peering through the keyhole you see a frantic cultist searching the room. You enter slowly, not wanting to disturb him.");
+    print("The cultist turns to you as you close the door.");
+    print("'What does he want now?', the cultist moans.", ".red-text");
+    print("You are unsure of how to respond. Use speak to talk to the cultist.");
+    } else {
+    print("You climb the stairs slowly, relighting your torch off of one of the wall sconces. The torch flares to life. As you round the curved stair case you notice a large, dark, oak door guarding the top. Peering through the keyhole you see a frantic cultist searching the room. Not wanting a fight, you descent the stairs wishing you had a disguise.");
+    currentRoom = gameData.rooms[5];
+    }
+  },
+  commands: [
+    {
+    input: "look bed",
+    result: function(){
+      print("You look over the largest bed you've ever seen. A tall, pearl white canopy extends upwards towards the ceilng, capped with golden finials. Golden drapes glisten gently in the torch light. You pull the drapes back gently to find the bedding tousled into a messy lump. Whoever slept here didn't have the time to make the bed.");
+    }
+    },
+    {
+    input: "look vase",
+    result: function(){
+      print("Dead roses fold over the edges of the vase, each black rose dropping gnarled petals upon the dresser. The vase itself is decorated with a scene that encircles the bulb of the hydria. You turn the vase delecately, trying to examine the entire scene, while petals rain down.");
+      print("A man stands over a vast field, mountains standing tall in the background. The field is full of men with spears. Next, the man stands over a large purple pool that rests atop a mountain. He is inside a decorated throne room, not unlike the one in this castle, but the back wall is black with two red eyes dominating the darkness. Lastly the man is in bed, surrounded by loved ones. He's holding his stomach in pain.");
+    }
+    },
+    {
+    input: "look painting",
+    result: function(){
+      print("A simple painting of a rainy field. There are boars giving birth to a human child. Human women surround them, rejoicing. What could that mean?");
+    }
+    },
+    {
+    input: "look small antechamber",
+    result: function(){
+      print("Something inside is growling and scratching at the door. It seems in pain. Periodically it screeches and pounds against the door, the frame doesn't look like it can hold on much longer.");
+    }
+    },
+    {
+    input: "look end table",
+    result: function(){
+      print("A dusty end table filled with half burnt candles. No one cared to clean up after themselves. Inbetween two melted candles you notice a ripped piece of parchment. You look back at the cultist who seems distracted his distraught search. You open it carefully: ");
+      print("When he finally returns, we will be acosted by the crows. Do not let them in. When we weather his storm we will be blessed by him. When we are the sole survivors we will fall into his graces and be made whole in his eyes. Do not lose faith. We've lost many, but those who remain are strong enough to survive his embrace", ".blue-text");
+    }
+    },
+    {
+    input: "speak",
+    result: function(){
+      conversation("Frantic_Cultist");
+    }
+    },
+    {
+    input: "open small antechamber",
+    result: function(){
+      combat(player, withered);
+      print("The cultist looks at you with admiration.");
+      print("I didn't think you'd be able to do that! Those things are way more difficult to fight than highly flammable birds.", ".red-text");
+    }
+  } //end commands
+  ]
   }
 ] //end of rooms
 }; //end of gameData
 
   //places the player in the starting room.
-  var currentRoom = gameData.rooms[0];
-
-
-  //functions
-  //prints out items to be looked at
-  function printLook(room) {
-      print("You glance around the room finding: ");
-      print(currentRoom.look);
-  }
+  var currentRoom = gameData.rooms[5];
 
  function attachListeners(){
     //  Event listeners
@@ -558,8 +572,8 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
  }
 
   //prints out input to screen
-  function print(input) {
-    $("<p class='text-center'>" + input + "</p>").insertBefore("#placeholder").fadeIn(1000);
+  function print(input, color) {
+    $("<p class='text-center " + color + "'>" + input + "</p>").insertBefore("#placeholder").fadeIn(1000);
           //reset textbox
       $("#commandline").val("");
   }
@@ -569,14 +583,18 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
     if (e.keyCode === 13) {
       var input = $("#commandline").val().toLowerCase();
       var roomCmd = currentRoom.commands;
+
+      //for combat testing. To be removed.
       if(input=="fight"){
-        combat(player,withered);
+        combat(player,shardKeeper);
       }
+
       //prints out current room
       if(input=="room"){
         print(currentRoom.name);
         console.log(currentRoom.name);
       }
+
       //prints out user inventory
       if(input == "inventory"){
         if(player.inventory < 1){
@@ -586,13 +604,17 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
           print(player.inventory);
         }
       }
-      if(input == "use cipher on scroll" && gameData.items[5].owned === true && gameData.items[4].owned === true){
-        print("You open up the cipher, and begin work on the scroll. After some time you work out the message. It reads: 'Thaddius on the ways of man: We must follow in the footsteps of Rain and follow his three rules, which are as follows. One: Do not succumb to the powers of idols. This serves only to cause war. Two: Do not war against another man. This serves only to empower Umbril and his creatures. Three: Do not give into the influences Umbril. This serves only to end mankind.' ")
+
+      //use commands that can be taken place in any room.
+      if(input == "use cipher on scroll" && cipher.owned === true && throneScroll.owned === true){
+        print("You open up the cipher, and begin work on the scroll. After some time you work out the message. It reads: 'Thaddius on the ways of man: We must follow in the footsteps of Rain and follow his three rules, which are as follows. One: Do not succumb to the powers of idols. This serves only to cause war. Two: Do not war against another man. This serves only to empower Umbril and his creatures. Three: Do not give into the influences Umbril. This serves only to end mankind.' ");
         return;
       }
+
       //prints out look items in room
       if(input.match(/look$/)){
-        printLook(currentRoom.look);
+        $("<p class='text-center blue-text'>" + "You glance around the room finding:" + "</p>").insertBefore("#placeholder").fadeIn(1000);
+        $("<p class='text-center blue-text'>" + currentRoom.look + "</p>").insertBefore("#placeholder").fadeIn(1000);
       }
 
       //formats the command
@@ -611,8 +633,8 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
 
       //checking what weapon is equipped
       if(input == "equipped"){
-        print("You have " + playerEquipped.name + " equipped." + " It deals up do " + playerEquipped.stats + " damage. And has a damage type of " + playerEquipped.damageType + ".");
-        print(playerArmor.description + " You take " + playerArmor.stats + " less damage.");
+        print("You have " + "<span class='blue-text'>" + playerEquipped.name + "</span>" + " equipped." + " It deals up do " + "<span class='red-text'>" + playerEquipped.stats + "</span>" + " damage. And has a damage type of " + "<span class='red-text'>" + playerEquipped.damageType + "</span>" + ".");
+        print("<span class='blue-text'>" + playerArmor.description + "</span>" +  " You take " + "<span class='red-text'>" + playerArmor.stats + "</span>" + " less damage.");
       }
 
       //conversation testing
@@ -621,7 +643,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
       }
 
       //equipping weapons
-      if(input == "equip old sword" && oldSword.owned === true){
+      if(input == "equip sword" && oldSword.owned === true){
           print("You fasten the old sheath to your belt and gently place the rusted blade inside.");
           playerEquipped = oldSword;
         } else if(input == "equip old sword" && oldSword.owned === false) {
@@ -635,10 +657,10 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
           print("You do not own the weapon 'steel mace'");
         }
 
-      if(input == "equip cultist disguise" && gameData.items[6].owned === true){
+      if(input == "equip cultist disguise" && cultistRobe.owned === true){
         print("You gently put on the disguise. Don't want to rip any extra holes into it.");
         playerArmor = cultistRobe;
-      } else if(input == "equip cultist disguise" && gameData.items[6].owned === false) {
+      } else if(input == "equip cultist disguise" && cultistRobe.owned === false) {
           print("You do not own 'cultist disguise' ");
         }
 
@@ -650,21 +672,22 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
 
 
       //consider commands
-      if (input == "consider sword" && gameData.items[0].owned === true) {
-        print(gameData.items[0].condition);
-      } else if (input == "consider torch" && gameData.items[1].owned === true) {
-        print(gameData.items[1].condition);
-      } else if (input == "consider key" && gameData.items[2].owned === true) {
-        print(gameData.items[2].condition);
-      } else if (input == "consider potion" && gameData.items[3].owned === true){
-        print(gameData.items[3].condition);
-      } else if (input == "consider scroll" && gameData.items[4].owned === true){
-        print(gameData.items[4].condition);
-      } else if (input == "consider cipher" && gameData.items[5].owned === true){
-        print(gameData.items[5].condition);
-      } else if (input ===" consider robe" && gameData.items[6].owned === true){
-        print(gameData.items[6].condition)
+      if (input == "consider old sword" && oldSword.owned === true) {
+        print(oldSword.condition);
+      } else if (input == "consider torch" && torch.owned === true) {
+        print(torch.condition);
+      } else if (input == "consider skeleton key" && skeleKey.owned === true) {
+        print(skeleKey.condition);
+      } else if (input == "consider potion" && healthPot.owned === true){
+        print(healthPot.condition);
+      } else if (input == "consider scroll" && throneScroll.owned === true){
+        print(throneScroll.condition);
+      } else if (input == "consider cipher" && cipher.owned === true){
+        print(cipher.condition);
+      } else if (input ===" consider robe" && cultistRobe.owned === true){
+        print(cultistRobe.condition)
       }
+
       //reset textbox
       $("#commandline").val("");
     }
@@ -766,7 +789,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
           "!"
       );
         calcHealthBars("playerHealth", player.health);
-        witheredAttackSound.play();
+        enemy.sounds.play();
         hasAttacked = true;
       }
     }
@@ -798,6 +821,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
         combatPrint("The game is over.");
       }
     }
+
     function useFireball() {
       if (hasAttacked === false) {
         return combatPrint("You are still recovering from your attack.");
@@ -913,6 +937,7 @@ Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
       $('#console').fadeIn(1500);
       $(".conversationMenu").fadeOut(1500);
       $(".conversation").fadeOut(1500);
+      $(".combatOutput").html(" ");
       $("body").removeClass("forrest-bg");
       $(".backbutton").fadeOut(1500)
     });
