@@ -13,11 +13,11 @@ $(document).ready(function() {
 //TODO FUCKS UP WITH THE HEALTH BARS MOVING?!?!?!
 //TODO Fix barrel text after player has obtained health Potion
 
-
-
+//@Bazill03 One way would be not to use the Dialogue object directly but to clone it to lets say var myDialogue = Object.assign({}, Dialogue);. Later if you want to delete all the info you just do the same myDialogue = Object.assign({}, Dialogue);
+//so use it as some kind of constructor @Bazill03
 
   let player;
-
+  //var myDialogue = Object.assign({}, Dialogue);
   $("#console").fadeIn(1500);
 
   //Audio start
@@ -400,13 +400,14 @@ $(document).ready(function() {
           moveThroughStairs.play();
           currentRoom = gameData.rooms[6];
           gameData.rooms[6].description();
+          console.log(Dialogue.dialogues);
         }
         },
         {
         input: "speak",
         result: function(){
           if(playerArmor == cultistRobe){
-            conversation("Unknown Brother");
+            conversation("Unknown Brother", "player");
           } else null;
         }
         },
@@ -485,7 +486,8 @@ $(document).ready(function() {
        moveThroughDoor.play();
        currentRoom = gameData.rooms[4];
        if(playerArmor == cultistRobe){
-         Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
+         Dialogue.load("Unknown Brother","dialogue_files/brother_1.txt");
+         //var myDialogue = Object.assign({grandHallCultist}, Dialogue);
          print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. He is silent. (Try using speak.)");
        } else if (playerArmor != cultistRobe){
           print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. You draw away slowly and close the door quietly, as not to rouse suspicion.");
@@ -499,7 +501,8 @@ $(document).ready(function() {
   look: ["bed", "dresser", "vase", "stoic cultist", "painting", "small antechamber", "end table"],
   description: function(){
     if(playerArmor == cultistRobe){
-    Dialogue.load("Frantic_Cultist", "dialogue_files/frantic_cultist.txt");
+    Dialogue.load("Frantic Cultist", "dialogue_files/frantic_cultist.txt");
+    //myDialogue = Object.assign({F_Cultist}, Dialogue);
     print("You climb the stairs slowly, relighting your torch off of one of the wall sconces. The torch flares to life. As you round the curved stair case you notice a large, dark, oak door guarding the top. Peering through the keyhole you see a frantic cultist searching the room. You enter slowly, not wanting to disturb him.");
     print("The cultist turns to you as you close the door.");
     print("'What does he want now?', the cultist moans.", ".red-text");
@@ -545,7 +548,7 @@ $(document).ready(function() {
     {
     input: "speak",
     result: function(){
-      conversation("Frantic_Cultist");
+      conversation("Frantic Cultist", "player_1");
     }
     },
     {
@@ -635,11 +638,6 @@ $(document).ready(function() {
       if(input == "equipped"){
         print("You have " + "<span class='blue-text'>" + playerEquipped.name + "</span>" + " equipped." + " It deals up do " + "<span class='red-text'>" + playerEquipped.stats + "</span>" + " damage. And has a damage type of " + "<span class='red-text'>" + playerEquipped.damageType + "</span>" + ".");
         print("<span class='blue-text'>" + playerArmor.description + "</span>" +  " You take " + "<span class='red-text'>" + playerArmor.stats + "</span>" + " less damage.");
-      }
-
-      //conversation testing
-      if(input == "convo"){
-        conversation("Unknown Brother");
       }
 
       //equipping weapons
@@ -890,7 +888,7 @@ $(document).ready(function() {
 
     //begin conversation
 
-    function conversation(actor){
+    function conversation(actor, player){
       $(".backbutton").fadeIn(1500);
       $('#console').fadeOut(1500);
       $(".conversationMenu").fadeIn(1500);
@@ -900,26 +898,24 @@ $(document).ready(function() {
       //handles click events for player response buttons
       $(".conversationMenu").on("click", ".convoButton", function(){
         //prints out actor response to player
-        printActorResponse(actor, this.id);
-        //prints out next stage of conversation
-        //combatPrint(Dialogue.interact(actor, "player").text);
+        printActorResponse(actor, player, this.id);
+        console.log("Actor " + actor + " " + player + this.id);
         //removes player response buttons
         deleteButtons();
         //prints out player repsonse buttons
-        conversationOptions(actor);
-
+        conversationOptions(actor, player);
       });
       //prints out greeting
-      printActorResponse(actor);
-      conversationOptions(actor);
+      printActorResponse(actor, player);
+      conversationOptions(actor, player);
     }
 
-    function printActorResponse(actor, response){
-      combatPrint(Dialogue.interact(actor, "player", response).text);
+    function printActorResponse(actor, player, response){
+      combatPrint(Dialogue.interact(actor, player, response).text);
     }
 
-    function conversationOptions(actor){
-      const responses = Dialogue.interact(actor, "player").responses;
+    function conversationOptions(actor, player){
+      let responses = Dialogue.interact(actor, player).responses;
 
       for(var i = 0; i < responses.length; i++){
         console.log(responses[i].text);
@@ -938,6 +934,9 @@ $(document).ready(function() {
       $(".conversationMenu").fadeOut(1500);
       $(".conversation").fadeOut(1500);
       $(".combatOutput").html(" ");
+      $(".conversationMenu").off("click");
+      //Dialogue.dialogues = {};
+      console.log(Dialogue.dialogues);
       $("body").removeClass("forrest-bg");
       $(".backbutton").fadeOut(1500)
     });
