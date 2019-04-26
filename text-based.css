@@ -1,5 +1,8 @@
 body {
   background-color: #000;
+  width: 100%;
+  height: 100%;
+  margin 0;
 }
 
 .forrest-bg{
@@ -21,12 +24,6 @@ body {
   color: red;
   border-color: black;
   border-bottom-color: red;
-}
-
-#console {
-  display: none;
-  width: 50%;
-  margin: auto;
 }
 
 p {
@@ -52,12 +49,28 @@ pre {
   margin: auto;
 }
 
-/* Begin player stats */
-.player_stats {
-  left: 5%;
-  display: grid;
+/* Container for flex box */
+.container{
+  width: 100%;
+  margin 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
 }
 
+/* Begin player stats */
+.player_stats {
+  flex-grow: 1;
+  text-align: left;
+}
+.player_stats p {
+    color: gray;
+}
+/* begin main console */
+#console {
+  display: none;
+  flex-grow: 3;
+}
 
 /*Begin Combat */
 
@@ -199,5 +212,5 @@ footer {
   display: fixed;
   bottom: 0;
   width: 100%;
-  position: absolute;
+  float: bottom;
 }

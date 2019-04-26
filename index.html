@@ -33,42 +33,41 @@
    ▄████▀     ██████████ ████       ███▄    ▄████▀             ▄█████████▀    ███    █▀   ▄████████▀    ██████████ ████████▀
 
 </pre>
+<div class="container">
+  <div class="player_stats">
+    <p>Stats: </p>
+    <p>Name: </p><p id="playerNameDisplay"></p>
+    <p>Level: </p><p id="playerLevelDisplay"></p>
+    <p>Health: </p><p id="playerHealthDisplay"></p>
+    <p>Mana: </p><p id="playerManaDisplay"></p>
+    <p>XP: </p><p id="playerXPDisplay"></p>
+    <p>Strength: </p><p id="playerStrengthDisplay"></p>
+    <p>Charisma: </p><p id="playerCharismaDisplay"></p>
+    <p>Agility: </p><p id="playerAgilityDisplay"></p>
+    <p>Intellegence: </p><p id="playerIntDisplay"></p>
 
-<div id="console">
+    <p>Inventory: </p>
 
-  <p class="text-center" id="start_message">Welcome to the game.</p>
+    <p id="playerInventoryDisplay"></p>
 
-   <p class="text-center" id="north">You awake in a cold sweat. The room is tight, and dark. Thick stone everywhere you look suffocates you. You remember nothing of a life before this very moment. Screams and manical laughter subdued by the thick walls dances all around you. Fear electrocutes you and a wild panic takes over your mind. You scream with the chorus and try to run through the darkness. It doesn't take long for you to slam into a wall, and fall to the floor. You sit for a moment, dazed and terrified. You tell yourself to calm down, you'll find your way out of this. That's when you notice the dark shape of a torch laying on the ground. Try typing "take torch" to look closer. Use help for a list of commands.</p>
+  </div>
 
+  <div id="console">
 
+    <p class="text-center" id="start_message">Welcome to the game.</p>
 
-   <p class="text-center" id="message_help">Here is a list of commands: help, go back, room, take, consider, open, use, climb, decend.</p>
-
-   <div class="text-center" id="placeholder"></div>
-
-  <input class="textBox" type="text" name="search" id="commandline" />
+     <p class="text-center" id="north">You awake in a cold sweat. The room is tight, and dark. Thick stone everywhere you look suffocates you. You remember nothing of a life before this very moment. Screams and manical laughter subdued by the thick walls dances all around you. Fear electrocutes you and a wild panic takes over your mind. You scream with the chorus and try to run through the darkness. It doesn't take long for you to slam into a wall, and fall to the floor. You sit for a moment, dazed and terrified. You tell yourself to calm down, you'll find your way out of this. That's when you notice the dark shape of a torch laying on the ground. Try typing "take torch" to look closer. Use help for a list of commands.</p>
 
 
-</div>
-<div class="player_stats">
-  <p>Stats: </p>
-  <p>-------------------------</p>
-  <p>Player Name: Player</p>
-  <p>Player Level: </p>
-  <p>Player Health: </p>
-  <p>Player Mana: </p>
-  <p>XP: </p>
-  <p>Strength: </p>
-  <p>Charisma: </p>
-  <p>Agility: </p>
-  <p>Intellegence: </p>
-  <p>-------------------------</p>
-  <p>Inventory: </p>
-  <p>-------------------------</p>
-  <p id="inventory"></p>
-  <p>-------------------------</p>
 
-</div>
+     <p class="text-center" id="message_help">Here is a list of commands: help, go back, room, take, consider, open, use, climb, decend.</p>
+
+     <div class="text-center" id="placeholder"></div>
+
+    <input class="textBox" type="text" name="search" id="commandline" />
+
+
+  </div>
 
    <div class="combat">
      <div id="playerHealth"></div>
@@ -96,6 +95,7 @@
   <div class="backbutton">
     <button type="button" class"combatButton" id="goodbye">Good-Bye</button>
   </div>
+</div>
 <footer>
   <div class="audioControls">
     <p>audio controls</p>
