@@ -1,23 +1,7 @@
 $(document).ready(function() {
-//sets up dialogue
-//TODO add disguise
-//TODO Add strong tags to items that can be taken. Work on clarity.
-//TODO stick play/pause buttons to bottom
-//TODO convert usefireball and useweapon into single function
-//TODO Impliment ice shard and mana potions
-//TODO if visted room before, different text
-//TODO streamline navigation
-//TODO streamline dialogue loading
-
-//bugs
-//TODO FUCKS UP WITH THE HEALTH BARS MOVING?!?!?!
-//TODO Fix barrel text after player has obtained health Potion
-
-//@Bazill03 One way would be not to use the Dialogue object directly but to clone it to lets say var myDialogue = Object.assign({}, Dialogue);. Later if you want to delete all the info you just do the same myDialogue = Object.assign({}, Dialogue);
-//so use it as some kind of constructor @Bazill03
 
   let player;
-  //var myDialogue = Object.assign({}, Dialogue);
+  let input = $("#commandline").val().toLowerCase();
   $("#console").fadeIn(1500);
 
   //Audio start
@@ -96,7 +80,7 @@ $(document).ready(function() {
           currentRoom = gameData.rooms[1];
           player.travelHistory.push(currentRoom);
           currentRoom = gameData.rooms[1];
-          currentRoom.description()
+          currentRoom.description();
           moveThroughDoor.play();
           }
         },
@@ -168,8 +152,8 @@ $(document).ready(function() {
     ]
   },
   {
-    name: "Lounge", //2
-    look: ["end table", "chair", "bookshelves", "door leading east"],
+    name: "Assassistants Office", //2
+    look: ["end table", "chair", "bookshelves", "messy desk", "door leading west"],
     description: function(){
       print("You open the door and find yourself in a quiet room outfitted with chairs, a small end table, and even more bookshelves. The room seems to be unnaturally dark. Your torch doesn't throw as much light here.")
     },
@@ -180,6 +164,20 @@ $(document).ready(function() {
       {
         input: "look chair",
         result: function(){print("A large velvet chair sits before you. The deep red hue of the chair reminds you of blood. You consider sitting in it for a moment but a dark force makes you consider otherwise")}
+      },
+      {
+      input: "look messy desk",
+      result: function(){
+        print("You look over the large desk. Stacks of old parchment dominate either end of the desk. The center is strangely clean with only one piece of paper folded neatly in half. It reads: To whomever finds this, these are my final words. 'use look' ");
+        look.push("old note");
+        }
+      },
+      {
+      input: "look old note",
+      result: function(){
+        print("I can feel myself changing. Fifty years I gave this Kingdom, and fifty years I toiled over the Kings wishes. I gave him advice when he was unsure. I gave him stability in his times of distress. I did his day-to-days. I gave Generals marching orders. I was important. Now these cultists have come. The coup succeeded. They brought their wretched gems and crystals and lay close to them at night. I am not near them, but I can feel them. They whisper to me. In my dreams I see a dark cloud gathering over the hills. Soon the cloud erupts into a million blue eyed ravens who tear into me. Over and over I have suffered these nightmares. I am weak now. Too weak to go on. My skin has shrivled and my mind races with canabalistic thoughts. I feel I do not have much longer before I become deranged. Whoever finds this, I pray the Goddess of Light watches over you.");
+        print("You set the note down, unsure of what to make of it. You can hear a growling behind the door at the far end of the room. Something is in there.");
+        }
       },
       {
         input: "look end table",
@@ -193,17 +191,19 @@ $(document).ready(function() {
       },
       {
         input: "look bookshelves",
-        result: function(){print("You browse the tomes along the walls. The leatherbound books seem to be so old that you no longer recongnize the language.")}
+        result: function(){
+          print("You browse the tomes along the walls, your torch barely putting forth enough light to make out the titles on the spines. Most are in a language that seems foreign to you. The letters glow a faint blue.");
+        }
       },
       {
-        input: "look door leading east",
+        input: "look door leading west",
         result: function() {
           if(gameData.rooms[2].lockedDoor.locked === true){
             print("You approach the door and try to open it. Locked. Glancing through the keyhole you see only darkness.");
           } else {
             print("You look through the keyhole. You see only darkness.");
           }
-        },
+        }
       },
       {
         input: "take key",
@@ -215,7 +215,7 @@ $(document).ready(function() {
         }
       },
       {
-        input: "use key on door leading east",
+        input: "use key on door leading west",
         result: function(){
         gameData.rooms[2].lockedDoor.locked = false;
         print("The key turns easily in the lock. The clicking sound of the lock gives off an unnatural echo in the room.");
@@ -223,7 +223,7 @@ $(document).ready(function() {
         }
       },
       {
-        input: "open door leading east",
+        input: "open door leading west",
         result: function(){
           if(gameData.rooms[2].lockedDoor.locked === true){
             print("You approach the door and wiggle the handle. Locked.")
@@ -312,7 +312,7 @@ $(document).ready(function() {
   },
   {
     name: "Grand Hall", //4
-    look: ["throne", "column", "doors leading outside", "red aisle runner", "alter", "dead crow", "door leading east", 'stairs leading north', 'small door'],
+    look: ["throne", "column", "doors leading outside", "red aisle runner", "alter", "dead crow", "door leading west", 'stairs leading north', 'small door'],
     description: "You slowly peek open the door. On the other side looks to be a throne room. It's much brighter here compared to the other rooms. You quickly extinguish your torch and hide behind one of the many columns that line the room. The ceilings here are tall and even minute sounds echo profoundly. The throne at the end of the room is large, and made of materials you've yet seen. Outside the window, a murder of crows caws ominously, desparate for food. Suddenly, something seems to slam against the large, oak doors that make up the entrance to the throne room. You hide in fear but after some time a crow slams into the window hard enough to break a small hole in the glass, and falls dead to the throne room floor. The slamming on the door continues, picking up speed as more and more birds charge into the door. Soon the orchestra of birds is so loud it consumes you. You glance around hesitantly, waiting for the figures to return. After some time you become sure enough to get a better look around the room.",
     commands:[
         {
@@ -362,10 +362,11 @@ $(document).ready(function() {
           }
         },
         {
-        input: "look door leading east",
+        input: "look door leading west",
         result: function(){
             print("You peek through the keyhole and see a strange creature lumbering around a large room. In the center of the room looks to be a staircase leading down. The creature is tall, but hunched over, a large, glowing pack strapped to its back. Its arms stretch down to the floor and with every step the shackles on its wrist grind against the stone floor. Its mouth is agape and a blue fluid drips out slowly. Its clothes are tattered rags and whatever hair this creature may have once had has fallen out. It begins to move towards you, its glowing bright blue eyes seem fixated on the key hole. It lets out a long, low howl and tries to pick up its pace. You recoil in fear and hear the large thud of the creature slamming into the doorway.");
             shardKeeper.introSound.play();
+            print("Are you sure you want to enter? Use: open door leading west");
             }
         },
         {
@@ -404,11 +405,19 @@ $(document).ready(function() {
         }
         },
         {
+        input: "open door leading west",
+        result: function(){
+          moveThroughDoor.play();
+          currentRoom = gameData.rooms[7];
+          gameData.rooms[7].description();
+        }
+        },
+        {
         input: "speak",
         result: function(){
           if(playerArmor == cultistRobe){
             conversation("Unknown Brother", "player");
-          } else null;
+          }
         }
         },
     ] //end of commands
@@ -498,14 +507,14 @@ $(document).ready(function() {
   },
   {
   name: "Ornate Chambers", //6
-  look: ["bed", "dresser", "vase", "stoic cultist", "painting", "small antechamber", "end table"],
+  look: ["bed", "dresser", "vase", "frantic cultist", "painting", "small antechamber", "end table", "back to the grand hall"],
   description: function(){
     if(playerArmor == cultistRobe){
     Dialogue.load("Frantic Cultist", "dialogue_files/frantic_cultist.txt");
     //myDialogue = Object.assign({F_Cultist}, Dialogue);
     print("You climb the stairs slowly, relighting your torch off of one of the wall sconces. The torch flares to life. As you round the curved stair case you notice a large, dark, oak door guarding the top. Peering through the keyhole you see a frantic cultist searching the room. You enter slowly, not wanting to disturb him.");
     print("The cultist turns to you as you close the door.");
-    print("'What does he want now?', the cultist moans.", ".red-text");
+    print("'What does he want now? That damn creature pounding on the door there and now you?', the cultist moans. As he finishes his sentence a loud scream erupts from behind a small antechamber door.", ".red-text");
     print("You are unsure of how to respond. Use speak to talk to the cultist.");
     } else {
     print("You climb the stairs slowly, relighting your torch off of one of the wall sconces. The torch flares to life. As you round the curved stair case you notice a large, dark, oak door guarding the top. Peering through the keyhole you see a frantic cultist searching the room. Not wanting a fight, you descent the stairs wishing you had a disguise.");
@@ -516,7 +525,8 @@ $(document).ready(function() {
     {
     input: "look bed",
     result: function(){
-      print("You look over the largest bed you've ever seen. A tall, pearl white canopy extends upwards towards the ceilng, capped with golden finials. Golden drapes glisten gently in the torch light. You pull the drapes back gently to find the bedding tousled into a messy lump. Whoever slept here didn't have the time to make the bed.");
+      print("You look over the largest bed you've ever seen. A tall, pearl white canopy extends upwards towards the ceilng, capped with golden finials. Golden drapes glisten gently in the torch light. You pull the drapes back gently to find the bedding tousled into a messy lump. Whoever slept here didn't have the time to make the bed. Looking underneath you see a small chest with a skull emblazened on it.");
+      look.push("small chest");
     }
     },
     {
@@ -527,10 +537,26 @@ $(document).ready(function() {
     }
     },
     {
+    input: "look dresser",
+    result: function(){
+        print("Old oaken dresser. The corners are dull from years of wear. A beautiful vase dipicting a scene rests atop it. You open the top drawer to find a bundle of stained clothing. But, by the looks of them they were once beautiful, and made from a good cloth. You sift through the clothing for a short time and come across a book not unlike the cipher you found in the library. Bound in a black leather, the book has no title on the spine, or in the front. As you hold it closer to examine it, brilliant letters begin to form: 'The origin of Rain'. You tuck the book softly into your pack.");
+        pickUpNew.play();
+        player.inventory.push("The origin of Rain");
+    }
+    },
+    {
     input: "look painting",
     result: function(){
       print("A simple painting of a rainy field. There are boars giving birth to a human child. Human women surround them, rejoicing. What could that mean?");
     }
+    },
+    {
+    input: "back to the grand hall",
+    result: function(){
+      moveThroughDoor.play();
+      currentRoom = gameData.rooms[4];
+      print("You climb down the stairs slowly. As you round the final stairs you find the grand hall to be empty. The onslaught of the crows pounding against the main gates continues.");
+      }
     },
     {
     input: "look small antechamber",
@@ -557,9 +583,139 @@ $(document).ready(function() {
       combat(player, withered);
       print("The cultist looks at you with admiration.");
       print("I didn't think you'd be able to do that! Those things are way more difficult to fight than highly flammable birds.", ".red-text");
+      }
+    },
+    {
+    input: "look small chest",
+    result: function(){
+      print("You open the small chest carefully. The inside is lined with a fine purple velvet and in the center lays a small vial filled with a viscous blue liquid. As you slide it into your bag the cultist takes notice.");
+      print("That's what you came up here for? What now? Another one for the torture eh? What a shame.");
+      player.inventory.push("serum");
+      serum.owned = true;
+      }
     }
-  } //end commands
+ //end commands
   ]
+  },
+  {
+  name: "Trial of the ShardKeeper", //7
+  shardKeeperDead: false,
+  description: function(){
+    print("You enter the room quietly as the Shardkeeper turns to face his back to the door. You're in a small hall leading west. There's a small spiral staircase embedded into the wall on the far side of the room. What was once just a corridor is now a staging area for tending to wounded cultists, and arming those who have yet to fight. The left side of the hall is covered in barrels, half are opened with their contents spewn upon the floor. The right side of the room is lined with weapon, and armor racks. All seem broken, and in disrepair after the battle. The shardkeeper begins to turn to face you. If you do not have the cipher, and the disguise, you should turn back. What do you do?");
+    print("Hide among the barrels.");
+    if(playerArmor == cultistRobe){
+      print("Disguise: Try to walk past.");
+    }
+    print("Fight the shardkeeper.");
+    print("Turn back");
+  },
+  commands: [
+  {
+  input: "fight the shardkeeper",
+  result: function(){
+    combat(player, weakenedShardKeeper);
+    shardKeeperDead = true;
+    print("The shardkeeper lies dead before you. Blue continuing to gush out of open wounds. His breathing is slow, and eventually stops. You carefully slip down the stairs into the next room.");
+    currentRoom = gameData.rooms[8];
+    print(currentRoom.description);
+    }
+  },
+  //stealth options
+  {
+  input: "hide among the barrels",
+  result: function(){
+    print("Just before the shardkeeper turns around you dart behind one of the barrels. It looks as if it were once filled with bandages, now long bloodied, and thrown out. You peek your head over to see the shardkeeper coming through the hall. His mouth is dripping with a vile blue substance, his skin is gray, and stretched. His wrists grind against the stone with every step. As he gets closer you notice a small, shining purple gem imbedded into his forehead.");
+    print("What do you do?");
+    print("Fight the shardkeeper.");
+    print("Move to the next barrel.");
+    print("Try to dislodge the gem.");
+    }
+  },
+  {
+  input: "move to the next barrel",
+  result: function(){
+    print("You wait for the shardkeeper to pass and try to move quietly over a small crate. As you lift your foot to step over the shardkeeper stops, and you freeze. You notice footsteps coming up the staircase. After some time two figures in deep red robes appear from beneath. They're chatting.");
+    print("Listen to the mens conversation.");
+    if(serum.owned == true){
+      print("Throw the serum.");
+      }
+    }
+  },
+  {
+  input: "throw the serum",
+  result: function(){
+    print("You brace yourself for a moment before pulling the serum out of your bag slowly. The viscous blue liquid bubbles angrily. You hold your breath, and hurl the vial at the men. The shardkeeper lets out an frenzied howl and charges the men. They're only able to let out screams as the monster tears into them. You spring out from the boxes as the keeper is preoccupied and make your way briskly down the stairs.");
+    currentRoom = gameData.rooms[8];
+    print(currentRoom.description);
+    }
+  },
+  {
+  input: "listen",
+  result: function(){
+    print("The men are speaking in hushed tones. Over the heavy breathing of the keeper you can only make out part of the conversation.");
+    print("He wants to pull back.");
+    print("Coward.");
+    print("No, no, deeper into the castle. The walls are not holding as well as he'd thought, or, any of us thought, really.");
+    print("We've been waiting for this for centuries. How is it possible that we'd fail?");
+    print("We're only men. All we can do is prepare the best we can, and wait.");
+    print("The men stand by the Keeper for moment before being sniffed, and ushered past. The exit into the grand hall. What do you do? : ");
+    print("Fight the shardkeeper");
+    print("Try to dislodge the gem");
+    print("Sneak further into the room");
+    }
+  },
+  {
+  input: "Sneak further into the room",
+  result: function(){
+    print("You move your way slowly the rest of the way across the chamber. Once the keeper has moved far enough away from you, you slip into the darkness of the staircase.");
+    currentRoom = gameData.rooms[8];
+    print(currentRoom.description);
+    }
+  },
+  //hostile options
+  {
+  input: "try to dislodge the gem",
+  result: function(){
+    print("You leap at the shardkeeper as his back is turned. Grabbing him by the shoudlers you lift yourself up and wrap your fingers around the gem. Pulling hard the gem begins to dislodge. The shardkeepers screams, clawing at your arms trying to pull you off. Finally, the gem becomes dislodged and the shardkeeper crumbes beneath you. You fall hard to the ground but the shardkeeper does not move. You look at the vibrant purple gem for a small while before stuffing it into your bags, and hurrying down the stairs.");
+    currentRoom = gameData.rooms[8];
+    print(currentRoom.description);
+    }
+  },
+  {
+  input: "Turn back",
+  result: function(){
+      currentRoom = gameData.rooms[4];
+      print("As you move to exit the Shardkeeper notices you. It lets out shrill scream and bounds towards you, each long leg stomping against the cold stone. Its mouth stretches down to his chest, a wide, gaping blue hole that seemed filled with the blue liquid. As it gets halfway across the hall you manage to get the door open, and slip through. Just as you get through, the shardkeeper reaches you, slamming its body against the door. It slams shut with a a shattering echo that plays across the grand hall. Sweat is pouring down your face. You're safe, for now.");
+    }
+  },
+  {
+  input: "try to walk past",
+  result: function(){
+    print("You stand up from your kneeling position and straighten your collar. You breath deeply and mentally prepare yourself. You stride towards the Shardkeeper with all the confidence you can muster. The Shardkeeper stops in its tracks and slowly turns to meet your gaze. You hold your breath. It sniffs you for a moment. Nostils flaring. What do you do?");
+    print("Stand still");
+    print("Keep walking");
+    }
+  },
+  {
+  input: "stand still",
+  result: function(){
+    print("The keeper sniffs you for a moment. Ever hair on your body stands stands on end as he places his hand on your shoulder. The liquid drips from his mouth and lands on your robe, burning small holes. Finally, he pushes you along. You look back only once as you decend down the stairs.");
+    currentRoom = gameData.rooms[8];
+    print(currentRoom.description);
+    }
+  },
+  {
+  input: "keep walking",
+  result: function(){
+    print("You decide to continue walking and give the keeper less time to notice you. As you pass him you gently rub shoulders. He stops, almost frozen. He turns his head quickly and screams before leaping upon you.");
+    combat(player, weakenedShardKeeper);
+    shardKeeperDead = true;
+    print("The shardkeeper lies dead before you. Blue continuing to gush out of open wounds. His breathing is slow, and eventually stops. You carefully slip down the stairs into the next room.");
+    currentRoom = gameData.rooms[8];
+    print(currentRoom.description);
+    }
+  }
+  ] // end commands
   }
 ] //end of rooms
 }; //end of gameData
@@ -584,9 +740,8 @@ $(document).ready(function() {
 
   $("#commandline").keypress(function(e) {
     if (e.keyCode === 13) {
-      var input = $("#commandline").val().toLowerCase();
       var roomCmd = currentRoom.commands;
-
+      var input = $("#commandline").val().toLowerCase();
       //for combat testing. To be removed.
       if(input=="fight"){
         combat(player,shardKeeper);
@@ -621,9 +776,9 @@ $(document).ready(function() {
       }
 
       //formats the command
-      var input_words = input.split(/\s+/) // ["open", "old", "door"]
-      var command = input_words[0] // "open"
-      var noun = input_words.slice(1).join(" ") // "old door"
+      var input_words = input.split(/\s+/); // ["open", "old", "door"]
+      var command = input_words[0]; // "open"
+      var noun = input_words.slice(1).join(" "); // "old door"
 
       //prints out look descriptions
       if(input.match(/look\s+/) || /open\s+/ || /take\s+/ || /use\s+/){
@@ -636,8 +791,8 @@ $(document).ready(function() {
 
       //checking what weapon is equipped
       if(input == "equipped"){
-        print("You have " + "<span class='blue-text'>" + playerEquipped.name + "</span>" + " equipped." + " It deals up do " + "<span class='red-text'>" + playerEquipped.stats + "</span>" + " damage. And has a damage type of " + "<span class='red-text'>" + playerEquipped.damageType + "</span>" + ".");
-        print("<span class='blue-text'>" + playerArmor.description + "</span>" +  " You take " + "<span class='red-text'>" + playerArmor.stats + "</span>" + " less damage.");
+        print("Weapon: You have " + "<span class='blue-text'>" + playerEquipped.name + "</span>" + " equipped." + " It deals up do " + "<span class='red-text'>" + playerEquipped.stats + "</span>" + " damage. And has a damage type of " + "<span class='red-text'>" + playerEquipped.damageType + "</span>" + ".");
+        print("Armor: " + "<span class='blue-text'>" + playerArmor.description + "</span>" +  " You take " + "<span class='red-text'>" + playerArmor.stats + "</span>" + " less damage.");
       }
 
       //equipping weapons
@@ -683,7 +838,7 @@ $(document).ready(function() {
       } else if (input == "consider cipher" && cipher.owned === true){
         print(cipher.condition);
       } else if (input ===" consider robe" && cultistRobe.owned === true){
-        print(cultistRobe.condition)
+        print(cultistRobe.condition);
       }
 
       //reset textbox
@@ -919,7 +1074,7 @@ $(document).ready(function() {
 
       for(var i = 0; i < responses.length; i++){
         console.log(responses[i].text);
-        $(".conversationMenu").append("<button class='convoButton' id='" + responses[i].id + "'>" + responses[i].text + "</button>")
+        $(".conversationMenu").append("<button class='convoButton' id='" + responses[i].id + "'>" + responses[i].text + "</button>");
         $(".conversationMenu").append("<br>");
       }
     }
@@ -938,7 +1093,7 @@ $(document).ready(function() {
       //Dialogue.dialogues = {};
       console.log(Dialogue.dialogues);
       $("body").removeClass("forrest-bg");
-      $(".backbutton").fadeOut(1500)
+      $(".backbutton").fadeOut(1500);
     });
 
     //END CONVERSATION

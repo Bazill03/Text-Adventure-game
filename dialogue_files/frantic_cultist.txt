@@ -1,4 +1,4 @@
-0 What does he want now? [1,2]
+0 What does he want now? [1,2, 17]
 1 He wants you to keep looking. -> 3
 2 What are you looking for? -> 4
 3 Well it's not in here, okay? I've been in here for hours. I've searched every corner for that damned book. [5]
@@ -11,7 +11,18 @@
 10 Your leader must want it for some reason, right? -> 11
 11 Oh he's obsessed with ancient knowledge, if someone from long, long ago told him to shove one of the shards up his ass and walk around the woods singing Rain's blessings and foraging for bilberries, he would.[15]
 12 I could take care of the withered. -> 13
-13 Yeah yeah, if it'll get ya off go ahead. But don't let it touch me! [14]
+13 Yeah yeah, if it'll get ya off go ahead. But don't let it touch me! [14, 17]
 14 Whose Rain? -> 8
 15 I'm sure that he would. -> 16
-16 Listen, we all can't be so obsessed with the past. The future is slamming it's tiny plummed head against our doors. We need to worry about the onslaught, not moldy books. -> 16
+16 Listen, we all can't be so obsessed with the past. The future is slamming it's tiny plummed head against our doors. We need to worry about the onslaught, not moldy books. [12]
+17 Where's the leader? -> 18
+18 Oh, what, to report me? -> [19]
+19 No, I just need to speak to him. A window broke in the great hall, the birds might be breaking through soon. -> 20
+20 Awh, damn! That's bad. If we don't weather this storm we'll never ascend. [21]
+21 That's why I need to speak to him. -> 22
+22 He's downstairs. Take that eastern door past the Shard Keeper. Just don't smell wrong. [23, 24]
+23 Smell wrong? -> 25
+24 I won't. -> 27
+25 Yeah, they supposedly have a way of peering into your soul to see if you're truly a follower of Umbril, I hear they're men who've sat next to the shards for so long they've become infused with Umbrils influence. Changes the mind. Makes you a husk. You live only for his influence. [24,26]
+26 I'll be sure to be careful. ->
+27 Good. Be careful. Don't get taken by the crows. We're about to ascend. As long as I can find this damned book anyway. [23]

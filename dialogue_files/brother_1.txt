@@ -1,15 +1,25 @@
-0 Brother? Is that you? The crows seem to grow ever louder. [1,2]
+0 Brother? Is that you? The crows seem to grow ever louder. [1,2,15]
 1 Yes Brother, I am here. How are you? -> 3
 2 Yes, it's me. Where's everyone else? -> 4
-3 I am fine, the attack is over for now. [5,6]
-4 They're recovering downstairs. I'm too shaken to stand with so many wounded. [5,6]
+3 I am fine, the attack is over for now. [5,6,15]
+4 They're recovering downstairs. I'm too shaken to stand with so many wounded. [5,6,15]
 5 I wasn't there for the attack, what happened? -> 7
 6 We all fought bravely, myself included. -> 10
-7 The bloodstains on your robe suggest otherwise. [8]
+7 The bloodstains on your robe suggest otherwise. [8, 15]
 8 I was helping others. I woke to the noise and came downstairs and found only injured brothers and rushed to help. -> 9
-9 I see. I'm sure many will remember your face as the face of a savior. [11]
-10 I'm sure many downstairs regard you as a hero. I must go now. [13]
+9 I see. I'm sure many will remember your face as the face of a savior. [11, 15]
+10 I'm sure many downstairs regard you as a hero. I must go now. [13, 15]
 11 I hope not. I joined to be a Brother, not a hero. -> 12
 12 I as well. I must go now to tend to the others. [13]
 13 Wait! Do you know why the crows attacked? -> 14
 14 Just as Thaddius has foretold, just as the shards have glowed, just as evil unfolds, Umbril has returned. -> 14
+15 I saw the body in the library. -> 16
+16 Did you now? And what did you think of that? [17,18]
+17 I think you're sick. -> 19
+18 He knew what would happen. -> 20
+19 Is that so? And what would you have done? [21, 22]
+20 That's true. No one betrays us in our time of destiny. No one. [13]
+21 I would have let him loose to the crows. -> 23
+22 I would have spared him. -> 24
+23 Hm, yes. That may have been more fitting. I must go now [13]
+24 Then you may also soon meet our blades. Don't trifle with us in this time. I must go now. Beware. Your mercy may betray you if you aren't careful. [13]

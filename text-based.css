@@ -52,6 +52,13 @@ pre {
   margin: auto;
 }
 
+/* Begin player stats */
+.player_stats {
+  left: 5%;
+  display: grid;
+}
+
+
 /*Begin Combat */
 
 .combat {
@@ -97,7 +104,6 @@ pre {
   height: 200px;
   position: absolute;
   right: 450px;
-  top: 50px;
 }
 
 #enemyMana {
@@ -106,7 +112,6 @@ pre {
   height: 200px;
   position: absolute;
   right: 425px;
-  top: 50px;
 }
 
 /* Combat buttons */
@@ -194,4 +199,5 @@ footer {
   display: fixed;
   bottom: 0;
   width: 100%;
+  position: absolute;
 }

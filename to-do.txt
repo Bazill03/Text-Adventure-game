@@ -1,0 +1,61 @@
+General Issues:
+-------
+It is possible to receive an item twice.
+Much smoother transitions between combat and dialogue.
+[Copied from other to-do list to be organized at a later date.]
+//TODO Add strong tags to items that can be taken. Work on clarity.
+//TODO convert usefireball and useweapon into single function
+//TODO Impliment ice shard and mana potions
+//TODO if visted room before, different text & find way to change room entrance if player has spoken to actor
+//TODO streamline navigation
+//TODO FEATURE Idea: read books
+------
+
+Room 2:
+-------
+Old note in room 2 not being pushed to look list. Player is still able to read the note, but would have no idea how to.
+Upon entering room 2 an "undefined" message is displayed.
+-------
+
+Room 5[Grand Hall]:
+Int description doesn't drive home very well just how many birds be slammin that door.
+
+Room 6[Ornate Chambers]:
+------
+Frantic Cultist needs a 'look' description.
+Frantic Cultist should have another dialogue when spoken to after finding vial.
+looking at small antechamber does not change after ghoul defeated.
+Frantic Cultists dialogue ends prematurely.
+------
+
+Combat:
+------
+Combat need an overhaul.
+  1. Boring
+  2. Action is unclear. 
+Enemy health likes to perch itself in the title to get a better view of the action.
+If player is dealt negative damage because of armor, the damage should be changed to 0. Or 1. Or 2. Haven't decided.
+-------
+
+General Browser woes:
+------
+Firefox: Title is broken. [The character encoding of the HTML document was not declared. The document will render with garbled text in some browser configurations if the document contains characters from outside the US-ASCII range. The character encoding of the page must be declared in the document or in the transfer protocol.]
+------
+
+Ideas:
+------
+Text should have a border so some kind to more easily differentiante different descriptions.
+Text spoken to the player should have another text color.
+Look description should have another color for doors not yet entered. [May be difficult to implement.]
+A list of available commands appears on the right side of the screen. [Could be very difficult to implement.]
+A list of the players inventory on the left side of the screen. [Could be easy to implement.]
+------
+
+Pipe Dreams:
+-----
+Level system with speech and str checks.[This would actually make speech and the "trial of the shardkeeper" much more interesting.]
+-----
+
+Fixed:
+
+  Speak not working [requires web server otherwise pulling the dialogue file will be an invalid CORS request]

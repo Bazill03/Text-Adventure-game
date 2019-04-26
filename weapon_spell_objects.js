@@ -94,6 +94,12 @@ var cipher = {
   condition: "Old and bound in a deep black flesh. Theres a rune on the front you don't recongnize. Using the cipher you're able to determine that the text on the front reads 'Notes on the workings of Thaddius, the first shard keeper.",
 };
 
+let serum = {
+  name: "serum",
+  owned: false,
+  condition: "Glowing bright blue and viscous. Used as a torture method to make shardkeepers attack those who are unpure."
+}
+
 //armor
 let rags = {
   stats: 0,

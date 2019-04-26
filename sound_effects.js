@@ -37,7 +37,7 @@ var pickUpNew = new Audio("soundeffects/234924__gordeszkakerek__pick-up-or-found
 
 //unlocking door
 var unlockDoor = new Audio("soundeffects/147347__fuzzpapi__unlock-door.wav");
-var moveThroughDoor = new Audio("soundeffects/344360__amholma__door-open-close.wav");
+var moveThroughDoor = new Audio("soundeffects/266682__wjtaylor__door-close.mp3");
 
 //climbing or decending staircase
 var moveThroughStairs = new Audio("soundeffects/205749__yuval__footsteps-staircase-carpet.wav");

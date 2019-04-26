@@ -27,6 +27,18 @@ var shardKeeper = {
   // death: shardKeeperDeathSound
 };
 
+var weakenedShardKeeper = {
+  name: "Shard Keeper",
+  greeting:
+    "The Shard Keeper lumbers towards you. Blue liquid spewing from every orafice. It doesn't look well.",
+  health: 50,
+  moveNum: 3,
+  moves: [["slash", 30], ["charge", 50], ["fire breath", 12]],
+  vulnerability: ["blunt", 50],
+  introSound: shardKeeperIntroSound,
+  sounds: shardKeeperAttackSounds
+}
+
 
 var brokenJailer = {
  name: "broken jailer",
