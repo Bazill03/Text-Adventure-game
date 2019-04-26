@@ -1,6 +1,5 @@
 $(document).ready(function() {
 
-  let player;
   let input = $("#commandline").val().toLowerCase();
   $("#console").fadeIn(1500);
 
@@ -32,16 +31,36 @@ $(document).ready(function() {
     currentSong.pause();
   });
 
-//player object
-  player = {
-    health : 100,
-    mana : 100,
-    inventory : [],
-    travelHistory : []
-  }
+
   //players equipped weapon
-  let playerEquipped = clayMore;
+  let playerEquipped = claymore;
   let playerArmor = cultistRobe;
+
+  //player Stats //wow do I feel like this could be done better.
+  function refreshPlayerStats(){
+  $("#playerHealthDisplay").html('');
+  $("#playerManaDisplay").html('');
+  $("#playerStrengthDisplay").html('');
+  $("#playerAgilityDisplay").html('');
+  $("#playerIntDisplay").html('');
+  $("#playerCharismaDisplay").html('');
+  $("#playerXPDisplay").html('');
+  $("#playerLevelDisplay").html('');
+  $("#playerHealthDisplay").append(player.health);
+  $("#playerManaDisplay").append(player.mana);
+  $("#playerStrengthDisplay").append(player.strength);
+  $("#playerAgilityDisplay").append(player.agility);
+  $("#playerIntDisplay").append(player.intelligence);
+  $("#playerCharismaDisplay").append(player.charisma);
+  $("#playerXPDisplay").append(player.xp);
+  $("#playerLevelDisplay").append(player.level);
+}
+  function updateInvDisplay(item){
+    $("#playerInventoryDisplay").append(item);
+    $("#playerInventoryDisplay").append(document.createElement("br"));
+  }
+
+  refreshPlayerStats(); //intitializes players stat display.
 
   var gameData = {
   //room objects
@@ -66,10 +85,14 @@ $(document).ready(function() {
       {
         input: 'take torch',
         result: function(){
+          if(torch.owned == false){
           print("Looking closer at the torch you find a flint and steel placed nearby, as if by a delicate hand. The hair on the back of your head stands up. You light the torch and the room blooms with light. Taking another look, you find that you're in a small, windowless room with one door on the western side. Try typing 'Look old door' to look closer. Or, try 'consider torch' to look at it.");
           player.inventory.push("torch");
           torch.owned = true;
+          updateInvDisplay("torch");
           pickUpNew.play();
+        }
+        else(print("You've already picked up the torch."));
           //not sure what this does anymore
           //gameData.rooms[0].splice(0,1);
         }
@@ -141,12 +164,16 @@ $(document).ready(function() {
       {
         input: "take sword",
         result: function(){
+          if(oldSword.owned == false){
         print("You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. What mighty warrior would cast aside a relic? What mighty foe made sure he didn't have a choice?");
         player.inventory.push("old sword");
+        updateInvDisplay("old sword");
         oldSword.owned = true;
         gameData.rooms[1].look.shift();
         gameData.rooms[1].look.push("empty table");
         pickUpNew.play();
+      }
+        else(print("You've already taken the old sword."));
         }
       }
     ]
@@ -155,7 +182,7 @@ $(document).ready(function() {
     name: "Assassistants Office", //2
     look: ["end table", "chair", "bookshelves", "messy desk", "door leading west"],
     description: function(){
-      print("You open the door and find yourself in a quiet room outfitted with chairs, a small end table, and even more bookshelves. The room seems to be unnaturally dark. Your torch doesn't throw as much light here.")
+      print("You open the door and find yourself in a quiet room outfitted with chairs, a small end table, and even more bookshelves. The room seems to be unnaturally dark. Your torch doesn't throw as much light here.");
     },
     lockedDoor: {
       locked: true
@@ -208,10 +235,14 @@ $(document).ready(function() {
       {
         input: "take key",
         result: function(){
+          if(skeleKey.owned == false){
         print("You gently pick the key up off the table. The rusted key leaving flakes of dark green copper on the end table. Looking closer you see the that the notches are worn down to almost nothing. You wonder for a moment what use this key might be. (Try using the key on something.)");
         player.inventory.push("skeleton key");
+        updateInvDisplay("key");
         skeleKey.owned = true;
         pickUpNew.play();
+      }
+      else(print("You've already taken the key."));
         }
       },
       {
@@ -331,11 +362,15 @@ $(document).ready(function() {
         {
         input: "take scroll",
         result: function(){
+          if(throneScroll == false){
             print("You place the scroll delicately in your bag.");
             pickUpNew.play();
+            updateInvDisplay("scroll");
             player.inventory.push("strange scroll");
             throneScroll.owned = true;
           }
+            else(print("You've already taken the scroll."));
+        }
         },
         {
         input: "look column",
@@ -440,19 +475,25 @@ $(document).ready(function() {
      {
        input: "take cipher",
        result: function(){
+         if(cipher.owned == false){
           cipher.owned = true;
           player.inventory.push("cipher");
+          updateInvDisplay("Cipher");
           pickUpNew.play();
           print("You gently pick up the book. The text begins to glow a faint blue but subsides. You feel a strange courage welling up within you.");
-        }
+        } else(print("You've already taken the cipher"))
+      }
      },
      {
        input: "take robe",
        result: function(){
+         if(cultistRobe.owned == false){
          cultistRobe.owned = true;
          player.inventory.push("Cultist Disguise");
          pickUpNew.play();
+         updateInvDisplay("Cultist Robes - Armor");
          print("You struggle to pull the robes off of the dead cultist. Luckly the robe's color is already one similar to the color of blood. No one should notice, you hope. Equip with 'equip cultist disguise'.")
+       } else(print("You've already taken the cultists robes."))
        }
      },
      {
@@ -539,9 +580,12 @@ $(document).ready(function() {
     {
     input: "look dresser",
     result: function(){
-        print("Old oaken dresser. The corners are dull from years of wear. A beautiful vase dipicting a scene rests atop it. You open the top drawer to find a bundle of stained clothing. But, by the looks of them they were once beautiful, and made from a good cloth. You sift through the clothing for a short time and come across a book not unlike the cipher you found in the library. Bound in a black leather, the book has no title on the spine, or in the front. As you hold it closer to examine it, brilliant letters begin to form: 'The origin of Rain'. You tuck the book softly into your pack.");
+      if(theOriginOfRain.owned == false){
+        print("Old oaken dresser. The corners are dull from years of wear. A beautiful vase dipicting a scene rests atop it. You open the top drawer to find a bundle of stained clothing. But, by the looks of them they were once beautiful, and made from a good cloth. You sift through the clothing for a short time and come across a book not unlike the cipher you found in the library. Bound in a black leather, the book has no title on the spine, or in the front. As you hold it closer to examine it, brilliant letters begin to form: ");
+        print("The Origin of Rain", yellow);
         pickUpNew.play();
         player.inventory.push("The origin of Rain");
+      } else(print("Old oaken dresser. The corners are dull from years of wear. A beautiful vase dipicting a scene rests atop it."));
     }
     },
     {
@@ -721,7 +765,7 @@ $(document).ready(function() {
 }; //end of gameData
 
   //places the player in the starting room.
-  var currentRoom = gameData.rooms[5];
+  var currentRoom = gameData.rooms[0];
 
  function attachListeners(){
     //  Event listeners
@@ -744,7 +788,7 @@ $(document).ready(function() {
       var input = $("#commandline").val().toLowerCase();
       //for combat testing. To be removed.
       if(input=="fight"){
-        combat(player,shardKeeper);
+        combat(player,withered);
       }
 
       //prints out current room
@@ -874,6 +918,9 @@ $(document).ready(function() {
         return true;
       } else if (enemy.health <= 0) {
         combatPrint("You've defeated the " + enemy.name + ".");
+        combatPrint("You gain " + enemy.xp + "XP!");
+        player.xp = player.xp + enemy.xp;
+        refreshPlayerStats();
         $("#backToGame").fadeIn(1000);
         battleVictory.play();
         enemy.death.play();
@@ -942,6 +989,7 @@ $(document).ready(function() {
           "!"
       );
         calcHealthBars("playerHealth", player.health);
+        refreshPlayerStats();
         enemy.sounds.play();
         hasAttacked = true;
       }
