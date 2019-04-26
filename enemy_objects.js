@@ -1,3 +1,18 @@
+//player object
+var player = {
+    health : 100,
+    mana : 100,
+    strength: 5,
+    agility: 5,
+    intelligence: 5,
+    charisma: 5,
+    xp: 0,
+    level: 0,
+    inventory : [],
+    travelHistory : []
+  }
+
+
 //enemies
 
 var withered = {
@@ -11,7 +26,8 @@ var withered = {
   vulnerability: ["fire", 5],
   sounds: witheredAttackSound,
   introSound: witheredIntroSound,
-  death: witheredDeathSound
+  death: witheredDeathSound,
+  xp: 500
 };
 
 var shardKeeper = {
@@ -36,7 +52,8 @@ var weakenedShardKeeper = {
   moves: [["slash", 30], ["charge", 50], ["fire breath", 12]],
   vulnerability: ["blunt", 50],
   introSound: shardKeeperIntroSound,
-  sounds: shardKeeperAttackSounds
+  sounds: shardKeeperAttackSounds,
+  xp: 1000
 }
 
 
