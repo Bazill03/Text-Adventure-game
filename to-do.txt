@@ -1,6 +1,5 @@
 General Issues:
 -------
-It is possible to receive an item twice.
 Much smoother transitions between combat and dialogue.
 [Copied from other to-do list to be organized at a later date.]
 //TODO Add strong tags to items that can be taken. Work on clarity.
@@ -15,6 +14,7 @@ Room 2:
 -------
 Old note in room 2 not being pushed to look list. Player is still able to read the note, but would have no idea how to.
 Upon entering room 2 an "undefined" message is displayed.
+What's up with light not throwing so far in this room? Figure it out and make the room more engaging.
 -------
 
 Room 5[Grand Hall]:
@@ -26,16 +26,31 @@ Frantic Cultist needs a 'look' description.
 Frantic Cultist should have another dialogue when spoken to after finding vial.
 looking at small antechamber does not change after ghoul defeated.
 Frantic Cultists dialogue ends prematurely.
+Hide key to Shardkeeper somewhere in the room. The Frantic Cultist should mention something about the withered being a former friend.
 ------
 
 Combat:
 ------
 Combat need an overhaul.
   1. Boring
-  2. Action is unclear. 
+  2. Action is unclear.
 Enemy health likes to perch itself in the title to get a better view of the action.
 If player is dealt negative damage because of armor, the damage should be changed to 0. Or 1. Or 2. Haven't decided.
 -------
+
+Stat overhaul
+------
+Enemies should give XP whenever defeated. [Enemies now give XP to the player object.]
+XP gain should be reflected in the sidebar.
+XP needed to level should be listed in the code.
+A level up should be announced and the player should be given a certain number of points to spend for leveling up stats.
+These points should be distributed in a menu on the side of the screen.
+The menu should only be visible while the player is distributing his or her points.
+The stats the player selects should have real impacts on the players playstyle.
+Heavier armor should reduce agility.
+Certain armor/weapons should boost certain stats. These stats should feel meaningful during combat.
+Each stat should have a check that does not influence combat i.e. being able to roll a barrel down stairs to kill enemies and avoid combat all together. [a better example could be found.]
+------
 
 General Browser woes:
 ------
@@ -53,9 +68,10 @@ A list of the players inventory on the left side of the screen. [Could be easy t
 
 Pipe Dreams:
 -----
-Level system with speech and str checks.[This would actually make speech and the "trial of the shardkeeper" much more interesting.]
+Readable books full of short stories i.e. flesh out the lore to a much greater extent.
 -----
 
 Fixed:
 
   Speak not working [requires web server otherwise pulling the dialogue file will be an invalid CORS request]
+  It is possible to receive an item twice.[Just used if statements. It was only ever a problem because I'm a problem.]
