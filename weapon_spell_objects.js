@@ -29,7 +29,7 @@ var steelMace = {
   sound: maceAttackSound
 };
 
-var clayMore = {
+var claymore = {
   name: "Claymore",
   stats: 30,
   owned: false,
@@ -94,6 +94,12 @@ var cipher = {
   condition: "Old and bound in a deep black flesh. Theres a rune on the front you don't recongnize. Using the cipher you're able to determine that the text on the front reads 'Notes on the workings of Thaddius, the first shard keeper.",
 };
 
+let theOriginOfRain = {
+  name: "The Origin of Rain",
+  owned: false,
+  condition: "An old Tome that must be thousands of years old. The bindings held together only by magic. Blue runes glow on the spine. With the cipher you're able to make out the title. Use 'read' to read the book.{{{{{{{{{{{{{{{THIS DOES NOT WORKK BUT DEFINITELY SHOULD ONE DAY}}}}}}}}}}}}}}}"
+}
+
 let serum = {
   name: "serum",
   owned: false,
@@ -110,7 +116,7 @@ let cultistRobe = {
   name: "Cultist Disguise",
   owned: false,
   condition: "Bloody and full of stab wounds. No one should notice.",
-  stats: 5,
+  stats: 0,
   description: "The robes of the followers of Thaddius. Cultists will believe you are one of their brothers."
 };
 
