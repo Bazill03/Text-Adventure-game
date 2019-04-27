@@ -94,16 +94,22 @@ var cipher = {
   condition: "Old and bound in a deep black flesh. Theres a rune on the front you don't recongnize. Using the cipher you're able to determine that the text on the front reads 'Notes on the workings of Thaddius, the first shard keeper.",
 };
 
-let theOriginOfRain = {
+var theOriginOfRain = {
   name: "The Origin of Rain",
   owned: false,
   condition: "An old Tome that must be thousands of years old. The bindings held together only by magic. Blue runes glow on the spine. With the cipher you're able to make out the title. Use 'read' to read the book.{{{{{{{{{{{{{{{THIS DOES NOT WORKK BUT DEFINITELY SHOULD ONE DAY}}}}}}}}}}}}}}}"
 }
 
-let serum = {
+var serum = {
   name: "serum",
   owned: false,
   condition: "Glowing bright blue and viscous. Used as a torture method to make shardkeepers attack those who are unpure."
+}
+
+var scrawledWritings = {
+  name: "Scrawled writings",
+  owned: false,
+  condition: "You look over the torn vellum. Most of the note is illegible but beneath all the scrawling some words can be made out: I was born to be a king. It was my only purpose. How dare I die to this contemptable fate. What tragedy befalls me. My brother. My rotten King Ambrosianus. He taunted me as he assumed the throne. Now my skin withers and sloughs off, beneath it my muscles pulse and squirm. I crave the flesh. I crave the neck of King Ambrosianus."
 }
 
 //armor
