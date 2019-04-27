@@ -5,18 +5,18 @@ body {
   margin 0;
 }
 
-.forrest-bg{
+.forrest-bg {
   background-image: url("background-images/forrest-bg.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-.blue-text{
+.blue-text {
   color: rgb(22, 100, 129);
 }
 
-.red-text{
+.red-text {
   color: rgb(144, 77, 68);
 }
 
@@ -50,7 +50,7 @@ pre {
 }
 
 /* Container for flex box */
-.container{
+.container {
   width: 100%;
   margin 0;
   display: flex;
@@ -59,13 +59,44 @@ pre {
 }
 
 /* Begin player stats */
+.yellow {
+  color: #9b931d;
+}
+
+.healthColor {
+  color: #771536;
+}
+
+.manaColor {
+  color: #278783;
+}
+
+.xpColor {
+  color: #1a5477;
+}
+
+.strColor {
+  color: #a3132b;
+}
+
+.chrColor {
+  color: #3a1554;
+}
+
+.agiColor {
+  color: #86a304;
+}
+
+.intColor {
+  color: #09b3bf;
+}
+
 .player_stats {
   flex-grow: 1;
   text-align: left;
+  display: fixed;
 }
-.player_stats p {
-    color: gray;
-}
+
 /* begin main console */
 #console {
   display: none;
@@ -73,7 +104,6 @@ pre {
 }
 
 /*Begin Combat */
-
 .combat {
   border: 1px solid white;
   width: 50%;
@@ -128,16 +158,15 @@ pre {
 }
 
 /* Combat buttons */
-.combatButton{
+.combatButton {
   margin-top: 5px;
   background: gray;
   border: none;
   display: inline-block;
   text-decoration: none;
-
 }
 
-#useWeapon{
+#useWeapon {
   background: #932424;
   margin-left: 5px;
 }
@@ -164,7 +193,6 @@ pre {
   display: none;
 }
 
-
 /*begin conversation menus*/
 .conversation {
   border: 1px solid white;
@@ -188,23 +216,36 @@ pre {
   display: none;
 }
 
-.convoButton{
+.convoButton {
   background: black;
   border: none;
   margin-top: 5px;
 }
-.convoButton:hover{
+
+.convoButton:hover {
   border: 1px solid white;
 }
 
-.backbutton{
+.backbutton {
   display: none;
 }
 
-#goodbye{
+#goodbye {
   background: black;
   margin: 0 auto;
   color: white;
+}
+
+.yellow {
+  color: #9b931d;
+}
+
+.healthColor {
+  color: #771536;
+}
+
+.manaColor {
+  color: #278783;
 }
 
 /*audio controls*/
