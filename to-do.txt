@@ -7,18 +7,32 @@ Much smoother transitions between combat and dialogue.
 //TODO Impliment ice shard and mana potions
 //TODO if visted room before, different text & find way to change room entrance if player has spoken to actor
 //TODO streamline navigation
-//TODO FEATURE Idea: read books
+//TODO FEATURE Idea: read books? After translated? Work more on the lore of the world.
+//TODO FEATURE: battles with more than one enemy, maybe a party system? Make friends and all that?
 ------
+
+UI bugs
+-------
+Everything about the UI does not scale correctly to the screen.
+When exiting dialogue or combat, you must scroll all the way back down.
+You must also scroll down for every command.
+-------
+
+Thaddius' Shrine:
+------------
+Description prints out entire function. Pretty ugly.
+------------
 
 Room 2:
 -------
-Old note in room 2 not being pushed to look list. Player is still able to read the note, but would have no idea how to.
 Upon entering room 2 an "undefined" message is displayed.
 What's up with light not throwing so far in this room? Figure it out and make the room more engaging.
+Maybe the player must return after being able to translate the books?
 -------
 
 Room 5[Grand Hall]:
 Int description doesn't drive home very well just how many birds be slammin that door.
+If not wearing cultists robes the strange man should either attack you or flee.
 
 Room 6[Ornate Chambers]:
 ------
@@ -27,6 +41,9 @@ Frantic Cultist should have another dialogue when spoken to after finding vial.
 looking at small antechamber does not change after ghoul defeated.
 Frantic Cultists dialogue ends prematurely.
 Hide key to Shardkeeper somewhere in the room. The Frantic Cultist should mention something about the withered being a former friend.
+What are the scrawled writings?
+There should be someone in the grand hall after leaving the ornate Chambers.
+Should be able to find a key to unlock the 4th grand hall door.
 ------
 
 Combat:
@@ -36,20 +53,24 @@ Combat need an overhaul.
   2. Action is unclear.
 Enemy health likes to perch itself in the title to get a better view of the action.
 If player is dealt negative damage because of armor, the damage should be changed to 0. Or 1. Or 2. Haven't decided.
+Spell and Melee damage should be elevated based on current stats.
+
 -------
 
 Stat overhaul
 ------
 Enemies should give XP whenever defeated. [Enemies now give XP to the player object.]
-XP gain should be reflected in the sidebar.
-XP needed to level should be listed in the code.
-A level up should be announced and the player should be given a certain number of points to spend for leveling up stats.
+XP gain should be reflected in the sidebar. [The players total XP is listed in the stats menu.]
+XP needed to level should be listed in the code. [XP to level is listed.]
+A level up should be announced and the player should be given a certain number of points to spend for leveling up stats. [Level up is announced.]
 These points should be distributed in a menu on the side of the screen.
 The menu should only be visible while the player is distributing his or her points.
-The stats the player selects should have real impacts on the players playstyle.
+The stats the player selects should have real impacts on the players playstyle. [Like in the shardkeeper section]
 Heavier armor should reduce agility.
 Certain armor/weapons should boost certain stats. These stats should feel meaningful during combat.
-Each stat should have a check that does not influence combat i.e. being able to roll a barrel down stairs to kill enemies and avoid combat all together. [a better example could be found.]
+Each stat should have a check that does not influence combat i.e. being able to roll a barrel down stairs to kill enemies and avoid combat all together. [a better example could be found. But this is a pretty fun one albeit cliche.]
+Players strength should modify melee damage.[Player strength / 3 rounded down is added to combat damage.]
+TODO Redo equipping items.
 ------
 
 General Browser woes:
@@ -59,11 +80,9 @@ Firefox: Title is broken. [The character encoding of the HTML document was not d
 
 Ideas:
 ------
-Text should have a border so some kind to more easily differentiante different descriptions.
-Text spoken to the player should have another text color.
+Text should have a border so some kind to more easily differentiante descriptions.
 Look description should have another color for doors not yet entered. [May be difficult to implement.]
 A list of available commands appears on the right side of the screen. [Could be very difficult to implement.]
-A list of the players inventory on the left side of the screen. [Could be easy to implement.]
 ------
 
 Pipe Dreams:
@@ -72,6 +91,6 @@ Readable books full of short stories i.e. flesh out the lore to a much greater e
 -----
 
 Fixed:
-
+  Text spoken to the player should have another text color. [At least I think this is added.]
   Speak not working [requires web server otherwise pulling the dialogue file will be an invalid CORS request]
   It is possible to receive an item twice.[Just used if statements. It was only ever a problem because I'm a problem.]
