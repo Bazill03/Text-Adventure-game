@@ -3,22 +3,22 @@ $(document).ready(function() {
   //move this elsewhere later.
   var makeStrong = document.createElement("STRONG");
 
-  let input = $("#commandline").val().toLowerCase();
+  var input = $("#commandline").val().toLowerCase();
   $("#console").fadeIn(1500);
 
   //Audio start
   //intro sounds
   withered.introSound.play();
   setTimeout(function() {
-    shardKeeper.introSound.play()
+    shardKeeper.introSound.play();
   }, 2000);
   steelMace.sound.play();
 
   var currentSong = song1;
   //Audio
   setTimeout(function() {
-    song1.play()
-  }, 5000);
+    song1.play();
+  }, 2000);
 
   song1.addEventListener("ended", function() {
     currentSong = song2;
@@ -38,12 +38,10 @@ $(document).ready(function() {
     currentSong.pause();
   });
 
+  //starting equipment
+  player = Object.assign(player, rags);
+  player = Object.assign(player, fists);
 
-  //players equipped weapon
-  let playerEquipped = claymore;
-  let playerArmor = cultistRobe;
-
-  //players gold count
 
   //player Stats //wow do I feel like this could be done better.
   function refreshPlayerStats() {
@@ -55,6 +53,8 @@ $(document).ready(function() {
     $("#playerCharismaDisplay").html('');
     $("#playerXPDisplay").html('');
     $("#playerLevelDisplay").html('');
+    $("#playerHealthPotDisplay").html('');
+    $("#playerManaPotDisplay").html('');
     $("#playerHealthDisplay").append(player.health);
     $("#playerManaDisplay").append(player.mana);
     $("#playerStrengthDisplay").append(player.strength);
@@ -63,6 +63,14 @@ $(document).ready(function() {
     $("#playerCharismaDisplay").append(player.charisma);
     $("#playerXPDisplay").append(player.xp);
     $("#playerLevelDisplay").append(player.level);
+    $("#playerHealthPotDisplay").append(player.healthPotNum);
+    $("#playerManaPotDisplay").append(player.manaPotNum);
+  }
+
+  function refreshPlayerGold(){
+    //players gold count
+    $("#playerGoldDisplay").html('');
+    $("#playerGoldDisplay").append(player.gold);
   }
 
   function updateInvDisplay(item) {
@@ -139,31 +147,31 @@ $(document).ready(function() {
           {
             input: 'look window',
             result: function() {
-              print("You poke your head out the window. Crows soar around your head, desperate for a meal. You find yourself fighting them off, unable to get a good look outside.")
+              print("You poke your head out the window. Crows soar around your head, desperate for a meal. You find yourself fighting them off, unable to get a good look outside.");
             }
           },
           {
             input: 'look shining object',
             result: function() {
-              print("You approach the table carefully. You see an old, rusted sword, chipped from years of battle. Any defense at all would help stave off the fear. Try 'take sword'.")
+              print("You approach the table carefully. You see an old, rusted sword, chipped from years of battle. Any defense at all would help stave off the fear. Try 'take sword'.");
             }
           },
           {
             input: 'look bookshelves',
             result: function() {
-              print("You browse the tomes along the walls. The leatherbound books seem to be so old that you no longer recongnize the language.")
+              print("You browse the tomes along the walls. The leatherbound books seem to be so old that you no longer recongnize the language.");
             }
           },
           {
             input: "look door leading south",
             result: function() {
-              print("You walk past the rows of books to a southern door. You put your ears up to it but hear nothing but the distant screams you've heard all along. Try 'open door leading south'.")
+              print("You walk past the rows of books to a southern door. You put your ears up to it but hear nothing but the distant screams you've heard all along. Try 'open door leading south'.");
             }
           },
           {
             input: "look empty table",
             result: function() {
-              print("You look over the empty table. There seems to be nothing else of value.")
+              print("You look over the empty table. There seems to be nothing else of value.");
             }
           },
           {
@@ -181,7 +189,7 @@ $(document).ready(function() {
             input: "take sword",
             result: function() {
               if (oldSword.owned == false) {
-                print("You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. You pull your shirt over your hand and use your palm to scrape away some of the rust before holding it up to the light. Your fear dissapates slightly.");
+                print("You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. You pull your shirt over your hand and use your palm to scrape away some of the rust before holding it up to the light. Your fear dissapates slightly. Try typing 'equip old sword'");
                 player.inventory.push("old sword");
                 updateInvDisplay("old sword");
                 oldSword.owned = true;
@@ -205,7 +213,7 @@ $(document).ready(function() {
         commands: [{
             input: "look chair",
             result: function() {
-              print("A large velvet chair sits before you. The deep red hue of the chair reminds you of blood. You consider sitting in it for a moment but a dark force makes you consider otherwise")
+              print("A large velvet chair sits before you. The deep red hue of the chair reminds you of blood. You consider sitting in it for a moment but a dark force makes you consider otherwise");
             }
           },
           {
@@ -272,10 +280,10 @@ $(document).ready(function() {
             input: "open door leading west",
             result: function() {
               if (gameData.rooms[2].lockedDoor.locked === true) {
-                print("You approach the door and wiggle the handle. Locked.")
+                print("You approach the door and wiggle the handle. Locked.");
               } else {
                 currentRoom = gameData.rooms[3];
-                combat(player, withered);
+                combat(player, hallwayWithered);
                 print(gameData.rooms[3].description);
                 moveThroughDoor.play();
               }
@@ -286,14 +294,14 @@ $(document).ready(function() {
       },
       {
         name: "small hallway", //3
-        look: ['barrel, dead enemy, small archway, door leading east'],
+        look: ['barrel, dead enemy, small archway, door leading west'],
         description: "You are in a small hallway. Your torch seems to emit even less light here. The smell of rotting flesh tingles your nose and makes your stomach turn over. There's a small barrel in the corner of the otherwise dangerous but unimpressive room.",
         figuresSpoken: false,
         withered: true,
         commands: [{
             input: "look barrel",
             result: function() {
-              if (healthPot.owned === false) {
+              if (smallHallwayBarrel.opened == false) {
                 print("A large wooden barrel sits idly in the corner. The top seems slightly ajar. You wonder if you should try opening it.");
               } else {
                 print("There is nothing left here but cobwebs and dust.");
@@ -303,9 +311,13 @@ $(document).ready(function() {
           {
             input: "open barrel",
             result: function() {
-              player.inventory.push("Health Potion");
+              if(smallHallwayBarrel.opened === false){
+              player.healthPotNum = player.healthPotNum = 1;
               print("You find a small vial tucked away beneath some grain. You lift it out of the barrel and hold it up to your torch. You watch the glistening red liquid swirl around in the vial momentarily before placing it in your bags.");
               print("Health potion added to inventory. You may use it during combat for 25 health points!");
+              refreshPlayerStats();
+              smallHallwayBarrel.opened = true;
+            } else  {print("There is nothing left here but cobwebs and dust.");}
             }
           },
           {
@@ -321,7 +333,7 @@ $(document).ready(function() {
             }
           },
           {
-            input: "look door leading east",
+            input: "look door leading west",
             result: function() {
               if (gameData.rooms[3].figuresSpoken === false) {
                 print("You peek through the keyhole. You can hear voices on the other side. Shadowy figures are pacing and speaking in muffled tones. Try using listen.");
@@ -342,7 +354,7 @@ $(document).ready(function() {
             }
           },
           {
-            input: "open door leading east",
+            input: "open door leading west",
             result: function() {
               if (gameData.rooms[3].figuresSpoken === true) {
                 moveThroughDoor.play();
@@ -357,13 +369,37 @@ $(document).ready(function() {
       },
       {
         name: "Grand Hall", //4
-        look: ["throne", "column", "doors leading outside", "red aisle runner", "alter", "dead crow", "door leading west", 'stairs leading north', 'small door'],
+        look: ["throne", "column", "doors leading outside", "red aisle runner", "alter", "dead crow", "door leading west", 'stairs leading north', 'small door', 'door leading north'],
         description: "You slowly peek open the door. On the other side looks to be a throne room. It's much brighter here compared to the other rooms. You quickly extinguish your torch and hide behind one of the many columns that line the room. The ceilings here are tall and even minute sounds echo profoundly. The throne at the end of the room is large, and made of materials you've yet seen. Outside the window, a murder of crows caws ominously, desparate for food. Suddenly, something seems to slam against the large, oak doors that make up the entrance to the throne room. You hide in fear but after some time a crow slams into the window hard enough to break a small hole in the glass, and falls dead to the throne room floor. The slamming on the door continues, picking up speed as more and more birds charge into the door. Soon the orchestra of birds is so loud it consumes you. You glance around hesitantly, waiting for the figures to return. After some time you become sure enough to get a better look around the room.",
         commands: [{
             input: "look throne",
             result: function() {
               print("Whoever sat here had considerable power. The fabric and metals seem to echo far away lands. On one of the arm rests is a small scroll.");
               gameData.rooms[4].look.push("scroll");
+            }
+          },
+          {
+            input: "use key on door leading north",
+            result: function(){
+              if(butlersKey.owned == true && butlersDoor.locked == true){
+                  unlockDoor.play();
+                  print("The key glides smoothly through the lock. The door is open.");
+                  butlersDoor.locked = false;
+              } else if(butlersKey.owned == true && butlersDoor.locked == false){
+                  print("The door is already unlocked.");
+              } else {
+                  print("You do not have the correct key.");
+              }
+            }
+          },
+          {
+            input: "open door leading north",
+            result: function(){
+              if(butlersDoor.locked == false){
+                moveThroughDoor.play();
+                currentRoom = gameData.rooms[8];
+                print(gameData.rooms[8].description);
+              }
             }
           },
           {
@@ -439,7 +475,7 @@ $(document).ready(function() {
             result: function() {
               moveThroughDoor.play();
               currentRoom = gameData.rooms[5];
-              print(gameData.rooms[5].description);
+              gameData.rooms[5].description();
             }
           },
           {
@@ -471,15 +507,32 @@ $(document).ready(function() {
       },
       {
         name: "Thaddius' Shrine", //5
-        look: ["pedestal", "bookshelves", "note", "wall writing", "corpse", "sky light", "back to the grand hall"],
-        description: "You find yourself in a large library, the walls lined with shelves. In the center of the room you see a bright light shining down upon a wooden pedestal. There seems to be no other lights or windows in the room other than the skylight. You move around the room slowly, scouting out enemies but find none. In the far corner of the room one of the bookshelves had been toppled over leaving a mess of books and loose pages. A corpse lays in a crumpled heap over top the shelf, papers below still drinking the blood oozing out.",
+        look: ["pedestal", "bookshelves", "note", "wall writing", "corpse", "sky light", "smouldering scroll", "back to the grand hall"],
+        description: function() {
+          if (shrine_withered.is_alive == true) {
+            print("You find yourself in a small library, the walls lined with shelves. In the center of the room you see a bright light shining down upon a wooden pedestal. There seems to be no other lights or windows in the room other than the skylight. In the far corner of the room one of the bookshelves had been toppled over leaving a mess of books and loose pages. A corpse lays in a crumpled heap over top the shelf, papers below still drinking the blood oozing out. Above the corpse stands a withered, breathing heavily. Its chest growing and shrinking as it shovles in the air. The withered turns its head to see you, glowing blue eyes and grey emaciated jaw dripping with blood. In the stillness before battle, while both combatants process each other, you watch a single drop fall from its face to join the pool below. Your hand moves naturally to the sword on your belt. You draw your blade as it charges.");
+          } else {
+            print("You find yourself in a small library, the walls lined with shelves. In the center of the room you see a bright light shining down upon a wooden pedestal. There seems to be no other lights or windows in the room other than the skylight. In the far corner of the room one of the bookshelves had been toppled over leaving a mess of books and loose pages. A corpse lays in a crumpled heap over top the shelf, papers below still drinking the blood oozing out.");
+          }
+        },
         commands: [{
-            input: "look pedestal",
+          input: "look pedestal",
+          result: function() {
+            if (cipher.owned === true) {
+              print("The pedestal seems to be made out of living wood. A vine curls along the stand ending in two small leaves basking in the moonlight streaming in from above. On the pedestal sits a dark book bound in a rough, black skin. A strange rune lays in the center of the book, with an unreadable text swirling below it. You reach over and open the book. On the first page you find a key to the strange text laid out in scrawled handwriting by some dutiful notetaker. It seems to be a cipher. The rest of the book is in the old writing you found in the scroll. ");
+            } else {
+              print("The pedestal seems to be made out of living wood. A vine curls along the stand ending in two small leaves basking in the moonlight streaming in from above. On the pedestal sits a dark book bound in a rough, black skin. A strange rune lays in the center of the book, with a strange text swirling below it. You reach over and open the book. On the first page you find a key to the strange text laid out in scrawled handwriting by some dutiful notetaker. It seems to be a cipher. You wonder what use this book might be.");
+            }
+          }
+          },
+          {
+            input: "fight",
             result: function() {
-              if (cipher.owned === true) {
-                print("The pedestal seems to be made out of living wood. A vine curls along the stand ending in two small leaves basking in the moonlight streaming in from above. On the pedestal sits a dark book bound in a rough, black skin. A strange rune lays in the center of the book, with an unreadable text swirling below it. You reach over and open the book. On the first page you find a key to the strange text laid out in scrawled handwriting by some dutiful notetaker. It seems to be a cipher. The rest of the book is in the old writing you found in the scroll. ");
+              if (shrine_withered.is_alive == true) {
+                combat(player, shrine_withered);
+                shrine_withered.is_alive = false;
               } else {
-                print("The pedestal seems to be made out of living wood. A vine curls along the stand ending in two small leaves basking in the moonlight streaming in from above. On the pedestal sits a dark book bound in a rough, black skin. A strange rune lays in the center of the book, with a strange text swirling below it. You reach over and open the book. On the first page you find a key to the strange text laid out in scrawled handwriting by some dutiful notetaker. It seems to be a cipher. You wonder what use this book might be.");
+                print("There is nothing to fight.");
               }
             }
           },
@@ -492,7 +545,9 @@ $(document).ready(function() {
                 updateInvDisplay("Cipher");
                 pickUpNew.play();
                 print("You gently pick up the book. The text begins to glow a faint blue but subsides. You feel a strange courage welling up within you.");
-              } else(print("You've already taken the cipher"))
+              } else{
+                print("You've already taken the cipher");
+              }
             }
           },
           {
@@ -503,8 +558,8 @@ $(document).ready(function() {
                 player.inventory.push("Cultist Disguise");
                 pickUpNew.play();
                 updateInvDisplay("Cultist Robes - Armor");
-                print("You struggle to pull the robes off of the dead cultist. Luckly the robe's color is already one similar to the color of blood. No one should notice, you hope. Equip with 'equip cultist disguise'.")
-              } else(print("You've already taken the cultists robes."))
+                print("You struggle to pull the robes off of the dead cultist. Luckly the robe's color is already one similar to the color of blood. No one should notice, you hope. Equip with 'equip cultist disguise'.");
+              } else{print("You've already taken the cultists robes.");}
             }
           },
           {
@@ -536,6 +591,19 @@ $(document).ready(function() {
             }
           },
           {
+            input: "look smouldering scroll",
+            result: function(){
+              print("Something should be written here.");
+            }
+          },
+          {
+            input: "take smouldering scroll",
+            result: function(){
+              fireBall.playerHas = true;
+              print("There should be something better written here but the gist is that you can now sling fireballs. Whoopee!");
+            }
+          },
+          {
             input: "look sky light",
             result: function() {
               print("Light streams in from a small dome in the ceiling. Standing in the light calms you. You stand for a moment, soaking in the light before realizing that the light is a different color than the light coming from the windows in other rooms. Whatever is making this light, it's inside the building.");
@@ -546,11 +614,11 @@ $(document).ready(function() {
             result: function() {
               moveThroughDoor.play();
               currentRoom = gameData.rooms[4];
-              if (playerArmor == cultistRobe) {
+              if (player.armorName == "Cultist Disguise") {
                 Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
                 //var myDialogue = Object.assign({grandHallCultist}, Dialogue);
                 print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. He is silent. (Try using speak.)");
-              } else if (playerArmor != cultistRobe) {
+              } else if (player.armorName != "Cultist Disguise") {
                 print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. You draw away slowly and close the door quietly, as not to rouse suspicion.");
               }
             }
@@ -559,9 +627,9 @@ $(document).ready(function() {
       },
       {
         name: "Ornate Chambers", //6
-        look: ["bed", "dresser", "vase", "frantic cultist", "painting", "small antechamber", "end table", "back to the grand hall"],
+        look: ["bed", "dresser", "vase", "frantic cultist", "painting", "silver serving tray", "small antechamber", "end table", "back to the grand hall"],
         description: function() {
-          if (playerArmor == cultistRobe) {
+          if (player.armorName == "Cultist Disguise") {
             Dialogue.load("Frantic Cultist", "dialogue_files/frantic_cultist.txt");
             //myDialogue = Object.assign({F_Cultist}, Dialogue);
             print("You climb the stairs slowly, relighting your torch off of one of the wall sconces. The torch flares to life. As you round the curved stair case you notice a large, dark, oak door guarding the top. Peering through the keyhole you see a frantic cultist searching the room. You enter slowly, not wanting to disturb him.");
@@ -582,8 +650,22 @@ $(document).ready(function() {
             }
           },
           {
-            input: "look frantic cultist",
+            input: "look silver serving tray" || "look serving tray" || "look tray",
             result: function(){
+              print("There should be something better written here but the gist is that there's a brass key on the tray.");
+              }
+          },
+          {
+            input: "take key",
+            result: function(){
+              print("You grab the key.");
+              butlersKey.owned = true;
+              updateInvDisplay("butlers key");
+            }
+          },
+          {
+            input: "look frantic cultist",
+            result: function() {
               print("You look over at the cultist as he paces he room. At seemingly random intervals he pulls open a drawer and mutters to himself inaudiably. He seems to be searching for something. He's staying far from the door to the small antechamber on the right side of the room. Periodically, scratches and screams erupt from the door before being replaced be a slow, agonizing moan into nothing. The cultist looks over to you.");
               print("'You gonna help? Or what?'", "manaColor");
             }
@@ -652,12 +734,12 @@ $(document).ready(function() {
           {
             input: "look small chest",
             result: function() {
-              if(serum.owned == false){
-              print("You open the small chest carefully. The inside is lined with a fine purple velvet and in the center lays a small vial filled with a viscous blue liquid. As you slide it into your bag the cultist takes notice.");
-              print("That's what you came up here for? What now? Another one for the torture eh? What a shame.", 'manaColor');
-              player.inventory.push("serum");
-              serum.owned = true;
-            } else(print("The chest is empty."));
+              if (serum.owned == false) {
+                print("You open the small chest carefully. The inside is lined with a fine purple velvet and in the center lays a small vial filled with a viscous blue liquid. As you slide it into your bag the cultist takes notice.");
+                print("That's what you came up here for? What now? Another one for the torture eh? What a shame.", 'manaColor');
+                player.inventory.push("serum");
+                serum.owned = true;
+              } else(print("The chest is empty."));
             }
           }
           //end commands
@@ -675,7 +757,8 @@ $(document).ready(function() {
           print("Fight the shardkeeper.");
           print("Turn back");
         },
-        commands: [{
+        commands: [
+          {
             input: "fight the shardkeeper",
             result: function() {
               combat(player, weakenedShardKeeper);
@@ -709,22 +792,22 @@ $(document).ready(function() {
           {
             input: "throw the serum",
             result: function() {
-              if(serum.owned == true){
-              print("You brace yourself for a moment before pulling the serum out of your bag slowly. The viscous blue liquid bubbles angrily. You hold your breath, and hurl the vial at the men. The shardkeeper lets out an frenzied howl and charges the men. They're only able to let out screams as the monster tears into them. You spring out from the boxes as the keeper is preoccupied and make your way briskly down the stairs.");
-              currentRoom = gameData.rooms[8];
-              print(currentRoom.description);
-            } else(print("Invalid response."));
+              if (serum.owned == true) {
+                print("You brace yourself for a moment before pulling the serum out of your bag slowly. The viscous blue liquid bubbles angrily. You hold your breath, and hurl the vial at the men. The shardkeeper lets out an frenzied howl and charges the men. They're only able to let out screams as the monster tears into them. You spring out from the boxes as the keeper is preoccupied and make your way briskly down the stairs.");
+                currentRoom = gameData.rooms[8];
+                print(currentRoom.description);
+              } else(print("Invalid response."));
             }
           },
           {
             input: "listen",
             result: function() {
               print("The men are speaking in hushed tones. Over the heavy breathing of the keeper you can only make out part of the conversation.");
-              print("He wants to pull back.");
-              print("Coward.");
-              print("No, no, deeper into the castle. The walls are not holding as well as he'd thought, or, any of us thought, really.");
-              print("We've been waiting for this for centuries. How is it possible that we'd fail?");
-              print("We're only men. All we can do is prepare the best we can, and wait.");
+              print("He wants to pull back.", "yellow");
+              print("Coward.", "blue");
+              print("No, no, deeper into the castle. The walls are not holding as well as he'd thought, or, any of us thought, really.", "yellow");
+              print("We've been waiting for this for centuries. How is it possible that we'd fail?", "blue");
+              print("We're only men. All we can do is prepare the best we can, and wait.", "yellow");
               print("The men stand by the Keeper for moment before being sniffed, and ushered past. The exit into the grand hall. What do you do? : ");
               print("Fight the shardkeeper");
               print("Try to dislodge the gem");
@@ -749,7 +832,7 @@ $(document).ready(function() {
             }
           },
           {
-            input: "Turn back",
+            input: "turn back", //broken? WHY?
             result: function() {
               currentRoom = gameData.rooms[4];
               print("As you move to exit the Shardkeeper notices you. It lets out shrill scream and bounds towards you, each long leg stomping against the cold stone. Its mouth stretches down to his chest, a wide, gaping blue hole that seemed filled with the blue liquid. As it gets halfway across the hall you manage to get the door open, and slip through. Just as you get through, the shardkeeper reaches you, slamming its body against the door. It slams shut with a a shattering echo that plays across the grand hall. Sweat is pouring down your face. You're safe, for now.");
@@ -783,17 +866,57 @@ $(document).ready(function() {
             }
           }
         ] // end commands
-      }
-    ] //end of rooms
+      },
+      {
+        name: "Royal Dressing Room", //room 8
+        look: ["cloak", "wardrobe", "royal hunting garb", "dresser","cheval mirror","ornate rug","ottoman","mannequin"],
+        description: "The royal dressing room. This is temporary text. If you see this text you are play testing my game. I'm very sorry you had to do this. Your sacrifice will not be forgotten. Also, hi kt!!!! Love you!!!!",
+        commands: [
+          {
+            input: "look cloak",
+            result: "Some shit."
+          },
+          {
+            input: "look wardrobe",
+            result: "Some shit."
+          },
+          {
+            input: "look royal hunting garb",
+            result: "Some shit"
+          },
+          {
+            input: "look dresser",
+            result: "Some shit"
+          },
+          {
+            input: "look cheval mirror",
+            result: "Some shit"
+          },
+          {
+            input: "look ornate rug",
+            result: "Some shit"
+          },
+          {
+            input: "look ottoman",
+            result: "Some shit"
+          },
+          {
+            input: "mannequin",
+            result: "Some shit"
+          }
+          ]
+        } //end of room 8 commands
+      ]
   }; //end of gameData
 
   //places the player in the starting room.
-  var currentRoom = gameData.rooms[6];
+  var currentRoom = gameData.rooms[0];
 
   function attachListeners() {
     //  Event listeners
     document.getElementById('useWeapon').addEventListener("click", useWeapon, false);
     document.getElementById('useFireball').addEventListener("click", useFireball, false);
+    document.getElementById('useHealthPot').addEventListener("click", useHealthPot, false);
     document.getElementById('backToGame').addEventListener("click", backToGame, false);
   }
 
@@ -858,37 +981,57 @@ $(document).ready(function() {
 
       //checking what weapon is equipped
       if (input == "equipped") {
-        print("Weapon: You have " + "<span class='blue-text'>" + playerEquipped.name + "</span>" + " equipped." + " It deals up do " + "<span class='red-text'>" + playerEquipped.stats + "</span>" + " damage. And has a damage type of " + "<span class='red-text'>" + playerEquipped.damageType + "</span>" + ".");
-        print("Armor: " + "<span class='blue-text'>" + playerArmor.description + "</span>" + " You take " + "<span class='red-text'>" + playerArmor.stats + "</span>" + " less damage.");
+        print("Weapon: You have " + "<span class='blue-text'>" + player.weaponName + "</span>" + " equipped." + " It deals up do " + "<span class='red-text'>" + player.weaponStats + "</span>" + " damage. And has a damage type of " + "<span class='red-text'>" + player.weaponDamageType + "</span>" + ".");
+        print("Armor: " + "<span class='blue-text'>" + player.armorDescription + "</span>" + " You take " + "<span class='red-text'>" + player.armorStats + "</span>" + " less damage.");
+        print("Shield: " + "<span class='blue-text'>" + player.shieldDescription + "</span>" + " You take " + "<span class='red-text'>" + player.shieldStats + "</span>" + " less damage.");
       }
 
       //equipping weapons
-      if (input == "equip sword" && oldSword.owned === true) {
+
+      //old sword
+      if (input == "equip old sword" && oldSword.owned === true && player.strength >= oldSword.reqStrength) {
         print("You fasten the old sheath to your belt and gently place the rusted blade inside.");
-        playerEquipped = oldSword;
+        player = Object.assign(player, oldSword);
       } else if (input == "equip old sword" && oldSword.owned === false) {
         print("You do not own the weapon 'old sword'");
       }
 
+
+      //steel mace
       if (input == "equip steel mace" && steelMace.owned === true) {
         print("You hold the mace tightly, ready to attack whatever growls in the dark.");
-        playerEquipped = steelMace;
+        player = Object.assign(player, steeMace);
       } else if (input == "equip steel mace" && steelMace.owned === false) {
         print("You do not own the weapon 'steel mace'");
       }
 
+      //equipping armor
+
+      //cultist disguise
       if (input == "equip cultist disguise" && cultistRobe.owned === true) {
         print("You gently put on the disguise. Don't want to rip any extra holes into it.");
-        playerArmor = cultistRobe;
+        player = Object.assign(player, cultistRobe);
       } else if (input == "equip cultist disguise" && cultistRobe.owned === false) {
         print("You do not own 'cultist disguise' ");
       }
 
+      //equipping shields
+
+      //makeshift shield
+
+      if (input == "equip makeshift shield" && makeshiftShield.owned === true) {
+        print("You grip the makeshift shield firmly in your left hand.");
+        player = Object.assign(player, makeshiftShield);
+      } else if (input == "equip makeshift shield" && makeshiftShield.owned === false) {
+        print("You do not own 'makeshift shield'");
+      }
 
       //player help
       if (input === "help") {
-        print("Commands to consider: look, open, take, use, consider, equip, equipped, inventory, use * on *, and room.");
+        $("<p class='text-center blue-text'>" + "Commands to consider: look, open, take, use, climb, consider, equip, equipped, inventory, use * on *, and room." + "</p>").insertBefore("#placeholder").fadeIn(1000);
       }
+
+      //use Commands..maybe
 
 
       //consider commands
@@ -906,8 +1049,10 @@ $(document).ready(function() {
         print(cipher.condition);
       } else if (input === " consider robe" && cultistRobe.owned === true) {
         print(cultistRobe.condition);
-      } else if (input === "consider scrawled writings" && scrawledWritings.owned === true){
+      } else if (input === "consider scrawled writings" && scrawledWritings.owned === true) {
         print(scrawledWritings.condition);
+      } else if (input == "consider serum" && serum.owned === true){
+        print(serum.condition);
       }
 
       //reset textbox
@@ -930,17 +1075,17 @@ $(document).ready(function() {
 
   //COMBAT HERE
   //player damage before being rounded down
-  let playerDamage;
+  var playerDamage;
   //player damage after being rounded down
-  let playerRealDamage;
+  var playerRealDamage;
   //stores random number deciding what move the enemy is using
-  let enemyMove;
+  var enemyMove;
   //enemy damage
-  let enemyDamage;
+  var enemyDamage;
   //enemy player is currently fighting
-  let enemy;
+  var enemy;
   //checks to see if the enemy has already attacked. Player goes first.
-  let hasAttacked = true;
+  var hasAttacked = true;
   //prints out combat to combat div
   function combatPrint(input, color) {
     $(".combatOutput")
@@ -960,6 +1105,8 @@ $(document).ready(function() {
       player.xp = player.xp + enemy.xp;
       levelUpCheck(player.xp);
       refreshPlayerStats();
+      player.gold = player.gold + enemy.goldReward;
+      refreshPlayerGold();
       $("#backToGame").fadeIn(1000);
       battleVictory.play();
       enemy.death.play();
@@ -993,7 +1140,7 @@ $(document).ready(function() {
 
   //changes the height of the player and enemy health and mana bars.
   function calcHealthBars(who, howMuch) {
-    document.getElementById(who).style.height = howMuch * 2 + "px";
+    document.getElementById(who).style.height = howMuch  + "px";
   }
 
   //checks enemy object vulnerability and compares it to the current damage type the player is performing.
@@ -1018,7 +1165,7 @@ $(document).ready(function() {
     if (gameOverCheck() === false) {
       enemyMove = calcEnemyMove(enemy);
       enemyDamage = calcDamage(enemy.moves[enemyMove][1], 1);
-      var enemyRealDamage = Math.floor(enemyDamage) - playerArmor.stats;
+      var enemyRealDamage = Math.floor(enemyDamage) - player.armorStats;
       player.health = player.health - enemyRealDamage;
       combatPrint(
         enemy.name +
@@ -1043,19 +1190,20 @@ $(document).ready(function() {
       gameOverCheck() === false &&
       hasAttacked === true
     ) {
-      playerDamage = calcDamage(playerEquipped.stats, 1);
-      playerRealDamage = Math.floor(playerDamage);
+      playerDamage = calcDamage(player.weaponStats, 1);
+      addedStatDamage = Math.floor(player.strength / 3);
+      playerRealDamage = Math.floor(playerDamage + addedStatDamage);
       enemy.health = enemy.health - playerRealDamage;
       combatPrint(
         "You attack " +
         enemy.name +
         " with your " +
-        playerEquipped.name +
+        player.weaponName +
         " for " +
         playerRealDamage
       );
       calcHealthBars("enemyHealth", enemy.health);
-      playerEquipped.sound.play();
+      player.weaponSound.play();
       setTimeout(enemyTurn, 1000);
       hasAttacked = false;
     } else {
@@ -1070,7 +1218,8 @@ $(document).ready(function() {
     if (
       gameOverCheck() === false &&
       hasAttacked === true &&
-      player.mana >= 25
+      player.mana >= 25 &&
+      fireBall.playerHas == true
     ) {
       playerDamage = calcDamage(fireBall.stats, 1);
       playerRealDamage = Math.floor(playerDamage);
@@ -1091,7 +1240,7 @@ $(document).ready(function() {
       setTimeout(enemyTurn, 1000);
       hasAttacked = false;
     } else {
-      combatPrint("You do not have enough mana");
+      combatPrint("You do not have enough mana or do not have the spell.");
     }
   }
 
@@ -1099,9 +1248,10 @@ $(document).ready(function() {
     if (hasAttacked === false) {
       return combatPrint("You are still recovering from your attack.");
     }
-    if (healthPot.owned > 0) {
+    if (player.healthPotNum > 0) {
       player.health = player.health + healthPot.stats;
-      healthPot.owned = healthPot.owned - 1;
+      player.healthPotNum = player.healthPotNum - 1;
+      refreshPlayerStats();
       combatPrint("You use a health potion. You feel invigorated!");
       healthPot.sound.play();
       calcHealthBars("playerHealth", player.health);
@@ -1129,7 +1279,7 @@ $(document).ready(function() {
   }
   //COMBAT END
 
-  //begin conversation
+  //BEGIN CONVERSATION
 
   function conversation(actor, player) {
     $(".backbutton").fadeIn(1500);
@@ -1158,7 +1308,7 @@ $(document).ready(function() {
   }
 
   function conversationOptions(actor, player) {
-    let responses = Dialogue.interact(actor, player).responses;
+    var responses = Dialogue.interact(actor, player).responses;
 
     for (var i = 0; i < responses.length; i++) {
       console.log(responses[i].text);

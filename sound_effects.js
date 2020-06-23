@@ -22,7 +22,7 @@ var claymoreAttackSound = new Audio("https://s3-us-west-2.amazonaws.com/s.cdpn.i
 var maceAttackSound = new Audio("soundeffects/376817__original-sound__impact-cinematic.wav");
 var fireBallSounds = new Audio("https://s3-us-west-2.amazonaws.com/s.cdpn.io/613226/368511__josepharaoh99__8-bit-fireball.mp3");
 var healthPotSound = new Audio("https://s3-us-west-2.amazonaws.com/s.cdpn.io/613226/221488__lloydevans09__glug.wav");
-var punchSound = new Audio("soundeffects/404766__owlstorm__retro-video-game-sfx-punch-2.wav")
+var punchSound = new Audio("soundeffects/404766__owlstorm__retro-video-game-sfx-punch-2.wav");
 
 //music
 var battleMusic = new Audio("music/rolemusi_-_07_-_07_rolemusic_-_the_great_madeja.mp3");

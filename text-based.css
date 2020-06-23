@@ -91,6 +91,10 @@ pre {
   color: #09b3bf;
 }
 
+.goldColor {
+  color: #cccc00;
+}
+
 .player_stats {
   flex-grow: 1;
   text-align: left;
