@@ -98,13 +98,30 @@ pre {
 .player_stats {
   flex-grow: 1;
   text-align: left;
-  display: fixed;
 }
 
 /* begin main console */
 #console {
   display: none;
   flex-grow: 3;
+  text-align: center;
+}
+
+.dialogue_button {
+  color: #cccc00;
+  background-color: #636363;
+  border-radius: 3px;
+  border: none;
+  margin: auto;
+  width: 30%;
+  margin-top: 1%;
+  margin-bottom: 1%;
+
+}
+
+.disabled_button {
+  background-color: black;
+  color: #771536;
 }
 
 /*Begin Combat */
