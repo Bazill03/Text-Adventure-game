@@ -80,6 +80,13 @@ $(document).ready(function() {
 
   refreshPlayerStats(); //intitializes players stat display.
 
+  //removes element. Mostly dialogue buttons.
+  function removeElement(elementId) {
+    // Removes an element from the document
+    var element = document.getElementById(elementId);
+    element.parentNode.removeChild(element);
+}
+
   var gameData = {
     //room objects
     rooms: [{
@@ -108,8 +115,6 @@ $(document).ready(function() {
                 updateInvDisplay("torch");
                 pickUpNew.play();
               } else(print("You've already picked up the torch."));
-              //not sure what this does anymore
-              //gameData.rooms[0].splice(0,1);
             }
           },
           {
@@ -130,9 +135,14 @@ $(document).ready(function() {
         look: ["shining object", "bookshelves", "window", "door leading south", "back to starting room"],
         description: function() {
           if (torch.owned === false) {
-            print("You arrive in the western corridor. Books line the walls top to bottom, the tomes old and rotten with age. The unmistakeable scent of old books makes the room feel humid and dense. The room is dimly lit by moonlight streaming in from arched windows between the bookcases. Birds flying outside cause shadows to play throughout the room making you feel threatened and small. Every skittering shadow makes you recoil in fear, too afraid to even breathe. You vaguely remember a torch in the north room.");
+            print("You arrive in the western corridor. Books line the walls top to bottom, the tomes old and rotten with age. The unmistakeable scent of old books makes the room feel humid and dense. The room is dimly lit by moonlight streaming in from arched windows between the bookcases. Birds flying outside cause shadows to play throughout the room making you feel threatened and small. Every skittering shadow makes you recoil in fear, too afraid to even breathe. You vaguely remember a torch in the north room. A strange man approaches you.");
+            print("'Go back, get the torch.' the robed figure croaks.", "manaColor");
           } else {
             print("You arrive in the western corridor. Books line the walls top to bottom, the tomes old and rotten with age. The unmistakeable scent of old books makes the room feel humid and dense. The room is dimly lit by moonlight streaming in from arched windows between the bookcases. Birds flying outside cause shadows to play throughout the room, making you feel threatened, but prepared. With the light of your torch, you are able to make out a shining object laying on a table in the center of the room. You hesitantly move closer. Try your 'look' command.");
+            print("'I see you've made it out alive. Hope that torch comes in handy.'", "manaColor");
+            print("The robed figure slowly gestures over to a sword laying on a table.");
+            print("'You might need that.", "manaColor");
+            dialogueButton("Here is some extremely long text in order to test out how this button will handle being very very large. I hope this is big enough I can definitely see characters in the game having reponses that are quite large. Don't want everything to look all weird should the occasion arrise when text gets very very long such as now where I have indeed typed many words and my word processor must work extra hard in order to be able to process such many various words. Okay, that's good enough.","Go", "roomZeroDialogueButton");
           }
         },
         commands: [{
@@ -910,7 +920,7 @@ $(document).ready(function() {
   }; //end of gameData
 
   //places the player in the starting room.
-  var currentRoom = gameData.rooms[0];
+  currentRoom = gameData.rooms[0];
 
   function attachListeners() {
     //  Event listeners
@@ -922,11 +932,27 @@ $(document).ready(function() {
 
   //prints out input to screen
   function print(input, color) {
-    $("<p class='text-center " + color + "'>" + input + "</p>").insertBefore("#placeholder").fadeIn(1000);
+    $("<p class='text-center " + color + "'>" + input + "</p>").insertBefore("#placeholder");
     //reset textbox
     $("#commandline").val("");
   }
+
+  function dialogueButton(input, response, name){
+    var name = document.createElement("BUTTON");   // Create a <button> element
+    name.innerHTML = input; //Gives the button text
+    name.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
+    $(name).insertBefore("#placeholder"); //Places the button in the text stream
+    name.addEventListener("click", function(){
+      print(response, "manaColor");
+      name.disabled = true;
+      name.classList.add("disabled_button");
+    }
+  )
+
+  }
+
   attachListeners();
+
 
   $("#commandline").keypress(function(e) {
     if (e.keyCode === 13) {
