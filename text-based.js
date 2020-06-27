@@ -20,15 +20,14 @@ $(document).ready(function() {
     song1.play();
   }, 2000);
 
-  song1.addEventListener("ended", function() {
-    currentSong = song2;
-    song2.play();
-  });
-
-  song2.addEventListener("ended", function() {
-    currentSong = song1;
-    song1.play();
-  });
+  function loopOneSong(song){
+    currentSong.pause();
+    currentSong = song;
+    currentSong.play();
+    currentSong.addEventListener("ended", function() {
+      currentSong.play();
+    });
+  }
 
   //audio controls
   $("#play").click(function() {
@@ -80,17 +79,78 @@ $(document).ready(function() {
 
   refreshPlayerStats(); //intitializes players stat display.
 
-  //removes element. Mostly dialogue buttons.
-  function removeElement(elementId) {
-    // Removes an element from the document
-    var element = document.getElementById(elementId);
-    element.parentNode.removeChild(element);
+function startGame(){
+  loopOneSong(tavernSounds);
+  document.getElementById('startGame').disabled = true;
+  document.getElementById('startGame').classList.add("disabled_button");
+  print("You find yourself in a bustling tavern. Surrounded by loved ones and acquaintances. Before you, on the beaten mahogany bar top, a dark ale's froth is just dying down.");
+  print("Next to you is your best friend, Sawyer. A bumbling but kind man, warm from alcohol and good times. He's been rambling about the benefits of fish oil for what seems like ages. This is your second drink of the night and you're growing antsy.");
+  print("You turn to Sawyer, interrupting his presentation of his ever clearing complexion.");
+  print("'Tell me Sawyer, before I die, will this conversation end?'", "agiColor");
+  print("Sawyer looks at you dejectedly. Then nods towards your drink.");
+  print("Maybe you could use a bit more of that in ya? Make ya a bit more agreeable for the night?", "manaColor");
+  print("You quietly agree and take a solemn drink.");
+  print("So, maybe you're up to somethin' fun tonight? Maybe somethin' a little dangerous?","agiColor");
+  Dialogue.load("Sawyer", "dialogue_files/sawyer1.txt");
+  var name = document.createElement("BUTTON");   // Create a <button> element
+  name.innerHTML = "Speak"; //Gives the button text
+  name.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
+  $(name).insertBefore("#placeholder"); //Places the button in the text stream
+  name.addEventListener("click", function(){
+    conversation("Sawyer", "player_1");
+    name.disabled = true;
+    name.classList.add("disabled_button");
+    print("--------------------");
+    print("As you and Sawyer are arguing a strange man approaches. Drooped eyes and crooked nose dominate his face. Ragged cloth and patinated brass piercings draw your mind into the imagineings of a life lived very roughly.");
+    print("The man drops heavily onto the stool next to you and Sawyer as you stand transfixed.");
+    print("The man glances at you for a moment, ice blue eyes shimmering errily in the low light of the tavern before turning to the bartender and ordering a lager in a gruff, low voice.");
+    print("The three of you sit silent for some time as the tender drafts the lager.");
+    print("After some time, Sawyer leans in close, as if to whisper into your ear but the heavyset man intervenes.");
+    print("Either of you lads got fortitude?","healthColor");
+    print("'Fortitude?', Sawyer stammers out. 'Sure, my pal and I were just about to venture to the woods, cause some trouble with that cult there.'","manaColor");
+    print("'Good, thas just what I needed ya for. Come with me', the man replied before downing his drink in an impressive display and beginning to stand.", "healthColor");
+    print("We got a long night ahead of us. Take a good look around before ya leave. Don't want you missin' anything.","healthColor");
+    print("Saywer rolls his eyes at the intensity of the mans words");
+    print("'Alright old man, we're comin.","manaColor");
+    print("This is a good time to try out the look command. Try typing 'look' into the text box. You may also type something like 'look bartop' to get a description. Whenever you're ready to leave type 'leave bar'", "intColor");
+  })
+  
 }
 
   var gameData = {
     //room objects
-    rooms: [{
-        name: 'strange room', //0
+    rooms: [
+      {
+        name: "tavern", //0
+        look: ['bartop','Sawyer','Bartender',"stool"],
+        commands: [{
+          input: 'look bartop',
+          result: function(){
+            print("An old mahogany bartop, supposedly crafted by one of Sawyers great grandfathers many years ago. Its coloring is uneven from decades of slammed drinks and constant washing.");
+          }
+          },
+          {
+          input: "look sawyer",
+          result: function(){
+            print("Your best friend. Goofy, curly blonde hair that's only washed when he swims in the local pond and a devilish grin that tells you he's up to no good.");
+          }
+          },
+          {
+          input: "look bartender",
+          result: function(){
+            print("A timid old man, who doesn't want any trouble. He's been a staple in your villiage for decades.");
+          }
+          },
+          {
+          input: "look stool",
+          result: function(){
+            print("A fairly unremarkable stool, but for some reason it's always available for you when you visit the tavern.");
+          }
+          }
+      ]
+      },
+      {
+        name: 'strange room', //1
         look: ['old door, torch'],
         description: "You are back in the strange room.",
         commands: [{
@@ -928,6 +988,7 @@ $(document).ready(function() {
     document.getElementById('useFireball').addEventListener("click", useFireball, false);
     document.getElementById('useHealthPot').addEventListener("click", useHealthPot, false);
     document.getElementById('backToGame').addEventListener("click", backToGame, false);
+    document.getElementById('startGame').addEventListener("click", startGame, false);
   }
 
   //prints out input to screen
@@ -937,19 +998,17 @@ $(document).ready(function() {
     $("#commandline").val("");
   }
 
-  function dialogueButton(input, response, name){
+  function dialogueButton(input, speaker){
     var name = document.createElement("BUTTON");   // Create a <button> element
     name.innerHTML = input; //Gives the button text
     name.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
     $(name).insertBefore("#placeholder"); //Places the button in the text stream
     name.addEventListener("click", function(){
-      print(response, "manaColor");
+      conversation(speaker, "player_1");
       name.disabled = true;
       name.classList.add("disabled_button");
     }
-  )
-
-  }
+  )}
 
   attachListeners();
 
