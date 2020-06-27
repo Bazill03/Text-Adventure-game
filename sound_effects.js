@@ -1,4 +1,6 @@
 //TODO add sounds into single object
+//tavern
+var tavernSounds = new Audio("music/144139__alukahn__crowd-with-violin-playing.wav");
 
 
 //withered
