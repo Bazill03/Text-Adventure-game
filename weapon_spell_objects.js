@@ -2,7 +2,7 @@
 
 var fists = {
   weaponName: "fists",
-  weaponStats: 3,
+  weaponStats: 1,
   weaponDamageType: "blunt",
   weaponSound: punchSound
 };
@@ -17,6 +17,19 @@ var oldSword = {
   findText: "You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. What mighty warrior would cast aside a relic? What mighty foe made sure he didn't have a choice? (Equip with 'equip old sword'.)",
   lookText: "You approach the table carefully. You see an old, rusted sword, chipped from years of battle. Any defense at all would help stave off the fear. Try 'take sword'.",
   reqStrength: 3,
+  canWieldShield: true
+};
+
+var woodenMallet = {
+  weaponName: "wooden mallet",
+  weaponStats: 3,
+  weaponDamageType: "blunt",
+  owned: false,
+  weaponSound: woodenWeaponSound,
+  weaponCondition: "Broken and mangled. You should find a replacement soon.",
+  findText: "You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. What mighty warrior would cast aside a relic? What mighty foe made sure he didn't have a choice? (Equip with 'equip old sword'.)",
+  lookText: "You approach the table carefully. You see an old, rusted sword, chipped from years of battle. Any defense at all would help stave off the fear. Try 'take sword'.",
+  reqStrength: 1,
   canWieldShield: true
 };
 

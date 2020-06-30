@@ -47,6 +47,23 @@ var player = {
 
 
 //enemies
+var largeRat = {
+  name: "large rat",
+  greeting: "The rat looks up from his dinner of grass, red eyes sprinkling in the low dusk light.",
+  health: 12,
+  attackFirst: false,
+  moveNum: 2,
+  moves: [
+    ["bite", 2],
+    ["slash", 3]
+  ],
+  vulnerability: ["blunt", 3],
+  goldReward: 0,
+  sounds: ratAttackSound,
+  introSound: ratAttackSound,
+  death: ratDeathSound,
+  xp: 50
+};
 
 var withered = {
   name: "withered",

@@ -1,0 +1,10 @@
+0 You look scared. Don't be. [1,2]
+1 Where am I? -> 3
+2 Who are you? -> 4
+3 You are exactly where you should be. [2,5]
+4 Oh me? I'm nobody. [1,5]
+5 What's going on here? -> 6
+6 Oh, you don't know? Yes, yes that's true. It's been some time for you Jack, some time. *The robed man trails off for a moment* [7]
+7 Some time? What does that mean? How long has it been? -> 8
+8 How long? Oh. I'd say about two weeks. Yes, 2 weeks. [9]
+9 *You open your mouth in incredulity but the figure is gone.*  

@@ -1,0 +1,14 @@
+0 Yes? [1]
+1 I never caught your name. -> 2
+2 Aethelu. An old name for an old man. [3]
+3 Yeah, of course, of course. Listen, I have my doubts. -> 4
+4 Sure ya do, who wouldn't? What do ya wanna know? [5]
+5 What's your plan here? -> 8
+6 Plan? Ha! I don't follow plans. You see that castle up there? Of course you do. Poor sob, you've lived here your entire boring existance. Something is going to happen to that castle tonight. [7]
+7 What? Somethings going to happen to the castle? What's going on with the castle? -> 8
+8 *Aethelu shrugs* Not sure. [9]
+9 What? So how do you even know? -> 10
+10 I can't say for certain. Had a thought. Weird thought. Told me to come here, find a couple men, and go out into the woods with them. [11]
+11 That doesn't make any sense. You just have a weird feeling you need to take us to the woods? -> 12
+12 Yes, now grab a weapon, we're leaving. [13]
+13 *You sigh* Alright, never been one to turn down weird men taking me out into the woods. Let's go. [13]

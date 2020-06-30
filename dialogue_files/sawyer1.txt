@@ -1,0 +1,11 @@
+0 So? What'll it be? [1,2]
+1 Yeah, haven't had anything interesting happen 'round here in ages! -> 3
+2 No, not tonight. Too much on my mind. Why don't you find something better to do? -> 4
+3 Nice! Yeah, what should we do? There's some fine ladies over in the corner. [5,6]
+4 Awh, c'mon bud, down that drink right quick, and let's get some action. [7]
+5 Ha! They look a little uh, strong for my taste. Why don't I let you go, and I'll stay here and tend this drink. -> 9
+6 Yeah? Might not be a bad idea. -> 10
+7 Listen, I'd really like to but I can't handle the pressure tonight. You go ahead. -> 8
+8 Ah fine, I'll do it on my own, but you'll be sorry in the morning!
+9 Ah, you're too picky. You're going to be alone forever with that attitude!
+10 Atta boy! That's what I like to hear! Now, you go over there first to soften them up and I'll be by in a quick jiffy.
