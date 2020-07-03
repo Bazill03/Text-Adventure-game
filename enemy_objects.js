@@ -42,7 +42,9 @@ var player = {
   shieldStats: 0,
   shieldBlockChance: 0,
   shieldDescription: "You have no shield equipped",
-  travelHistory: []
+  travelHistory: [],
+  //Resistances
+  coldDefence: false
 };
 
 
@@ -62,6 +64,9 @@ var largeRat = {
   sounds: ratAttackSound,
   introSound: ratAttackSound,
   death: ratDeathSound,
+  loot: function(){
+
+  },
   xp: 50
 };
 
