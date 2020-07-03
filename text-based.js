@@ -1587,11 +1587,15 @@ function startGame(){
   //checks to see if the enemy has already attacked. Player goes first.
   var hasAttacked = true;
   //prints out combat to combat div
+  function scrollSmoothToBottom (id) {
+    var div = document.getElementById(id);
+    $('#' + id).animate({
+       scrollTop: div.scrollHeight - div.clientHeight
+    }, 500);
+ }
   function combatPrint(input, color) {
-    $(".combatOutput")
-      .append("<p class='text-center'" + color + ">" + input + "</p>");
-    //reset textbox
-    $("#commandline").val("");
+    $("#combatOutput").append("<p class='text-center'" + color + ">" + input + "</p>"); 
+    scrollSmoothToBottom("combat");
   }
   //  Combat section
   //checks if the game is over by comparing health
@@ -1621,7 +1625,7 @@ function startGame(){
     $('#console').fadeIn(50);
     $("#combatWrapper").fadeOut(0);
     $(".combatMenu").fadeOut(0);
-    $(".combat").fadeOut(0);
+    $("#combat").fadeOut(0);
     $(".combatOutput").html("");
     battleMusic.pause();
     battleMusic.currentTime = 0;
@@ -1767,8 +1771,8 @@ function startGame(){
   function combat(player, enemyFighting) {
     $('#console').fadeOut(0);
     $(".combatMenu").fadeIn(50);
-    $(".combat").fadeIn(50);
-    $("#combatWrapper").fadeIn(0);
+    $("#combat").fadeIn(50);
+    $("#combatWrapper").fadeIn(50);
     enemy = enemyFighting;
     combatPrint(enemy.greeting);
     if (enemy.attackFirst === true) {

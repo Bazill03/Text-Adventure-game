@@ -113,6 +113,7 @@ pre {
   display: none;
   flex-grow: 3;
   text-align: center;
+  height: 60%;
 }
 
 .dialogue_button {
@@ -139,7 +140,7 @@ pre {
   display: none;
 }
 
-.combat {
+#combat {
   border: 1px solid white;
   width: 100%;
   height: 300px;
