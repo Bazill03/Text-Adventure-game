@@ -369,6 +369,7 @@ function startGame(){
         echoingScreams.pause();
         currentRoom = gameData.rooms[4]
         currentRoom.description();
+        Object.assign(player, fists);
         loopOneSong(song1);
           })
         })
@@ -629,7 +630,7 @@ function startGame(){
               } else {
                 currentRoom = gameData.rooms[7];
                 combat(player, hallwayWithered);
-                print(gameData.rooms[7].description);
+                currentRoom.description();
                 moveThroughDoor.play();
               }
 
@@ -640,7 +641,10 @@ function startGame(){
       {
         name: "small hallway", //7
         look: ['barrel, dead enemy, small archway, door leading west'],
-        description: "You are in a small hallway. Your torch seems to emit even less light here. The smell of rotting flesh tingles your nose and makes your stomach turn over. There's a small barrel in the corner of the otherwise dangerous but unimpressive room.",
+        description: function(){
+          print("----- Small Hallway -----", "goldColor");
+          print("You are in a small hallway. Your torch seems to emit even less light here. The smell of rotting flesh tingles your nose and makes your stomach turn over. There's a small barrel in the corner of the otherwise dangerous but unimpressive room.")
+        },
         figuresSpoken: false,
         withered: true,
         commands: [{
@@ -691,7 +695,14 @@ function startGame(){
             input: "listen",
             result: function() {
               if (gameData.rooms[7].figuresSpoken === false) {
-                print("The blood will flow Cassius. I am certain. Umbril has spoken to me and given me his sacred charge. The boy in the cellar is subdued and will remain so until you're ready.' Another figure seems to mock the first but it is unintelligable. The first speaks up again: 'Do you dare threaten me Cassius? I won't stand idly by and let our people rot into that figure in the hallway. The blood must flow Cassius, and I will see to it alone if I must.' With that, the figures are gone.");
+                print("You hear footsteps. Then, muffled voices.");
+                print("Ah, Cassius.","intColor");
+                print("Hmm, oh, yes. Thought I'd come up here for a spell and see the birds.","chrColor");
+                print("I can't blame you. They're a beautiful sight. We do need your help downstairs however, the men are wounded and -","intColor");
+                print("You know, I butchered my own father in the massacre. Killed him with an axe to the head. Yet, I feel nothing. I know this is the end of the world. But shouldn't I feel something? Anything?","chrColor");
+                print("The two figures are silent for a moment.");
+                print("These are the blessings the shards provide Cassius. The tools you need to perform your role in the second coming. Come now, we need your help.", "intColor");
+                print("There are footsteps, then silence.");
                 gameData.rooms[7].figuresSpoken = true;
               } else {
                 print("You listen hard but hear nothing.");
@@ -851,14 +862,6 @@ function startGame(){
               gameData.rooms[11].description();
             }
           },
-          {
-            input: "speak",
-            result: function() {
-              if (playerArmor == cultistRobe) {
-                conversation("Unknown Brother", "player");
-              }
-            }
-          },
         ] //end of commands
       },
       {
@@ -967,8 +970,18 @@ function startGame(){
               currentRoom = gameData.rooms[8];
               if (player.armorName == "Cultist Disguise") {
                 Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
-                //var myDialogue = Object.assign({grandHallCultist}, Dialogue);
-                print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. He is silent. (Try using speak.)");
+                print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. He is silent.");
+                var continueButton = document.createElement("BUTTON");   // Create a <button> element
+                continueButton.innerHTML = "Speak"; //Gives the button text
+                continueButton.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
+                $(continueButton).insertBefore("#placeholder"); //Places the button in the text stream
+                continueButton.addEventListener("click", function(){
+                continueButton.disabled = true;
+                continueButton.classList.add("disabled_button");
+                  conversation("Unknown Brother","player");
+                  print("The robed figure exits the room.");
+    
+                  })
               } else if (player.armorName != "Cultist Disguise") {
                 print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. You draw away slowly and close the door quietly, as not to rouse suspicion.");
               }
@@ -1222,7 +1235,7 @@ function startGame(){
       },
       {
         name: "Royal Dressing Room", //12
-        look: ["cloak", "wardrobe", "royal hunting garb", "dresser","cheval mirror","ornate rug","ottoman","mannequin"],
+        look: ["cloak", "wardrobe", "hunting garb", "dresser","cheval mirror","ornate rug"],
         description: function(){
           print("----- Royal Dressing Room -----","goldColor");
           print("You enter the room slowly, peeking around the door. In the room, examining a large, marble bust of the king is one of the cultists. In an attempt to be confident you approach the man but as you draw near his arm flings out, and stiff arms you in the chest. He slowly turns to face you, revealing the strange man who spoke to you after you woke.");
@@ -1239,6 +1252,7 @@ function startGame(){
         healthPotTaken: false,
         swordTaken: false,
         manaPotTaken: false,
+        noteShown: false,
         commands: [
           {
             input: "look cloak",
@@ -1257,20 +1271,88 @@ function startGame(){
           {
             input: "show note",
             result: function(){
+              if(noteUnderRug.deciphered == true){
               print("You show the note to the old man, who rips it from your hands. He reads it for a moment, then steps aside motioning you to the bust.");
               print("All yours boy. You win this time.", "manaColor");
+              currentRoom.noteShown = true;
+              } else if(noteUnderRug.owned === true && noteUnderRug.deciphered === false){
+                print("The old man looks at the note for a moment, then gives it back without saying a word.");
+              } else {
+                print("You have nothing to show him.");
+              }
             }
           },
           {
             input: "turn bust east", //find shard
             result: function(){
-              print(" ");
+              if(currentRoom.noteShown == false){
+                print("There is nothing to do.");
+              } else{
+              print("----- Finding the secret -----","goldColor");
+              print("You step up to the bust of the King, then look over to the old man whose waiting impatiently.");
+              print("Go on then.","manaColor");
+              print("You take the king by his marbled cheeks and torque him to the east. There's some resistance but soon it gives and he begins to turn on his own. While he turns, the wall behind him begins to lift with a great rumble, dust and debris cascading to the imaculate floor below.");
+              print("Ahhh, very good. Even I couldn't have guess the king would have been intelligent enough to instal a hidden chamber","manaColor");
+              print("The walls accent finishes revealing a pitch black chamber. You light your torch.");
+              print("Your torch comes to life revealing a pale blue stone laying dorment atop a stone pedistal. As you reach out your hand to grab it, the old man grips you firmly by the shoulder.");
+              print("Ah ah, I'd be careful with that. You're not one of the usual men. I don't know what will happen to you.","manaColor");
+              print("What do you mean? What could happen to me?","agiColor");
+              print("Could be horrible, could give you extreme powers. Most of us disagree.","manaColor");
+              print("Whose us, and why am I special?","agiColor");
+              print("It's not really my place to answer either of those questions. What I do know is that you'll eventually have to grab that stone. When is a more complicated question but eventually, it is certain.","manaColor");
+              }
+
             }
           },
           {
-            input: "take shard", //find umbril, go mad.
+            input: "take stone", //find umbril, go mad.
             result: function(){
-              print(" ")
+              print("----- We Don't Know What Happens To People Like You -----","goldColor");
+              print("You steel yourself for a moment before reaching out your hand.");
+              print("I'll see you on the other side Jack, good luck.","manaColor");
+              print("As your hand grips the stone you feel an electric shock stream up your arm and find rest in your head. You fall hard to the rug begin to hum uncontrollably while your body shifts uncomfortably on the ground.");
+              print("You look up to the old man for support, but he has gone and been replaced by a withered who leaps towards you but dissapates into a swarm of crows. They flap about the room, screaming the sounds of those who are tortured.");
+              print("You try to scream along with them, but hear and feel nothing. You feel yourself being pulled and soon you are standing. The room is now bright, lit by the fires of the birds erupting into bright blue flames.");
+              print("Then there is silence, if only for a moment before being replaced by a hundred voices all whispering in unison.");
+              print("Jack","chrColor");
+              print("The whispers hit your ears like so many ants, crawling in and out of your skull taking pieces off with them to some unknown place to be consumed by some unknown magic. ");
+              print("As your mind begins to unravel the dressing room begins to stretch and elongate until it is an infinite hallway and in the center, a blue light shines, beckoning you forward.");
+              print("Come to me Jack, it is time.","chrColor");
+              print("You struggle to speak. 'Who are you?'","agiColor");
+              print("I am your god Jack","chrColor");
+              print("Suddenly you are shot like an arrow down the room, careening towards the light.");
+              print("As you fly the voices assault you, peeling your consciousness back until it finds what it is looking for.");
+              var continueButton = document.createElement("BUTTON");   // Create a <button> element
+              continueButton.innerHTML = "Relent"; //Gives the button text
+              continueButton.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
+              $(continueButton).insertBefore("#placeholder"); //Places the button in the text stream
+              continueButton.addEventListener("click", function(){
+              continueButton.disabled = true;
+              continueButton.classList.add("disabled_button");
+              print("It would be cool if this text appeared slowly onto the screen.","intColor");
+              print("You see your mother.");
+              print("She is screaming your name.");
+              print("You try to run to her but your legs are stiff, as if you are in a dream.");
+              print("She is being dragged away by two men in armor.");
+              print("She screams your name again. Tells you to run, but you can't.");
+              print("The men began to stomp on her face.");
+              print("Her screaming gets louder.");
+              print("You try to cover your ears but it does nothing to stop the screams.");
+              print("They continue until your mother wont scream any more.");
+              var keepGoing = document.createElement("BUTTON");   // Create a <button> element
+              keepGoing.innerHTML = "Relent"; //Gives the button text
+              keepGoing.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
+              $(keepGoing).insertBefore("#placeholder"); //Places the button in the text stream
+              keepGoing.addEventListener("click", function(){
+              keepGoing.disabled = true;
+              keepGoing.classList.add("disabled_button");
+              print("----- A World You've Never Dreamed -----","goldColor");
+              print("You're back.");
+              print("Your mind is clear but your eyes show nothing but darkness.");
+              print("Welcome Jack, welcome to my world.","chrColor");
+              })
+              })
+              
             }
           },
           {
@@ -1295,33 +1377,46 @@ function startGame(){
             }
           },
           {
-            input: "look royal hunting garb", //Find sword
+            input: "look hunting garb", //Find sword
             result: function(){
-              if(swordTaken == true){
-              print("In the corner of the room, tucked into a small alcove you see a bundle of gear, clearly dropped by hurried hands. Most of the clothing here is simply thin, flamboyantly colored silk, not useful to you. Leaning on the corner of the marbled brick walls you see a hunting sabre, sheathed in an almost black leather.");
+              if(currentRoom.swordTaken == false){
+              print("In the corner of the room, tucked into a small alcove you see a bundle of gear, clearly dropped by hurried hands. Most of the clothing here is simply thin, flamboyantly colored silk, not useful to you. Leaning on the corner of the marbled brick walls you see a hunting sabre, sheathed in an almost black leather.")
+              currentRoom.look.push('hunting sabre');
               } else(print("In the corner of the room, tucked into a small alcove you see a bundle of gear, clearly dropped by hurried hands. Most of the clothing here is simply thin, flamboyantly colored silk, not useful to you."));
             }
           },
           {
-            input: 'take sword',
+            input: 'look hunting sabre',
             result: function(){
-              if(swordTaken == false){
+              print("Leaning on the corner of the marbled brick walls you see a hunting sabre, sheathed in an almost black leather.");
+            }
+          },
+          {
+            input: 'take hunting sabre',
+            result: function(){
+              if(currentRoom.swordTaken == false){
               print("You gently pick it and feel the weight of the blade in your hands. With great anticipation building in your chest you pull the sword from the sheath to reveal a steel polished to a mirrored surface tapering down to a sharp point. You breathe a sigh of relief.");
               print("You got the royal sabre! Equip with 'equip royal sabre'");
               royalSabre.owned = true;
-              swordTaken = true;
+              currentRoom.swordTaken = true;
               } else(print("There are no more swords to take."));
             }
           },
           {
             input: "look dresser", //Find health potion
             result: function(){
-              if(healthPotTaken == false){
-                print("A dresser made from a pale gray wood. The handles, copper and stamped with the royal crest. Atop if you see a a bright green skullcap and matching patterned scarf with gold flourishes.  You leaf through the dresser for some time. Beneath a pair of pants you see a familiar color, the color of a health potion. You pocket it gratefully.");
-                healthPotTaken = true;
-                player.healthPotNum = player.healthPotNum + 1;
-                refreshPlayerStats();
-                } else(print("You dig around the wardrobe some more, finding nothing of value."));
+              print("A dresser made from a pale gray wood. The handles, copper and stamped with the royal crest. Atop if you see a a bright green skullcap and matching patterned scarf with gold flourishes.");
+            }
+          },
+          {
+            input: 'open dresser',
+            result: function(){
+              if(currentRoom.healthPotTaken == false){
+              print("You leaf through the dresser for some time. Beneath a pair of pants you see a familiar color, the color of a health potion. You pocket it gratefully.");
+              currentRoom.healthPotTaken = true;
+              player.healthPotNum = player.healthPotNum + 1;
+              refreshPlayerStats();
+              } else(print("You dig around some more, but find nothing of value."))
             }
           },
           {
@@ -1346,21 +1441,9 @@ function startGame(){
             }
           },
           {
-            input: "look ottoman",
-            result: function(){
-              print("Some Shit");
-            }
-          },
-          {
             input: "look bust", //see scratch marks
             result: function(){
-              print("Some Shit");
-            }
-          },
-          {
-            input: "mannequin", //Find leather armor
-            result: function(){
-              print("Some Shit");
+              print("A marbled bust of the King standing on a stone pedestal. The old man seems very intrigued by it.");
             }
           }
           ]
@@ -1385,7 +1468,7 @@ function startGame(){
     $("<p class='text-center " + color + "'>" + input + "</p>").insertBefore("#placeholder");
     //reset textbox
     $("#commandline").val("");
-    $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+    $("html, body").animate({ scrollTop: $(document).height() }, 2000);
   }
 
   function dialogueButton(input, speaker){
@@ -1426,7 +1509,7 @@ function startGame(){
 
       //skip to castle
       if(input == "skip"){
-        currentRoom = gameData.rooms[4];
+        currentRoom = gameData.rooms[12];
       }
 
       //use commands that can be taken place in any room.
@@ -1434,9 +1517,10 @@ function startGame(){
         print("You open up the cipher, and begin work on the scroll. After some time you work out the message. It reads: 'Thaddius on the ways of man: We must follow in the footsteps of Rain and follow his three rules, which are as follows. One: Do not succumb to the powers of idols. This serves only to cause war. Two: Do not war against another man. This serves only to empower Umbril and his creatures. Three: Do not give into the influences Umbril. This serves only to end mankind.' ","parchmentColor");
         return;
       }
-      if (input == "use cipher on note" && cipher.owned === true && noteUnderRug.owned === true) {
+      if (input == "use cipher on note" && cipher.owned === true && noteUnderRug.owned === true && noteUnderRug.deciphered === false) {
         print("You open up the cipher, and begin work on the note. After some time you work out the message. It reads: 'Sire, I've put together that contraption you requested. Should you ever need access to it, you only need to turn your likeness until it faces east. I do hope it serves you well. P.S. - Since I'm already going to go through the trouble of encrypting this message, I feel like this would be a good time to ask for a small raise in my pay? My girl will be coming into school age soon and I'd like to send her somewhere nice.","parchmentColor");
         print("You consider showing the note to the old man.");
+        noteUnderRug.deciphered = true;
         return;
       }
 
@@ -1626,10 +1710,11 @@ function startGame(){
     $("#combatWrapper").fadeOut(0);
     $(".combatMenu").fadeOut(0);
     $("#combat").fadeOut(0);
-    $(".combatOutput").html("");
+    $("#combatOutput").html("");
     battleMusic.pause();
     battleMusic.currentTime = 0;
     currentSong.play();
+    $("html, body").animate({ scrollTop: $(document).height() }, 1000);
   }
 
   //takes in the maxmum and minimum damage a given move can inflict and returns a random value between those ranges.
@@ -1810,8 +1895,12 @@ function startGame(){
     conversationOptions(actor, player);
   }
 
+  function conversationPrint(input, color){
+      $(".conversationOutput").append("<p class='text-center'" + color + ">" + input + "</p>"); 
+  }
+
   function printActorResponse(actor, player, response) {
-    combatPrint(Dialogue.interact(actor, player, response).text);
+    conversationPrint(Dialogue.interact(actor, player, response).text);
   }
 
   function conversationOptions(actor, player) {
@@ -1833,13 +1922,14 @@ function startGame(){
     $('#console').fadeIn(50);
     $(".conversationMenu").fadeOut(50);
     $(".conversation").fadeOut(50);
-    $(".combatOutput").html(" ");
+    $(".conversationOutput").html(" ");
     $(".conversationMenu").off("click");
     $(".conversationWrapper").fadeOut(50);
     //Dialogue.dialogues = {};
     console.log(Dialogue.dialogues);
     $("body").removeClass("forrest-bg");
     $(".backbutton").fadeOut(50);
+    $("html, body").animate({ scrollTop: $(document).height() }, 1000);
   });
 
   //END CONVERSATION

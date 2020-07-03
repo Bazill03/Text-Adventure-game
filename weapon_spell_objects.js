@@ -174,6 +174,7 @@ var scrawledWritings = {
 noteUnderRug = {
   name: "Note",
   owned: false,
+  deciphered: false,
   condition: "A note you found under the rug.",
   read: "A note you found under the rug in the royal dressing room. It reads: Some shit."
   

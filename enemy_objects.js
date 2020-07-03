@@ -1,9 +1,6 @@
 //prints out combat to combat div
 function combatPrint(input, color) {
-  $(".combatOutput")
-    .append("<p class='text-center'" + color + ">" + input + "</p>");
-  //reset textbox
-  $("#commandline").val("");
+  $(".combatOutput").append("<p class='text-center'" + color + ">" + input + "</p>");
 }
 function updateInvDisplay(item) {
   $("#playerInventoryDisplay").append(item);
