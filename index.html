@@ -13,6 +13,7 @@
 
   <!-- bootstrap JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   <!-- imports dialoguejs -->
   <script src="dialogue.js"></script>
   <!-- imports game functions -->
@@ -86,15 +87,15 @@
 
 
     </div>
-
+    <div class="combatWrapper">
     <div class="combat">
       <div id="playerHealth"></div>
       <div id="playerMana"></div>
+      <div id="enemyHealth"></div>
       <div class="combatOutput">
         <p class="text-center combatOutputText">
           <p>
       </div>
-      <div id="enemyHealth"></div>
     </div>
     <div class="combatMenu">
       <button type="button" class="combatButton" id="useWeapon">Use weapon</button>
@@ -102,9 +103,13 @@
       <button type="button" class="combatButton" id="useIce">Use ice shard</button>
       <button type="button" class="combatButton" id="useManaPot">Use mana potion</button>
       <button type="button" class="combatButton" id="useHealthPot">Use Health Potion</button>
+      <select id="inventory">
+        <option>Inventory</option>
+      </select>
       <button type="button" class="combatButton" id="backToGame">Back to game</button>
-
+  </div>
     </div>
+    <div class="conversationWrapper">
     <div class="conversation">
       <div class="combatOutput">
         <p class="text-center combatOutputText">
@@ -116,11 +121,4 @@
       <button type="button" class"combatButton" id="goodbye">Good-Bye</button>
     </div>
   </div>
-  <footer>
-    <div class="audioControls">
-      <p>audio controls</p>
-      <button type="button" name="play" id="play">Play</button>
-      <button type="button" name="pause" id="pause">Pause</button>
-    </div>
-  </footer>
 </body>
