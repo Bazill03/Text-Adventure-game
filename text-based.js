@@ -944,7 +944,7 @@ function startGame(){
           {
             input: "look smouldering scroll",
             result: function(){
-              print("Something should be written here.");
+              print("Within the bookshelves you find a small pile of embers but they are cool to the touch. It's a scroll. I'd like to rewrite this, sorry.");
             }
           },
           {
@@ -1236,48 +1236,113 @@ function startGame(){
           print("Again, you open your mouth to speak but the man shushes you.");
           print("Much work to do boy, much work.", "manaColor");
         },
+        healthPotTaken: false,
+        swordTaken: false,
+        manaPotTaken: false,
         commands: [
           {
             input: "look cloak",
             result: function(){
-              print("Some Shit");
+              print("A cloak is hanging by a hook drilled into the cold, white marble of the dressing room. The cloak is made from a leather finer than you've ever felt. It is rimmed in thick wolves fur and carved into the center, the royal crest. It looks warm, and inviting.");
+            }
+          },
+          {
+            input: "take cloak",
+            result: function(){
+              print("As you wrap yourself in the leather cloak, you begin to feel more safe.");
+              print("You are now able to brave the cold!","intColor");
+              player.coldDefence = true;
             }
           },
           {
             input: "show note",
             result: function(){
               print("You show the note to the old man, who rips it from your hands. He reads it for a moment, then steps aside motioning you to the bust.");
-              print("All your boy. You win this time.", "manaColor");
+              print("All yours boy. You win this time.", "manaColor");
             }
           },
           {
-            input: "look wardrobe",
+            input: "turn bust east", //find shard
             result: function(){
-              print("Some Shit");
+              print(" ");
             }
           },
           {
-            input: "look royal hunting garb",
+            input: "take shard", //find umbril, go mad.
             result: function(){
-              print("Some Shit");
+              print(" ")
             }
           },
           {
-            input: "look dresser",
+            input: "look wardrobe", //Find mana potion
             result: function(){
-              print("Some Shit");
+              print("Next to the dresser in the room is a matching wardrobe, the sides etched in impressively delicate copper filigree.");
+
             }
           },
           {
-            input: "look cheval mirror",
+            input: 'open wardrobe',
             result: function(){
-              print("Some Shit");
+              print("You open the dresser and glance around the bright green silken coats and ties. Out of the corner of your eye you notice a glass vial protruding from one of the pockets. You lift it carefully and examine the contents. A deep navy hued liquid swirls and plays with the ambient light of the room in a way you've never seen. Holding your torch up to the liquid you notice that the light exits the vial with a greater intensity than it entered.");
+              print("The old man speaks up.");
+              print("Oooh, very nice very nice. You'll want that.","manaColor");
+              print("And what is it?","agiColor");
+              print("A very curious elixer made from a plant that grows father north than you'll ever care to venture. Drink it when you're tired, it'll set you straight. I think you'll find it useful.","manaColor");
+              print("You nod, and pocket the potion.");
+              print("You got a mana potion! Use in combat for 25 mana points!","goldColor");
+              player.manaPotNum = player.manaPotNum + 1;
+              refreshPlayerStats();
+            }
+          },
+          {
+            input: "look royal hunting garb", //Find sword
+            result: function(){
+              if(swordTaken == true){
+              print("In the corner of the room, tucked into a small alcove you see a bundle of gear, clearly dropped by hurried hands. Most of the clothing here is simply thin, flamboyantly colored silk, not useful to you. Leaning on the corner of the marbled brick walls you see a hunting sabre, sheathed in an almost black leather.");
+              } else(print("In the corner of the room, tucked into a small alcove you see a bundle of gear, clearly dropped by hurried hands. Most of the clothing here is simply thin, flamboyantly colored silk, not useful to you."));
+            }
+          },
+          {
+            input: 'take sword',
+            result: function(){
+              if(swordTaken == false){
+              print("You gently pick it and feel the weight of the blade in your hands. With great anticipation building in your chest you pull the sword from the sheath to reveal a steel polished to a mirrored surface tapering down to a sharp point. You breathe a sigh of relief.");
+              print("You got the royal sabre! Equip with 'equip royal sabre'");
+              royalSabre.owned = true;
+              swordTaken = true;
+              } else(print("There are no more swords to take."));
+            }
+          },
+          {
+            input: "look dresser", //Find health potion
+            result: function(){
+              if(healthPotTaken == false){
+                print("A dresser made from a pale gray wood. The handles, copper and stamped with the royal crest. Atop if you see a a bright green skullcap and matching patterned scarf with gold flourishes.  You leaf through the dresser for some time. Beneath a pair of pants you see a familiar color, the color of a health potion. You pocket it gratefully.");
+                healthPotTaken = true;
+                player.healthPotNum = player.healthPotNum + 1;
+                refreshPlayerStats();
+                } else(print("You dig around the wardrobe some more, finding nothing of value."));
+            }
+          },
+          {
+            input: "look cheval mirror", //See yourself
+            result: function(){
+              print("A tall beautiful mirror that reflects you from your feet to the top of your head. You look into your eyes for the first time since you came here. You look shattered. Broken. Your hands, dirty, your fingernails caked in a blue coagulated blood and grime. You look down to your bare feet which are nearly black with soot and dirt. While examining your feet you notice a piece of parchment sticking out from underneath the rug.");
             }
           },
           {
             input: "look ornate rug",
             result: function(){
-              print("Some Shit");
+              print("A beautiful rug embroidered in bold green tassels. The rug, in imaculate an imaculate crosstitch, seems to depict a scene similar to the one you found in the royal quarters. There's a rainy field and in the center, women praising a newborn child. ");
+            }
+          },
+          {
+            input: "look under ornate rug", //use cipher on parchment and show it to the robed helper man who will tell you to move the bust. Moving the bust reveals a hidden door. Inside that door is the shard. As you place your hands around it. You go crazy.
+            result: function(){
+              print("Under the rug you find a weathered piece of parchment. You open it and try to decipher the odd language. You'll need something to decipher this.");
+              print("You got the undeciphered note!","goldColor");
+              noteUnderRug.owned = true;
+              player.inventory.push("undeciphered note");
             }
           },
           {
@@ -1287,19 +1352,19 @@ function startGame(){
             }
           },
           {
-            input: "look bust",
+            input: "look bust", //see scratch marks
             result: function(){
               print("Some Shit");
             }
           },
           {
-            input: "mannequin",
+            input: "mannequin", //Find leather armor
             result: function(){
               print("Some Shit");
             }
           }
           ]
-        } //end of room 8 commands
+        } //end of room 12 commands
       ]
   }; //end of gameData
 
@@ -1320,6 +1385,7 @@ function startGame(){
     $("<p class='text-center " + color + "'>" + input + "</p>").insertBefore("#placeholder");
     //reset textbox
     $("#commandline").val("");
+    $("html, body").animate({ scrollTop: $(document).height() }, 1000);
   }
 
   function dialogueButton(input, speaker){
@@ -1341,10 +1407,6 @@ function startGame(){
     if (e.keyCode === 13) {
       var roomCmd = currentRoom.commands;
       var input = $("#commandline").val().toLowerCase();
-      //for combat testing. To be removed.
-      if (input == "fight") {
-        combat(player, withered);
-      }
 
       //prints out current room
       if (input == "room") {
@@ -1369,7 +1431,12 @@ function startGame(){
 
       //use commands that can be taken place in any room.
       if (input == "use cipher on scroll" && cipher.owned === true && throneScroll.owned === true) {
-        print("You open up the cipher, and begin work on the scroll. After some time you work out the message. It reads: 'Thaddius on the ways of man: We must follow in the footsteps of Rain and follow his three rules, which are as follows. One: Do not succumb to the powers of idols. This serves only to cause war. Two: Do not war against another man. This serves only to empower Umbril and his creatures. Three: Do not give into the influences Umbril. This serves only to end mankind.' ");
+        print("You open up the cipher, and begin work on the scroll. After some time you work out the message. It reads: 'Thaddius on the ways of man: We must follow in the footsteps of Rain and follow his three rules, which are as follows. One: Do not succumb to the powers of idols. This serves only to cause war. Two: Do not war against another man. This serves only to empower Umbril and his creatures. Three: Do not give into the influences Umbril. This serves only to end mankind.' ","parchmentColor");
+        return;
+      }
+      if (input == "use cipher on note" && cipher.owned === true && noteUnderRug.owned === true) {
+        print("You open up the cipher, and begin work on the note. After some time you work out the message. It reads: 'Sire, I've put together that contraption you requested. Should you ever need access to it, you only need to turn your likeness until it faces east. I do hope it serves you well. P.S. - Since I'm already going to go through the trouble of encrypting this message, I feel like this would be a good time to ask for a small raise in my pay? My girl will be coming into school age soon and I'd like to send her somewhere nice.","parchmentColor");
+        print("You consider showing the note to the old man.");
         return;
       }
 
@@ -1407,7 +1474,14 @@ function startGame(){
       } else if (input == "equip wooden mallet" && woodenMalet.owned === false) {
         print("You do not own the weapon 'wooden mallet'");
       }
-
+      
+      //royal sabre
+      if (input == "equip royal sabre" && royalSabre.owned === true && player.strength >= royalSabre.reqStrength) {
+        print("You bounce the sabre in your hands, feeling its exquisite balance.");
+        player = Object.assign(player, royalSabre);
+      } else if (input == "equip royal sabre" && royalSabre.owned === false) {
+        print("You do not own the weapon 'royal sabre'");
+      }
 
       //old sword
       if (input == "equip old sword" && oldSword.owned === true && player.strength >= oldSword.reqStrength) {
@@ -1453,6 +1527,11 @@ function startGame(){
       }
 
       //use Commands..maybe
+
+      //fight testing to be removed
+      if(input == "fight"){
+      combat(player,largeRat);
+      }
 
 
       //consider commands
@@ -1540,6 +1619,7 @@ function startGame(){
   //returns the player to the main game
   function backToGame() {
     $('#console').fadeIn(50);
+    $("#combatWrapper").fadeOut(0);
     $(".combatMenu").fadeOut(0);
     $(".combat").fadeOut(0);
     $(".combatOutput").html("");
@@ -1688,6 +1768,7 @@ function startGame(){
     $('#console').fadeOut(0);
     $(".combatMenu").fadeIn(50);
     $(".combat").fadeIn(50);
+    $("#combatWrapper").fadeIn(0);
     enemy = enemyFighting;
     combatPrint(enemy.greeting);
     if (enemy.attackFirst === true) {
@@ -1707,6 +1788,7 @@ function startGame(){
     $('#console').fadeOut(50);
     $(".conversationMenu").fadeIn(50);
     $(".conversation").fadeIn(50);
+    $(".conversationWrapper").fadeIn(50);
     //conversation with actor
     $("body").addClass("forrest-bg");
     //handles click events for player response buttons
@@ -1749,6 +1831,7 @@ function startGame(){
     $(".conversation").fadeOut(50);
     $(".combatOutput").html(" ");
     $(".conversationMenu").off("click");
+    $(".conversationWrapper").fadeOut(50);
     //Dialogue.dialogues = {};
     console.log(Dialogue.dialogues);
     $("body").removeClass("forrest-bg");
