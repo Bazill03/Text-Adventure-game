@@ -39,31 +39,31 @@ var royalSabre = {
   weaponCondition: "A royal sabre. To be changed at a later date.",
   findText: "Teach the player how to equip.",
   lookText: "Try to equip this with equip, then the name royal sabre",
-  stats: 12,
+  stats: 10,
   weaponDamageType: "slash",
   weaponSound: swordAttackSound,
-  reqStrength: 7,
+  reqStrength: 4,
   canWieldShield: true
 };
 
 var steelMace = {
-  name: "Steel mace",
+  weaponName: "Steel mace",
   owned: false,
-  condition: "Candle light glints off of every polished surface. Truely a powerful weapon.",
+  weaponCondition: "Candle light glints off of every polished surface. Truely a powerful weapon.",
   findText: "You wrap your fingers around the leather hilt of the mace. Every possible angle seems impossibly polished. Judging by the condition of the weapon you guess that this mace is something someone is very proud of. It was well taken care of.",
   lookText: "You notice from the corner of your eye a text the writer should redo once he knows where this mace is found.",
-  stats: 20,
-  damageType: "blunt",
+  weaponStats: 20,
+  weaponDamageType: "blunt",
   sound: maceAttackSound,
   reqStrength: 10,
   canWieldShield: true
 };
 
 var claymore = {
-  name: "Claymore",
-  stats: 35,
+  weaponName: "Claymore",
+  weaponStats: 35,
   owned: false,
-  damageType: "slash",
+  weaponDamageType: "slash",
   sound: claymoreAttackSound,
   reqStrength: 20,
   canWieldShield: false
@@ -88,7 +88,7 @@ var fireBallScroll = {
 
 var fireBall = {
   playerHas: false,
-  stats: 20,
+  stats: 12,
   damageType: "fire",
   manaCost: 25,
   owned: false,
@@ -171,6 +171,14 @@ var scrawledWritings = {
   condition: "You look over the torn vellum. Most of the note is illegible but beneath all the scrawling some words can be made out: I was born to be a king. It was my only purpose. How dare I die to this contemptable fate. What tragedy befalls me. My brother. My rotten King Ambrosianus. He taunted me as he assumed the throne. Now my skin withers and sloughs off, beneath it my muscles pulse and squirm. I crave the flesh. I crave the neck of King Ambrosianus."
 };
 
+noteUnderRug = {
+  name: "Note",
+  owned: false,
+  condition: "A note you found under the rug.",
+  read: "A note you found under the rug in the royal dressing room. It reads: Some shit."
+  
+}
+
 //armor
 var rags = {
   armorName: "rags",
@@ -186,8 +194,14 @@ var cultistRobe = {
   armorDescription: "The robes of the followers of Thaddius. Cultists will believe you are one of their brothers."
 };
 
+var leatherChest = {
+  armorName: "leather vest",
+  owned: false,
+};
+
 var chainMail = {
   stats: 10,
+  owned: false,
   description: "You look over your 'chainmail' with pride." //To be replaced by cooler text with context.
 };
 
