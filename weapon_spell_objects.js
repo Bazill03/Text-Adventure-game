@@ -105,7 +105,7 @@ var iceShard = {
   manaCost: 12,
   owned: false,
   sound: iceShardSound,
-  castText: "You summon an ice shard! It flies forwards like as arrow for "
+  castText: "You summon an ice shard! It flies forwards like an arrow for "
 };
 
 var aeleasLight = {

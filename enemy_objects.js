@@ -10,8 +10,8 @@ function updateInvDisplay(item) {
 
 //player object
 var player = {
-  health: 100,
-  mana: 100,
+  health: 98,
+  mana: 98,
   strength: 5,
   agility: 5,
   intelligence: 5,
@@ -49,14 +49,14 @@ var player = {
 var largeRat = {
   name: "large rat",
   greeting: "The rat looks up from his dinner of grass, red eyes sprinkling in the low dusk light.",
-  health: 12,
+  health: 30,
   attackFirst: false,
   moveNum: 2,
   moves: [
     ["bite", 2],
     ["slash", 3]
   ],
-  vulnerability: ["blunt", 3],
+  vulnerability: [["blunt", 3],["fire", 2]],
   goldReward: 0,
   sounds: ratAttackSound,
   introSound: ratAttackSound,
