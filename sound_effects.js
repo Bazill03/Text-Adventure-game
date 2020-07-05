@@ -37,6 +37,7 @@ var fireBallSounds = new Audio("https://s3-us-west-2.amazonaws.com/s.cdpn.io/613
 var healthPotSound = new Audio("https://s3-us-west-2.amazonaws.com/s.cdpn.io/613226/221488__lloydevans09__glug.wav");
 var punchSound = new Audio("soundeffects/404766__owlstorm__retro-video-game-sfx-punch-2.wav");
 var woodenWeaponSound = new Audio("soundeffects/504618__neospica__knife-thrust-into-wall.mp3");
+var iceShardSound = new Audio("soundeffects/216089__richerlandtv__magic.mp3");
 
 //music
 var battleMusic = new Audio("music/rolemusi_-_07_-_07_rolemusic_-_the_great_madeja.mp3");
