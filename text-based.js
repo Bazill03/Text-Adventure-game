@@ -1743,13 +1743,18 @@ function startGame(){
     if(dodgeChance <= randomNumber){
       console.log(dodgeChance);
       console.log(randomNumber);
+      return false;
+    } else {
       return true;
     }
   }
 
+
   function enemyTurn() {
     if (gameOverCheck() === false) {
-      if(dodgeCheck(player.agility * .01) == true){
+      var didPlayerDodge = dodgeCheck(player.agility * .01 / 2);
+      var didPlayerBlock = dodgeCheck(player.shieldBlockChance * .01 / 2);
+      if(didPlayerDodge == false && didPlayerBlock == false){
       enemyMove = calcEnemyMove(enemy);
       enemyDamage = calcDamage(enemy.moves[enemyMove][1], 1);
       var enemyRealDamage = Math.floor(enemyDamage) - player.armorStats;
@@ -1766,9 +1771,23 @@ function startGame(){
       refreshPlayerStats();
       enemy.sounds.play();
       hasAttacked = true;
-      } else {
+      } else if(didPlayerDodge == true && didPlayerBlock == false){
         combatPrint(enemy.name + " tries to attack but you dodge out of the way!");
+        enemy.sounds.play();
         hasAttacked = true;
+      } else if(didPlayerDodge == false && didPlayerBlock == true){
+        combatPrint(enemy.name + " tries to attack but you block just in time!");
+        enemy.sounds.play();
+        //insert some blocking sounds here!
+        hasAttacked = true;
+      } else {
+        combatPrint("You parry your opponent doing some extra damage!");
+        combatPrint("You deal an extra " + player.agility / 2 + " damage!");
+        combatPrint("Now's your time to strike!");
+        //insert some cool parrying sounds here!
+        enemy.health = enemy.health - player.agility / 2;
+        hasAttacked = true;
+        enemy.sounds.play();
       }
     }
   }
@@ -1781,7 +1800,7 @@ function startGame(){
       gameOverCheck() === false &&
       hasAttacked === true
     ) {
-      if(dodgeCheck(enemy.dodgeChance) == true){
+      if(dodgeCheck(enemy.dodgeChance) == false){
       playerDamage = calcDamage(player.weaponStats, 1);
       addedStatDamage = Math.floor(player.strength / 3);
       playerRealDamage = Math.floor(playerDamage + addedStatDamage);
