@@ -7,6 +7,8 @@ $(document).ready(function() {
   $("#console").fadeIn(1500);
 
   //Audio start
+allAudio = [tavernSounds, outsideTavern, witheredAttackSound,witheredIntroSound,witheredDeathSound,ratDeathSound,ratAttackSound,shardKeeperIntroSound,shardKeeperAttackSounds,wings, walkingThroughGrassAudio,donkeyBraying,clipClop,echoingScreams,jumpScare,swordAttackSound,claymoreAttackSound,maceAttackSound,fireBallSounds,healthPotSound,punchSound,woodenWeaponSound,battleMusic,battleVictory,song1,song2,pickUpNew,unlockDoor,moveThroughDoor,moveThroughStairs];
+
   //intro sounds
   withered.introSound.play();
   setTimeout(function() {
@@ -14,11 +16,12 @@ $(document).ready(function() {
   }, 2000);
   steelMace.sound.play();
 
+
   var currentSong = song1;
   //Audio
-  setTimeout(function() {
-    song1.play();
-  }, 2000);
+    setTimeout(function() {
+      song1.play();
+      }, 2000);
 
   function loopOneSong(song){
     currentSong.pause();
@@ -29,13 +32,21 @@ $(document).ready(function() {
     });
   }
 
-  //audio controls
-  $("#play").click(function() {
-    currentSong.play();
-  });
-  $("#pause").click(function() {
-    currentSong.pause();
-  });
+  function loopTwoSongs(song1, song2){
+      currentSong.pause();
+      currentSong = song1;
+      currentSong.play();
+      currentSong.addEventListener("ended", function(){
+        currentSong = song2;
+        currentSong.play();
+      })
+    }
+
+  function audioControl(playormute){
+    for(var i = 0; i< allAudio.length; i++){
+      allAudio[i].muted = playormute;
+    }
+  }
 
   //starting equipment
   player = Object.assign(player, rags);
@@ -150,7 +161,7 @@ function startGame(){
               previousRoom = gameData.rooms[0];
               currentRoom.description();
               moveThroughDoor.play();
-            }
+              }
             },
           {
           input: "look stool",
@@ -211,7 +222,7 @@ function startGame(){
               walkingThroughGrassAudio.play();
               donkeyBraying.play();
               clipClop.play();
-            }
+              }
           },
           {
             input: 'look town',
@@ -358,7 +369,7 @@ function startGame(){
           }, 9000);
           echoingScreams.addEventListener("ended", function() {
             echoingScreams.play();
-        });
+          });
         var continueButton = document.createElement("BUTTON");   // Create a <button> element
         continueButton.innerHTML = "Continue"; //Gives the button text
         continueButton.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
@@ -370,43 +381,15 @@ function startGame(){
         currentRoom = gameData.rooms[4]
         currentRoom.description();
         Object.assign(player, fists);
-        loopOneSong(song1);
+        loopTwoSongs(song1, song2);
           })
         })
 
         },
         commands: [{
-            input: 'look old door',
+            input: 'look nothing',
             result: function() {
-              print("A large oak door lays before you. The screams still echoing around you, you lean closer trying to hear what may be on the other side. Ear glued to the door, your hand reaches down to grasp the latch. The door opens freely. Try typing 'open old door' to find out whats on the other side.");
-            }
-          },
-          {
-            input: 'look torch',
-            result: function() {
-              print("The torch lays lifeless on the ground.");
-            }
-          },
-          {
-            input: 'take torch',
-            result: function() {
-              if (torch.owned == false) {
-                print("Looking closer at the torch you find a flint and steel placed nearby, as if by a delicate hand. The hair on the back of your head stands up. You light the torch and the room blooms with light. Taking another look, you find that you're in a small, windowless room with one door on the western side. Try typing 'Look old door' to look closer. Or, try 'consider torch' to look at it.");
-                player.inventory.push("torch");
-                torch.owned = true;
-                updateInvDisplay("torch");
-                pickUpNew.play();
-              } else(print("You've already picked up the torch."));
-            }
-          },
-          {
-            input: 'open old door',
-            result: function() {
-              currentRoom = gameData.rooms[1];
-              player.travelHistory.push(currentRoom);
-              currentRoom = gameData.rooms[1];
-              currentRoom.description();
-              moveThroughDoor.play();
+              print("You focus your eyes as hard as you can but can't discern anything.");
             }
           },
         ]
@@ -619,7 +602,7 @@ function startGame(){
             result: function() {
               gameData.rooms[6].lockedDoor.locked = false;
               print("The key turns easily in the lock. The clicking sound of the lock gives off an unnatural echo in the room.");
-              unlockDoor.play();
+              unlockDoor.play() 
             }
           },
           {
@@ -725,7 +708,7 @@ function startGame(){
       },
       {
         name: "Grand Hall", //8
-        look: ["throne", "column", "doors leading outside", "red aisle runner", "alter", "dead crow", "door leading west", 'stairs leading north', 'small door', 'door leading north'],
+        look: ["throne", "column", "doors leading outside", "red aisle runner", "alter", "dead crow", 'stairs leading north', 'small door', 'door leading north'],
         description: "You slowly peek open the door. On the other side looks to be a throne room. It's much brighter here compared to the other rooms. You quickly extinguish your torch and hide behind one of the many columns that line the room. The ceilings here are tall and even minute sounds echo profoundly. The throne at the end of the room is large, and made of materials you've yet seen. Outside the window, a murder of crows caws ominously, desparate for food. Suddenly, something seems to slam against the large, oak doors that make up the entrance to the throne room. You hide in fear but after some time a crow slams into the window hard enough to break a small hole in the glass, and falls dead to the throne room floor. The slamming on the door continues, picking up speed as more and more birds charge into the door. Soon the orchestra of birds is so loud it consumes you. You glance around hesitantly, waiting for the figures to return. After some time you become sure enough to get a better look around the room.",
         butlersDoor: {
           locked: true
@@ -852,14 +835,6 @@ function startGame(){
               currentRoom = gameData.rooms[10];
               gameData.rooms[10].description();
               console.log(Dialogue.dialogues);
-            }
-          },
-          {
-            input: "open door leading west",
-            result: function() {
-              moveThroughDoor.play();
-              currentRoom = gameData.rooms[11];
-              gameData.rooms[11].description();
             }
           },
         ] //end of commands
@@ -1457,7 +1432,8 @@ function startGame(){
   function attachListeners() {
     //  Event listeners
     document.getElementById('useWeapon').addEventListener("click", useWeapon, false);
-    document.getElementById('useFireball').addEventListener("click", useFireball, false);
+    document.getElementById('useFireball').addEventListener("click", function(){useDamageSpell(fireBall)}, false);
+    document.getElementById('useIce').addEventListener("click", function(){useDamageSpell(iceShard)}, false);
     document.getElementById('useHealthPot').addEventListener("click", useHealthPot, false);
     document.getElementById('backToGame').addEventListener("click", backToGame, false);
     document.getElementById('startGame').addEventListener("click", startGame, false);
@@ -1468,7 +1444,7 @@ function startGame(){
     $("<p class='text-center " + color + "'>" + input + "</p>").insertBefore("#placeholder");
     //reset textbox
     $("#commandline").val("");
-    $("html, body").animate({ scrollTop: $(document).height() }, 2000);
+    $("html, body").animate({ scrollTop: $(document).height() }, 200);
   }
 
   function dialogueButton(input, speaker){
@@ -1510,6 +1486,17 @@ function startGame(){
       //skip to castle
       if(input == "skip"){
         currentRoom = gameData.rooms[12];
+      }
+
+      //audio commands
+      if(input == "stop audio"){
+        audioControl(true);
+        print("All audio muted");
+      }
+
+      if(input == "play audio"){
+        audioControl(false);
+        print("All audio unmuted");
       }
 
       //use commands that can be taken place in any room.
@@ -1751,8 +1738,18 @@ function startGame(){
     }
   }
 
+  function dodgeCheck(dodgeChance){
+    var randomNumber = Math.random();
+    if(dodgeChance <= randomNumber){
+      console.log(dodgeChance);
+      console.log(randomNumber);
+      return true;
+    }
+  }
+
   function enemyTurn() {
     if (gameOverCheck() === false) {
+      if(dodgeCheck(player.agility * .01) == true){
       enemyMove = calcEnemyMove(enemy);
       enemyDamage = calcDamage(enemy.moves[enemyMove][1], 1);
       var enemyRealDamage = Math.floor(enemyDamage) - player.armorStats;
@@ -1769,6 +1766,10 @@ function startGame(){
       refreshPlayerStats();
       enemy.sounds.play();
       hasAttacked = true;
+      } else {
+        combatPrint(enemy.name + " tries to attack but you dodge out of the way!");
+        hasAttacked = true;
+      }
     }
   }
 
@@ -1780,6 +1781,7 @@ function startGame(){
       gameOverCheck() === false &&
       hasAttacked === true
     ) {
+      if(dodgeCheck(enemy.dodgeChance) == true){
       playerDamage = calcDamage(player.weaponStats, 1);
       addedStatDamage = Math.floor(player.strength / 3);
       playerRealDamage = Math.floor(playerDamage + addedStatDamage);
@@ -1796,37 +1798,55 @@ function startGame(){
       player.weaponSound.play();
       setTimeout(enemyTurn, 1000);
       hasAttacked = false;
+      } else {
+        combatPrint(
+          "You attack " +
+          enemy.name +
+          " with your " +
+          player.weaponName +
+          " but they smoothly dodge the attack!"
+        );
+        setTimeout(enemyTurn, 1000);
+        hasAttacked = false;
+      }
     } else {
       combatPrint("The game is over.");
     }
   }
 
-  function useFireball() {
+  function useDamageSpell(spellName) {
     if (hasAttacked === false) {
       return combatPrint("You are still recovering from your attack.");
     }
     if (
       gameOverCheck() === false &&
       hasAttacked === true &&
-      player.mana >= 25 &&
-      fireBall.playerHas == true
+      player.mana >= spellName.manaCost &&
+      spellName.playerHas == true
     ) {
-      playerDamage = calcDamage(fireBall.stats, 1);
-      playerRealDamage = Math.floor(playerDamage);
+      playerDamage = calcDamage(spellName.stats, 1);
+      addedIntDamage = player.intelligence / 2
+      playerRealDamage = Math.floor(playerDamage + addedIntDamage);
       enemy.health = enemy.health - playerRealDamage;
-      player.mana = player.mana - fireBall.manaCost;
+      spellEffeciency = Math.floor(player.intelligence / 5);
+      realManaCost = spellName.manaCost - spellEffeciency;
+      if(realManaCost <= 0){
+        player.mana = player.mana - 5;
+      } else {
+        player.mana = player.mana - realManaCost;
+      }
       combatPrint(
-        "You sling a flaming ball at " + enemy.name + " for " + playerRealDamage
+        spellName.castText + " " + enemy.name + " for " + playerRealDamage
       );
-      if (checkForDamageType(fireBall, enemy) > 0) {
+      if (checkForDamageType(spellName.damageType, enemy) > 0) {
         combatPrint(
-          "Fireball deals an extra " + enemy.vulnerability[1] + " damage"
+           spellName.name + " deals an extra " + enemy.vulnerability[1] + " damage!"
         );
         enemy.health = enemy.health - enemy.vulnerability[1];
       }
       calcHealthBars("enemyHealth", enemy.health);
       calcHealthBars("playerMana", player.mana);
-      fireBall.sound.play();
+      spellName.sound.play();
       setTimeout(enemyTurn, 1000);
       hasAttacked = false;
     } else {
