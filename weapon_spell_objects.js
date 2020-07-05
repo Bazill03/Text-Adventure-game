@@ -87,21 +87,35 @@ var fireBallScroll = {
 };
 
 var fireBall = {
-  playerHas: false,
-  stats: 12,
+  name: "fireball",
+  playerHas: true,
+  stats: 15,
   damageType: "fire",
-  manaCost: 25,
+  manaCost: 10,
   owned: false,
-  sound: fireBallSounds
+  sound: fireBallSounds,
+  castText: "You sling the fireball for "
 };
 
 var iceShard = {
+  name: "ice shard",
+  playerHas: true,
   stats: 15,
   damageType: "ice",
-  manaCost: 20,
-  owned: false
-  //sound: iceShard
+  manaCost: 12,
+  owned: false,
+  sound: iceShardSound,
+  castText: "You summon an ice shard! It flies forwards like as arrow for "
 };
+
+var aeleasLight = {
+  playerHas: false,
+  stats: 30,
+  damageType: "holy",
+  manaCost: 50,
+  owned: false
+  //sound: aeleasLightSound
+}
 
 //items
 var healthPot = {
