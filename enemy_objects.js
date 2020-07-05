@@ -61,6 +61,7 @@ var largeRat = {
   sounds: ratAttackSound,
   introSound: ratAttackSound,
   death: ratDeathSound,
+  dodgeChance: 0.1,
   loot: function(){
 
   },
@@ -86,6 +87,7 @@ var withered = {
   sounds: witheredAttackSound,
   introSound: witheredIntroSound,
   death: witheredDeathSound,
+  dodgeChance: 0.12,
   xp: 500
 };
 
@@ -113,6 +115,7 @@ var hallwayWithered = {
   sounds: witheredAttackSound,
   introSound: witheredIntroSound,
   death: witheredDeathSound,
+  dodgeChance: 0.12,
   xp: 500
 };
 
@@ -139,6 +142,7 @@ var antechamber_withered = {
   sounds: witheredAttackSound,
   introSound: witheredIntroSound,
   death: witheredDeathSound,
+  dodgeChance: 0.12,
   xp: 600
 };
 
@@ -163,6 +167,7 @@ var shrine_withered = {
   sounds: witheredAttackSound,
   introSound: witheredIntroSound,
   death: witheredDeathSound,
+  dodgeChance: 0.12,
   xp: 600,
   is_alive: true
 };
@@ -182,6 +187,7 @@ var shardKeeper = {
   introSound: shardKeeperIntroSound,
   sounds: shardKeeperAttackSounds,
   // death: shardKeeperDeathSound
+  dodgeChance: 0.05,
   xp: 1500
 };
 
@@ -199,6 +205,7 @@ var weakenedShardKeeper = {
   goldReward: 13,
   introSound: shardKeeperIntroSound,
   sounds: shardKeeperAttackSounds,
+  dodgeChance: 0.01,
   xp: 1000
 };
 
@@ -208,5 +215,6 @@ var brokenJailer = {
   health: 75,
   moves: ["killer move here", 800],
   vulnerability: ["ice", 10],
-  goldReward: 20
+  goldReward: 20,
+  dodgeChance: 0.03
 };
