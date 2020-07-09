@@ -177,13 +177,20 @@ pre {
   left: 395px;
 }
 
-#enemyHealth {
+#enemyHealth1 {
   background: #932424;
   width: 10px;
   height: 100px;
   position: absolute;
   right: 410px;
-  top: 
+}
+
+#enemyHealth2 {
+  background: #932424;
+  width: 10px;
+  height: 100px;
+  position: absolute;
+  right: 450px;
 }
 
 #enemyMana {
