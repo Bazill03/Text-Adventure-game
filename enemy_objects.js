@@ -10,10 +10,13 @@ function updateInvDisplay(item) {
 
 //player object
 var player = {
+  name: "player",
+  indentifier: "player",
+  isPlayer: true,
   health: 98,
   mana: 98,
   strength: 5,
-  agility: 5,
+  agility: 1,
   intelligence: 5,
   charisma: 5,
   xp: 0,
@@ -23,6 +26,7 @@ var player = {
   inventory: [],
   healthPotNum: 0,
   manaPotNum: 0,
+  turnRoll: 0,
   //Weapon
   weaponName: "",
   weaponStats: 0,
@@ -44,87 +48,70 @@ var player = {
   coldDefence: false
 };
 
-
 //enemies
-var largeRat = {
-  name: "large rat",
-  greeting: "The rat looks up from his dinner of grass, red eyes sprinkling in the low dusk light.",
-  health: 30,
-  attackFirst: false,
-  moveNum: 2,
-  moves: [
-    ["bite", 2],
-    ["slash", 3]
-  ],
-  vulnerability: [["blunt", 3],["fire", 2]],
-  goldReward: 0,
-  sounds: ratAttackSound,
-  introSound: ratAttackSound,
-  death: ratDeathSound,
-  dodgeChance: 0.1,
-  loot: function(){
+class rat {
+  constructor(name,health,goldReward,dodgeChance,loot,xp,greeting,agility){
+    this.name = name;
+    this.health = health;
+    this.agility = agility;
+    this.indentifier = null;
+    this.greeting = greeting;
+    this.attackFirst = false;
+    this.isPlayer = false;
+    this.moveNum = 2;
+    this.moves = [
+      ["bite", 2],
+      ["slash", 3],
+      ["go for the neck", 10]
+    ];
+    this.vulnerability = [["blunt", 3],["fire", 2]];
+    this.goldReward = goldReward;
+    this.sounds = ratAttackSound;
+    this.introSound = ratAttackSound;
+    this.death = ratDeathSound;
+    this.dodgeChance = dodgeChance;
+    this.loot = loot;
+    this.xp = xp;
+    this.turnRoll = 0;
+  }
+}
 
-  },
-  xp: 50
-};
-
-var withered = {
-  name: "withered",
-  greeting: "A withered shambles forward, barring its menacing teeth. It leaps forwards, attacking first.",
-  health: 25,
-  attackFirst: true,
-  moveNum: 2,
-  moves: [
-    ["bite", 5],
-    ["slash", 8]
-  ],
-  vulnerability: ["fire", 5],
-  goldReward: 5,
-  loot: function() {
-    combatPrint("You stand over the shattered body of the withered. His mangled hand slow unfurles revealing five gold!.");
-    combatPrint("You receive 5 gold!", "yellow");
-  },
-  sounds: witheredAttackSound,
-  introSound: witheredIntroSound,
-  death: witheredDeathSound,
-  dodgeChance: 0.12,
-  xp: 500
-};
-
-
-var hallwayWithered = {
-  name: "withered",
-  greeting: "A withered shambles forward, barring its menacing teeth. It leaps forwards, attacking first.",
-  health: 25,
-  attackFirst: true,
-  moveNum: 2,
-  moves: [
-    ["bite", 5],
-    ["slash", 8]
-  ],
-  vulnerability: ["fire", 5],
-  goldReward: 5,
-  loot: function() {
-    combatPrint("You stand over the shattered body of the withered. His mangled hand slow unfurles revealing some gold!.");
-    combatPrint("You receive 5 gold!", "yellow");
-    combatPrint("Beneath the withereds body you find an old pot lid. You pull it from underneath the mangled corpse.");
-    combatPrint("Try to equip your new shield with 'equip makeshift shield'");
-    makeshiftShield.owned = true;
-    player.inventory.push("makeshift shield");
-  },
-  sounds: witheredAttackSound,
-  introSound: witheredIntroSound,
-  death: witheredDeathSound,
-  dodgeChance: 0.12,
-  xp: 500
-};
-
+//withered class
+class withered {
+  constructor(name,health,goldReward,dodgeChance,loot,xp,greeting, agility){
+    this.name = name;
+    this.health = health;
+    this.agility = agility;
+    this.goldReward = goldReward;
+    this.indentifier = null;
+    this.isPlayer = false;
+    this.turnRoll = 0;
+    this.attackFirst = true;
+    this.moveNum = 2;
+    this.moves = [
+      ["bite", 5],
+      ["slash", 8]
+    ];
+    this.vulnerability = ["fire", 5];
+    this.dodgeChance = dodgeChance;
+    this.loot = loot;
+    this.sounds = witheredAttackSound;
+    this.introSound = witheredIntroSound;
+    this.death =  witheredDeathSound;
+    this.xp = xp;
+    this.greeting = greeting;
+    this.turnRoll = 0;
+  }
+}
 
 var antechamber_withered = {
   name: "withered",
   greeting: "You open the antechamber door, brancing yourself for impact only to find the sad creature huddled into the alcove. It sits in the fetal position, its arms wrapped tight around its knees. With the door open, you're finally able to make out what it's speaking. 'I was great once...', it mumbles in a raspy, desert dry voice. It looks up at you. It's mouth opens wide and claws extend from it's hand. 'I was great once!' it screams as it lunges towards you.",
   health: 30,
+  indentifier: null,
   attackFirst: true,
+  turnRoll: null,
+  agility: 5,
   moveNum: 2,
   moves: [
     ["bite", 7],
