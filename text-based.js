@@ -1,5 +1,22 @@
-$(document).ready(function () {
 
+var combatants = [];
+var turnOrder = [];
+var agiRoll;
+var turnCounter;
+var playerTurn;
+var firstEnemy; //stores first enemy object
+var secondEnemy; //stores second enemy object
+var toAttack;
+var groupName;
+var isGameOver = false; //bool allows me to see if gameOverCheck function has been run, or where it has broken.
+var doubleFight = true;
+
+var fieldrat = new rat("Field Rat", 12, 0, 0.1,
+  function () {
+    combatPrint("You recieved 0 gold and 50xp!");
+  }, 5, "The large rat looks up to you from the corner of the room. Its teeth are barred.", 5);
+
+$(document).ready(function () {
   //move this elsewhere later.
   var makeStrong = document.createElement("STRONG");
 
@@ -10,7 +27,7 @@ $(document).ready(function () {
   allAudio = [tavernSounds, outsideTavern, witheredAttackSound, witheredIntroSound, witheredDeathSound, ratDeathSound, ratAttackSound, shardKeeperIntroSound, shardKeeperAttackSounds, wings, walkingThroughGrassAudio, donkeyBraying, clipClop, echoingScreams, jumpScare, swordAttackSound, claymoreAttackSound, maceAttackSound, fireBallSounds, healthPotSound, punchSound, woodenWeaponSound, battleMusic, battleVictory, song1, song2, pickUpNew, unlockDoor, moveThroughDoor, moveThroughStairs];
 
   //intro sounds
-  withered.introSound.play();
+  witheredIntroSound.play();
   setTimeout(function () {
     shardKeeper.introSound.play();
   }, 2000);
@@ -111,7 +128,7 @@ $(document).ready(function () {
     print("You quietly agree and take a solemn drink.");
     print("So, maybe you're up to somethin' fun tonight? Maybe somethin' a little dangerous?", "agiColor");
     Dialogue.load("Sawyer", "dialogue_files/sawyer1.txt");
-    var name = document.createElement("BUTTON");   // Create a <button> element
+    var name = document.createElement("BUTTON"); // Create a <button> element
     name.innerHTML = "Speak"; //Gives the button text
     name.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
     $(name).insertBefore("#placeholder"); //Places the button in the text stream
@@ -139,43 +156,42 @@ $(document).ready(function () {
 
   var gameData = {
     //room objects
-    rooms: [
-      {
+    rooms: [{
         name: "tavern", //0
         look: ['bartop', 'Sawyer', 'Bartender', "stool"],
         commands: [{
-          input: 'look bartop',
-          result: function () {
-            print("An old mahogany bartop, supposedly crafted by one of Sawyers great grandfathers many years ago. Its coloring is uneven from decades of slammed drinks and constant washing.");
+            input: 'look bartop',
+            result: function () {
+              print("An old mahogany bartop, supposedly crafted by one of Sawyers great grandfathers many years ago. Its coloring is uneven from decades of slammed drinks and constant washing.");
+            }
+          },
+          {
+            input: "look sawyer",
+            result: function () {
+              print("Your best friend. Goofy, curly blonde hair that's only washed when he swims in the local pond and a devilish grin that tells you he's up to no good.");
+            }
+          },
+          {
+            input: "look bartender",
+            result: function () {
+              print("A timid old man, who doesn't want any trouble. He's been a staple in your villiage for decades.");
+            }
+          },
+          {
+            input: "leave bar",
+            result: function () {
+              currentRoom = gameData.rooms[1];
+              previousRoom = gameData.rooms[0];
+              currentRoom.description();
+              moveThroughDoor.play();
+            }
+          },
+          {
+            input: "look stool",
+            result: function () {
+              print("A fairly unremarkable stool, but for some reason it's always available for you when you visit the tavern.");
+            }
           }
-        },
-        {
-          input: "look sawyer",
-          result: function () {
-            print("Your best friend. Goofy, curly blonde hair that's only washed when he swims in the local pond and a devilish grin that tells you he's up to no good.");
-          }
-        },
-        {
-          input: "look bartender",
-          result: function () {
-            print("A timid old man, who doesn't want any trouble. He's been a staple in your villiage for decades.");
-          }
-        },
-        {
-          input: "leave bar",
-          result: function () {
-            currentRoom = gameData.rooms[1];
-            previousRoom = gameData.rooms[0];
-            currentRoom.description();
-            moveThroughDoor.play();
-          }
-        },
-        {
-          input: "look stool",
-          result: function () {
-            print("A fairly unremarkable stool, but for some reason it's always available for you when you visit the tavern.");
-          }
-        }
         ]
       },
       {
@@ -196,7 +212,7 @@ $(document).ready(function () {
           print("'Hardly!' Sawyer exclaims, pounding his fists together. 'But yeah, I suppose you're right. Hey, Jack, get over here and grab something.'", "intColor");
           print("You look over the gruff man for a moment. Perhaps you should speak to him.");
           Dialogue.load("Aethelu", "dialogue_files/aethelu1.txt");
-          var name = document.createElement("BUTTON");   // Create a <button> element
+          var name = document.createElement("BUTTON"); // Create a <button> element
           name.innerHTML = "Speak"; //Gives the button text
           name.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
           $(name).insertBefore("#placeholder"); //Places the button in the text stream
@@ -221,40 +237,40 @@ $(document).ready(function () {
           })
         },
         commands: [{
-          input: 'exit to woods',
-          result: function () {
-            currentRoom = gameData.rooms[2];
-            player.travelHistory.push(currentRoom);
-            currentRoom.description();
-            walkingThroughGrassAudio.play();
-            donkeyBraying.play();
-            clipClop.play();
-          }
-        },
-        {
-          input: 'look town',
-          result: function () {
-            print("The town you grew up in. A small farming hamlet. Probably no more than 100 people live here. Your father, and your fathers father lived just down the street from where you stand. Your mother passed years ago but you've held your own the best you could.");
-          }
-        },
-        {
-          input: 'look exit to woods',
-          result: function () {
-            print("You look off to the west, into the forboding forrest. In your younger years you'd galavant the wilderness, finding all sorts of mischeif. Lately though, the forrest has grown darker. You feel a pit in your stomach.");
-          }
-        },
-        {
-          input: 'look cart',
-          result: function () {
-            print("A small ramshackle cart. Looks to be on its 5th or 6th owner. Inside are the bare basics for human survival. It is drawn by an old donkey whose eyes are glassed over with a thick film. Patches of fur are missing, but based on the way Aethelu pets him, he's well loved.")
-          }
-        },
-        {
-          input: 'look tavern',
-          result: function () {
-            print("Your second home. You and Sawyer spend every extra penny there. It's an old, stone building with two stories. The second serving as a small inn for traders and travellers that come through.");
-          }
-        },
+            input: 'exit to woods',
+            result: function () {
+              currentRoom = gameData.rooms[2];
+              player.travelHistory.push(currentRoom);
+              currentRoom.description();
+              walkingThroughGrassAudio.play();
+              donkeyBraying.play();
+              clipClop.play();
+            }
+          },
+          {
+            input: 'look town',
+            result: function () {
+              print("The town you grew up in. A small farming hamlet. Probably no more than 100 people live here. Your father, and your fathers father lived just down the street from where you stand. Your mother passed years ago but you've held your own the best you could.");
+            }
+          },
+          {
+            input: 'look exit to woods',
+            result: function () {
+              print("You look off to the west, into the forboding forrest. In your younger years you'd galavant the wilderness, finding all sorts of mischeif. Lately though, the forrest has grown darker. You feel a pit in your stomach.");
+            }
+          },
+          {
+            input: 'look cart',
+            result: function () {
+              print("A small ramshackle cart. Looks to be on its 5th or 6th owner. Inside are the bare basics for human survival. It is drawn by an old donkey whose eyes are glassed over with a thick film. Patches of fur are missing, but based on the way Aethelu pets him, he's well loved.")
+            }
+          },
+          {
+            input: 'look tavern',
+            result: function () {
+              print("Your second home. You and Sawyer spend every extra penny there. It's an old, stone building with two stories. The second serving as a small inn for traders and travellers that come through.");
+            }
+          },
         ]
 
       }, //end of outside the tavern
@@ -278,12 +294,12 @@ $(document).ready(function () {
           print("'Just want to make sure you know how to use that weapon I gave you. Just kill the rat.'", "healthColor");
           print("You and Sawyer shrug. May as well.");
           print("Now you will learn the very basics of the combat system. You don't have any spells yet so all you can use is your weapon. Click to begin combat. You wont always be able to start combat at your leasure, so try to always be ready!", "intColor");
-          var name = document.createElement("BUTTON");   // Create a <button> element
+          var name = document.createElement("BUTTON"); // Create a <button> element
           name.innerHTML = "Fight Rat"; //Gives the button text
           name.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
           $(name).insertBefore("#placeholder"); //Places the button in the text stream
           name.addEventListener("click", function () {
-            combat(player, largeRat);
+            combat(player, fieldrat);
             name.disabled = true;
             name.classList.add("disabled_button");
             print("----- The distance Beckons -----", "goldColor");
@@ -311,31 +327,31 @@ $(document).ready(function () {
           })
         },
         commands: [{
-          input: 'look path',
-          result: function () {
-            print("Dark, loamy earth that serves as life source for your farm.");
-          }
-        },
-        {
-          input: 'look tree line',
-          result: function () {
-            print("The forrest strethches out before you. A formidible wall of wood and underbrush. During the day it's quite beautiful but now, as the sun begins to fade, it looks to harbor horrible secrets.");
-          }
-        },
-        {
-          input: 'look strange light',
-          result: function () {
-            print("A strange, pale blue light that glows in the distance. It flickers and burns with an intensity greater than any campfire you've made. As you stare your eyes begin to grow unfocused. Your mind slows to a halt. Your muscles feel tight, and tired, as if you'd finished a long days work. The longer you stare the more intense these feelings become until drool begins to drip out of your mouth. You're soon brought to the ground again by a slap from Aethelu. He warns you not to try it again.");
-          }
-        },
-        {
-          input: 'towards the strange light',
-          result: function () {
-            currentRoom = gameData.rooms[3];
-            currentRoom.description();
-            walkingThroughGrassAudio.play();
-          }
-        },
+            input: 'look path',
+            result: function () {
+              print("Dark, loamy earth that serves as life source for your farm.");
+            }
+          },
+          {
+            input: 'look tree line',
+            result: function () {
+              print("The forrest strethches out before you. A formidible wall of wood and underbrush. During the day it's quite beautiful but now, as the sun begins to fade, it looks to harbor horrible secrets.");
+            }
+          },
+          {
+            input: 'look strange light',
+            result: function () {
+              print("A strange, pale blue light that glows in the distance. It flickers and burns with an intensity greater than any campfire you've made. As you stare your eyes begin to grow unfocused. Your mind slows to a halt. Your muscles feel tight, and tired, as if you'd finished a long days work. The longer you stare the more intense these feelings become until drool begins to drip out of your mouth. You're soon brought to the ground again by a slap from Aethelu. He warns you not to try it again.");
+            }
+          },
+          {
+            input: 'towards the strange light',
+            result: function () {
+              currentRoom = gameData.rooms[3];
+              currentRoom.description();
+              walkingThroughGrassAudio.play();
+            }
+          },
         ]
 
       }, //end of woods
@@ -360,7 +376,7 @@ $(document).ready(function () {
           print("The group looks at each other, puzzled.");
           print("'What is the hell is Umbril?' you say, as quietly as possible.", "agiColor");
           print("I do not know. But it cannot be good. Let's try to get a little closer.", "healthColor");
-          var name = document.createElement("BUTTON");   // Create a <button> element
+          var name = document.createElement("BUTTON"); // Create a <button> element
           name.innerHTML = "Move Closer"; //Gives the button text
           name.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
           $(name).insertBefore("#placeholder"); //Places the button in the text stream
@@ -377,7 +393,7 @@ $(document).ready(function () {
             echoingScreams.addEventListener("ended", function () {
               echoingScreams.play();
             });
-            var continueButton = document.createElement("BUTTON");   // Create a <button> element
+            var continueButton = document.createElement("BUTTON"); // Create a <button> element
             continueButton.innerHTML = "Continue"; //Gives the button text
             continueButton.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
             $(continueButton).insertBefore("#placeholder"); //Places the button in the text stream
@@ -398,8 +414,7 @@ $(document).ready(function () {
           result: function () {
             print("You focus your eyes as hard as you can but can't discern anything.");
           }
-        },
-        ]
+        }, ]
 
       }, //end of strange room
       {
@@ -410,38 +425,38 @@ $(document).ready(function () {
           print("To take an item type 'take [item name]'", "intColor");
         },
         commands: [{
-          input: 'look old door',
-          result: function () {
-            print("A large oak door lays before you. The screams still echoing around you, you lean closer trying to hear what may be on the other side. Ear glued to the door, your hand reaches down to grasp the latch. The door opens freely. Try typing 'open old door' to find out whats on the other side.");
-          }
-        },
-        {
-          input: 'look torch',
-          result: function () {
-            print("The torch lays lifeless on the ground.");
-          }
-        },
-        {
-          input: 'take torch',
-          result: function () {
-            if (torch.owned == false) {
-              print("Looking closer at the torch you find a flint and steel placed nearby, as if by a delicate hand. The hair on the back of your head stands up. You light the torch and the room blooms with light. Taking another look, you find that you're in a small, windowless room with one door on the western side. Try typing 'Look old door' to look closer. Or, try 'consider torch' to look at it.");
-              player.inventory.push("torch");
-              torch.owned = true;
-              updateInvDisplay("torch");
-              pickUpNew.play();
-            } else (print("You've already picked up the torch."));
-          }
-        },
-        {
-          input: 'open old door',
-          result: function () {
-            currentRoom = gameData.rooms[5];
-            player.travelHistory.push(currentRoom);
-            currentRoom.description();
-            moveThroughDoor.play();
-          }
-        },
+            input: 'look old door',
+            result: function () {
+              print("A large oak door lays before you. The screams still echoing around you, you lean closer trying to hear what may be on the other side. Ear glued to the door, your hand reaches down to grasp the latch. The door opens freely. Try typing 'open old door' to find out whats on the other side.");
+            }
+          },
+          {
+            input: 'look torch',
+            result: function () {
+              print("The torch lays lifeless on the ground.");
+            }
+          },
+          {
+            input: 'take torch',
+            result: function () {
+              if (torch.owned == false) {
+                print("Looking closer at the torch you find a flint and steel placed nearby, as if by a delicate hand. The hair on the back of your head stands up. You light the torch and the room blooms with light. Taking another look, you find that you're in a small, windowless room with one door on the western side. Try typing 'Look old door' to look closer. Or, try 'consider torch' to look at it.");
+                player.inventory.push("torch");
+                torch.owned = true;
+                updateInvDisplay("torch");
+                pickUpNew.play();
+              } else(print("You've already picked up the torch."));
+            }
+          },
+          {
+            input: 'open old door',
+            result: function () {
+              currentRoom = gameData.rooms[5];
+              player.travelHistory.push(currentRoom);
+              currentRoom.description();
+              moveThroughDoor.play();
+            }
+          },
         ]
 
       }, //end of strange room
@@ -458,7 +473,7 @@ $(document).ready(function () {
             print("The robed figure slowly gestures over to a sword laying on a table.");
             print("'You might need that.'", "manaColor");
             Dialogue.load('strange_follower', 'dialogue_files/strange_follower.txt');
-            var continueButton = document.createElement("BUTTON");   // Create a <button> element
+            var continueButton = document.createElement("BUTTON"); // Create a <button> element
             continueButton.innerHTML = "Speak"; //Gives the button text
             continueButton.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
             $(continueButton).insertBefore("#placeholder"); //Places the button in the text stream
@@ -473,68 +488,68 @@ $(document).ready(function () {
           }
         },
         commands: [{
-          input: 'back to starting room',
-          result: function () {
-            currentRoom = gameData.rooms[0];
-            print("You return to the starting room.");
-            print(gameData.rooms[0].description);
-            moveThroughDoor.play();
-          }
-        },
-        {
-          input: 'look window',
-          result: function () {
-            print("You poke your head out the window. Crows soar around your head, desperate for a meal. You find yourself fighting them off, unable to get a good look outside.");
-          }
-        },
-        {
-          input: 'look shining object',
-          result: function () {
-            print("You approach the table carefully. You see an old, rusted sword, chipped from years of battle. Any defense at all would help stave off the fear. Try 'take sword'.");
-          }
-        },
-        {
-          input: 'look bookshelves',
-          result: function () {
-            print("You browse the tomes along the walls. The leatherbound books seem to be so old that you no longer recongnize the language.");
-          }
-        },
-        {
-          input: "look door leading south",
-          result: function () {
-            print("You walk past the rows of books to a southern door. You put your ears up to it but hear nothing but the distant screams you've heard all along. Try 'open door leading south'.");
-          }
-        },
-        {
-          input: "look empty table",
-          result: function () {
-            print("You look over the empty table. There seems to be nothing else of value.");
-          }
-        },
-        {
-          input: "open door leading south",
-          result: function () {
-            if (torch.owned === true) {
-              currentRoom = gameData.rooms[6];
-              currentRoom.description();
+            input: 'back to starting room',
+            result: function () {
+              currentRoom = gameData.rooms[0];
+              print("You return to the starting room.");
+              print(gameData.rooms[0].description);
               moveThroughDoor.play();
             }
+          },
+          {
+            input: 'look window',
+            result: function () {
+              print("You poke your head out the window. Crows soar around your head, desperate for a meal. You find yourself fighting them off, unable to get a good look outside.");
+            }
+          },
+          {
+            input: 'look shining object',
+            result: function () {
+              print("You approach the table carefully. You see an old, rusted sword, chipped from years of battle. Any defense at all would help stave off the fear. Try 'take sword'.");
+            }
+          },
+          {
+            input: 'look bookshelves',
+            result: function () {
+              print("You browse the tomes along the walls. The leatherbound books seem to be so old that you no longer recongnize the language.");
+            }
+          },
+          {
+            input: "look door leading south",
+            result: function () {
+              print("You walk past the rows of books to a southern door. You put your ears up to it but hear nothing but the distant screams you've heard all along. Try 'open door leading south'.");
+            }
+          },
+          {
+            input: "look empty table",
+            result: function () {
+              print("You look over the empty table. There seems to be nothing else of value.");
+            }
+          },
+          {
+            input: "open door leading south",
+            result: function () {
+              if (torch.owned === true) {
+                currentRoom = gameData.rooms[6];
+                currentRoom.description();
+                moveThroughDoor.play();
+              }
+            }
+          },
+          {
+            input: "take sword",
+            result: function () {
+              if (oldSword.owned == false) {
+                print("You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. You pull your shirt over your hand and use your palm to scrape away some of the rust before holding it up to the light. Your fear dissapates slightly. Try typing 'equip old sword'");
+                player.inventory.push("old sword");
+                updateInvDisplay("old sword");
+                oldSword.owned = true;
+                gameData.rooms[1].look.shift();
+                gameData.rooms[1].look.push("empty table");
+                pickUpNew.play();
+              } else(print("You've already taken the old sword."));
+            }
           }
-        },
-        {
-          input: "take sword",
-          result: function () {
-            if (oldSword.owned == false) {
-              print("You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. You pull your shirt over your hand and use your palm to scrape away some of the rust before holding it up to the light. Your fear dissapates slightly. Try typing 'equip old sword'");
-              player.inventory.push("old sword");
-              updateInvDisplay("old sword");
-              oldSword.owned = true;
-              gameData.rooms[1].look.shift();
-              gameData.rooms[1].look.push("empty table");
-              pickUpNew.play();
-            } else (print("You've already taken the old sword."));
-          }
-        }
         ]
       },
       {
@@ -547,85 +562,91 @@ $(document).ready(function () {
           locked: true
         },
         commands: [{
-          input: "look chair",
-          result: function () {
-            print("A large velvet chair sits before you. The deep red hue of the chair reminds you of blood. You consider sitting in it for a moment but a dark force makes you consider otherwise");
-          }
-        },
-        {
-          input: "look messy desk",
-          result: function () {
-            print("You look over the large desk. Stacks of old parchment dominate either end of the desk. The center is strangely clean with only one piece of paper folded neatly in half. It reads: To whomever finds this, these are my final words. 'use look' ");
-            gameData.rooms[6].look.push("old note");
-          }
-        },
-        {
-          input: "look old note",
-          result: function () {
-            print("I can feel myself changing. Fifty years I gave this Kingdom, and fifty years I toiled over the Kings wishes. I gave him advice when he was unsure. I gave him stability in his times of distress. I did his day-to-days. I gave Generals marching orders. I was important. Now these cultists have come. The coup succeeded. They brought their wretched gems and crystals and lay close to them at night. I am not near them, but I can feel them. They whisper to me. In my dreams I see a dark cloud gathering over the hills. Soon the cloud erupts into a million blue eyed ravens who tear into me. Over and over I have suffered these nightmares. I am weak now. Too weak to go on. My skin has shrivled and my mind races with canabalistic thoughts. I feel I do not have much longer before I become deranged. Whoever finds this, I pray the Goddess of Light watches over you.");
-            print("You set the note down, unsure of what to make of it. You can hear a growling behind the door at the far end of the room. Something is in there.");
-          }
-        },
-        {
-          input: "look end table",
-          result: function () {
-            if (skeleKey.owned === false) {
-              print("The round end table seems to be made of a dark, polished hardwood. You find an empty oil lantern with busted glass, and a key. You pick up the key for a moment and hold the torch up to it. The notches seem ground down to almost nothing. Try taking it.");
-            } else {
-              print("There's an indent in the wood the shape of the key. As if the key had been slowly burning it's way through the table. The key seems cool to the touch.");
+            input: "look chair",
+            result: function () {
+              print("A large velvet chair sits before you. The deep red hue of the chair reminds you of blood. You consider sitting in it for a moment but a dark force makes you consider otherwise");
             }
-          }
-        },
-        {
-          input: "look bookshelves",
-          result: function () {
-            print("You browse the tomes along the walls, your torch barely putting forth enough light to make out the titles on the spines. Most are in a language that seems foreign to you. The letters glow a faint blue.");
-          }
-        },
-        {
-          input: "look door leading west",
-          result: function () {
-            if (gameData.rooms[6].lockedDoor.locked === true) {
-              print("You approach the door and try to open it. Locked. Glancing through the keyhole you see only darkness.");
-            } else {
-              print("You look through the keyhole. You see only darkness.");
+          },
+          {
+            input: "look messy desk",
+            result: function () {
+              print("You look over the large desk. Stacks of old parchment dominate either end of the desk. The center is strangely clean with only one piece of paper folded neatly in half. It reads: To whomever finds this, these are my final words. 'use look' ");
+              gameData.rooms[6].look.push("old note");
             }
-          }
-        },
-        {
-          input: "take key",
-          result: function () {
-            if (skeleKey.owned == false) {
-              print("You gently pick the key up off the table. The rusted key leaving flakes of dark green copper on the end table. Looking closer you see the that the notches are worn down to almost nothing. You wonder for a moment what use this key might be. (Try using the key on something.)");
-              player.inventory.push("skeleton key");
-              updateInvDisplay("key");
-              skeleKey.owned = true;
-              pickUpNew.play();
-            } else (print("You've already taken the key."));
-          }
-        },
-        {
-          input: "use key on door leading west",
-          result: function () {
-            gameData.rooms[6].lockedDoor.locked = false;
-            print("The key turns easily in the lock. The clicking sound of the lock gives off an unnatural echo in the room.");
-            unlockDoor.play()
-          }
-        },
-        {
-          input: "open door leading west",
-          result: function () {
-            if (gameData.rooms[6].lockedDoor.locked === true) {
-              print("You approach the door and wiggle the handle. Locked.");
-            } else {
-              currentRoom = gameData.rooms[7];
-              combat(player, hallwayWithered);
-              currentRoom.description();
-              moveThroughDoor.play();
+          },
+          {
+            input: "look old note",
+            result: function () {
+              print("I can feel myself changing. Fifty years I gave this Kingdom, and fifty years I toiled over the Kings wishes. I gave him advice when he was unsure. I gave him stability in his times of distress. I did his day-to-days. I gave Generals marching orders. I was important. Now these cultists have come. The coup succeeded. They brought their wretched gems and crystals and lay close to them at night. I am not near them, but I can feel them. They whisper to me. In my dreams I see a dark cloud gathering over the hills. Soon the cloud erupts into a million blue eyed ravens who tear into me. Over and over I have suffered these nightmares. I am weak now. Too weak to go on. My skin has shrivled and my mind races with canabalistic thoughts. I feel I do not have much longer before I become deranged. Whoever finds this, I pray the Goddess of Light watches over you.");
+              print("You set the note down, unsure of what to make of it. You can hear a growling behind the door at the far end of the room. Something is in there.");
             }
+          },
+          {
+            input: "look end table",
+            result: function () {
+              if (skeleKey.owned === false) {
+                print("The round end table seems to be made of a dark, polished hardwood. You find an empty oil lantern with busted glass, and a key. You pick up the key for a moment and hold the torch up to it. The notches seem ground down to almost nothing. Try taking it.");
+              } else {
+                print("There's an indent in the wood the shape of the key. As if the key had been slowly burning it's way through the table. The key seems cool to the touch.");
+              }
+            }
+          },
+          {
+            input: "look bookshelves",
+            result: function () {
+              print("You browse the tomes along the walls, your torch barely putting forth enough light to make out the titles on the spines. Most are in a language that seems foreign to you. The letters glow a faint blue.");
+            }
+          },
+          {
+            input: "look door leading west",
+            result: function () {
+              if (gameData.rooms[6].lockedDoor.locked === true) {
+                print("You approach the door and try to open it. Locked. Glancing through the keyhole you see only darkness.");
+              } else {
+                print("You look through the keyhole. You see only darkness.");
+              }
+            }
+          },
+          {
+            input: "take key",
+            result: function () {
+              if (skeleKey.owned == false) {
+                print("You gently pick the key up off the table. The rusted key leaving flakes of dark green copper on the end table. Looking closer you see the that the notches are worn down to almost nothing. You wonder for a moment what use this key might be. (Try using the key on something.)");
+                player.inventory.push("skeleton key");
+                updateInvDisplay("key");
+                skeleKey.owned = true;
+                pickUpNew.play();
+              } else(print("You've already taken the key."));
+            }
+          },
+          {
+            input: "use key on door leading west",
+            result: function () {
+              gameData.rooms[6].lockedDoor.locked = false;
+              print("The key turns easily in the lock. The clicking sound of the lock gives off an unnatural echo in the room.");
+              unlockDoor.play()
+            }
+          },
+          {
+            input: "open door leading west",
+            result: function () {
+              if (gameData.rooms[6].lockedDoor.locked === true) {
+                print("You approach the door and wiggle the handle. Locked.");
+              } else {
+                currentRoom = gameData.rooms[7];
+                var hallwayWithered = new withered("withered", 25, 5, .12, function () {
+                  combatPrint("You stand over the shattered body of the withered. His mangled hand slow unfurles revealing some gold!.");
+                  combatPrint("You receive 5 gold!", "yellow");
+                  combatPrint("Beneath the withereds body you find an old pot lid. You pull it from underneath the mangled corpse.");
+                  combatPrint("Try to equip your new shield with 'equip makeshift shield'");
+                }, 50, "A withered shambles forward, barring its menacing teeth. It leaps forwards, attacking first.");
+                combat(player, hallwayWithered);
+                currentRoom.description();
+                moveThroughDoor.play();
+              }
 
+            }
           }
-        }
         ]
       },
       {
@@ -638,79 +659,81 @@ $(document).ready(function () {
         figuresSpoken: false,
         withered: true,
         commands: [{
-          input: "look barrel",
-          result: function () {
-            if (smallHallwayBarrel.opened == false) {
-              print("A large wooden barrel sits idly in the corner. The top seems slightly ajar. You wonder if you should try opening it.");
-            } else {
-              print("There is nothing left here but cobwebs and dust.");
+            input: "look barrel",
+            result: function () {
+              if (smallHallwayBarrel.opened == false) {
+                print("A large wooden barrel sits idly in the corner. The top seems slightly ajar. You wonder if you should try opening it.");
+              } else {
+                print("There is nothing left here but cobwebs and dust.");
+              }
             }
-          }
-        },
-        {
-          input: "open barrel",
-          result: function () {
-            if (smallHallwayBarrel.opened === false) {
-              player.healthPotNum = player.healthPotNum = 1;
-              print("You find a small vial tucked away beneath some grain. You lift it out of the barrel and hold it up to your torch. You watch the glistening red liquid swirl around in the vial momentarily before placing it in your bags.");
-              print("Health potion added to inventory. You may use it during combat for 25 health points!");
-              refreshPlayerStats();
-              smallHallwayBarrel.opened = true;
-            } else { print("There is nothing left here but cobwebs and dust."); }
-          }
-        },
-        {
-          input: "look dead enemy",
-          result: function () {
-            print("You look over your defeated foe. Your heart is still beating and sweat is now dripping down your face. You are out of breath and every noise now seems that much more dangerous.");
-          }
-        },
-        {
-          input: "look small archway",
-          result: function () {
-            print("You peek into the archway. Inside is an alter. The alter is the figure of a young girl holding out a bowl. The bowl seems filled with blood.");
-          }
-        },
-        {
-          input: "look door leading west",
-          result: function () {
-            if (gameData.rooms[7].figuresSpoken === false) {
-              print("You peek through the keyhole. You can hear voices on the other side. Shadowy figures are pacing and speaking in muffled tones. Try using listen.");
-            } else {
-              print("You hold your ear up to the door but hear nothing. Looking through the keyhole you can make out red carpet, and marble columns.");
+          },
+          {
+            input: "open barrel",
+            result: function () {
+              if (smallHallwayBarrel.opened === false) {
+                player.healthPotNum = player.healthPotNum = 1;
+                print("You find a small vial tucked away beneath some grain. You lift it out of the barrel and hold it up to your torch. You watch the glistening red liquid swirl around in the vial momentarily before placing it in your bags.");
+                print("Health potion added to inventory. You may use it during combat for 25 health points!");
+                refreshPlayerStats();
+                smallHallwayBarrel.opened = true;
+              } else {
+                print("There is nothing left here but cobwebs and dust.");
+              }
             }
-          }
-        },
-        {
-          input: "listen",
-          result: function () {
-            if (gameData.rooms[7].figuresSpoken === false) {
-              print("You hear footsteps. Then, muffled voices.");
-              print("Ah, Cassius.", "intColor");
-              print("Hmm, oh, yes. Thought I'd come up here for a spell and see the birds.", "chrColor");
-              print("I can't blame you. They're a beautiful sight. We do need your help downstairs however, the men are wounded and -", "intColor");
-              print("You know, I butchered my own father in the massacre. Killed him with an axe to the head. Yet, I feel nothing. I know this is the end of the world. But shouldn't I feel something? Anything?", "chrColor");
-              print("The two figures are silent for a moment.");
-              print("These are the blessings the shards provide Cassius. The tools you need to perform your role in the second coming. Come now, we need your help.", "intColor");
-              print("There are footsteps, then silence.");
-              gameData.rooms[7].figuresSpoken = true;
-            } else {
-              print("You listen hard but hear nothing.");
+          },
+          {
+            input: "look dead enemy",
+            result: function () {
+              print("You look over your defeated foe. Your heart is still beating and sweat is now dripping down your face. You are out of breath and every noise now seems that much more dangerous.");
             }
-          }
-        },
-        {
-          input: "open door leading west",
-          result: function () {
-            if (gameData.rooms[7].figuresSpoken === true) {
-              moveThroughDoor.play();
-              currentRoom = gameData.rooms[8];
-              print(gameData.rooms[8].description);
-            } else {
-              print("You can hear some figures speaking outside. Try 'listen' ");
+          },
+          {
+            input: "look small archway",
+            result: function () {
+              print("You peek into the archway. Inside is an alter. The alter is the figure of a young girl holding out a bowl. The bowl seems filled with blood.");
             }
-          }
-        },
+          },
+          {
+            input: "look door leading west",
+            result: function () {
+              if (gameData.rooms[7].figuresSpoken === false) {
+                print("You peek through the keyhole. You can hear voices on the other side. Shadowy figures are pacing and speaking in muffled tones. Try using listen.");
+              } else {
+                print("You hold your ear up to the door but hear nothing. Looking through the keyhole you can make out red carpet, and marble columns.");
+              }
+            }
+          },
+          {
+            input: "listen",
+            result: function () {
+              if (gameData.rooms[7].figuresSpoken === false) {
+                print("You hear footsteps. Then, muffled voices.");
+                print("Ah, Cassius.", "intColor");
+                print("Hmm, oh, yes. Thought I'd come up here for a spell and see the birds.", "chrColor");
+                print("I can't blame you. They're a beautiful sight. We do need your help downstairs however, the men are wounded and -", "intColor");
+                print("You know, I butchered my own father in the massacre. Killed him with an axe to the head. Yet, I feel nothing. I know this is the end of the world. But shouldn't I feel something? Anything?", "chrColor");
+                print("The two figures are silent for a moment.");
+                print("These are the blessings the shards provide Cassius. The tools you need to perform your role in the second coming. Come now, we need your help.", "intColor");
+                print("There are footsteps, then silence.");
+                gameData.rooms[7].figuresSpoken = true;
+              } else {
+                print("You listen hard but hear nothing.");
+              }
+            }
+          },
+          {
+            input: "open door leading west",
+            result: function () {
+              if (gameData.rooms[7].figuresSpoken === true) {
+                moveThroughDoor.play();
+                currentRoom = gameData.rooms[8];
+                print(gameData.rooms[8].description);
+              } else {
+                print("You can hear some figures speaking outside. Try 'listen' ");
+              }
+            }
+          },
         ]
       },
       {
@@ -721,129 +744,129 @@ $(document).ready(function () {
           locked: true
         },
         commands: [{
-          input: "look throne",
-          result: function () {
-            print("Whoever sat here had considerable power. The fabric and metals seem to echo far away lands. On one of the arm rests is a small scroll. Behind the throne, a great red cloth, embroidered in golden tassels. You fling aside the drapes and peer behind them to find a door.");
-            gameData.rooms[4].look.push("scroll");
-          }
-        },
-        {
-          input: "use key on door leading north",
-          result: function () {
-            if (butlersKey.owned == true && butlersDoor.locked == true) {
-              unlockDoor.play();
-              print("The key glides smoothly through the lock. The door is open.");
-              butlersDoor.locked = false;
-            } else if (butlersKey.owned == true && butlersDoor.locked == false) {
-              print("The door is already unlocked.");
-            } else {
-              print("You do not have the correct key.");
+            input: "look throne",
+            result: function () {
+              print("Whoever sat here had considerable power. The fabric and metals seem to echo far away lands. On one of the arm rests is a small scroll. Behind the throne, a great red cloth, embroidered in golden tassels. You fling aside the drapes and peer behind them to find a door.");
+              gameData.rooms[4].look.push("scroll");
             }
-          }
-        },
-        {
-          input: "open door leading north",
-          result: function () {
-            if (butlersDoor.locked == false) {
+          },
+          {
+            input: "use key on door leading north",
+            result: function () {
+              if (butlersKey.owned == true && butlersDoor.locked == true) {
+                unlockDoor.play();
+                print("The key glides smoothly through the lock. The door is open.");
+                butlersDoor.locked = false;
+              } else if (butlersKey.owned == true && butlersDoor.locked == false) {
+                print("The door is already unlocked.");
+              } else {
+                print("You do not have the correct key.");
+              }
+            }
+          },
+          {
+            input: "open door leading north",
+            result: function () {
+              if (butlersDoor.locked == false) {
+                moveThroughDoor.play();
+                currentRoom = gameData.rooms[12];
+                gameData.rooms[12].description();
+              } else(print("You jiggle the latch but the door won't budge. Must be a key around here somewhere."));
+            }
+          },
+          {
+            input: "look door leading north",
+            result: {
+              function () {
+                print("In an alcove behind the throne you find a slender oaken door with golden hinges. You jiggle the handle, but the door won't butdge.");
+              }
+            }
+          },
+          {
+            input: "look scroll",
+            result: function () {
+              print("The scroll looks to be the oldest thing you ever seen. Upon opening you see something scrawled in ancient text. You'll need to find a way to decipher this.");
+            }
+          },
+          {
+            input: "take scroll",
+            result: function () {
+              if (throneScroll.owned == false) {
+                print("You place the scroll delicately in your bag.");
+                pickUpNew.play();
+                updateInvDisplay("scroll");
+                player.inventory.push("strange scroll");
+                throneScroll.owned = true;
+              } else(print("You've already taken the scroll."));
+            }
+          },
+          {
+            input: "look column",
+            result: function () {
+              print("Tall marble columns line either side of the red carpet. Looking closer you see the columns look to have had large sections taken out of them. Some small, as if a stray blade sliced the marble. Others seem large, like an explosion had slammed into it.");
+            }
+          },
+          {
+            input: "look doors leading outside",
+            result: function () {
+              print("Birds continue to slam their heads into the door. It sounds as if a hailstorm is raging all around you. The sounds drown out any small noises. Feeling like something might be behind you, you turn around, but there is nothing.");
+            }
+          },
+          {
+            input: "look red aisle runner",
+            result: function () {
+              print("A beautiful red carpet runs central to the room leading down to the throne. The carpet is pockmarked with feathers and blood.");
+            }
+          },
+          {
+            input: "look alter",
+            result: function () {
+              print("A large alter similar to one you'd seen in the hallway. It looks to be a statue of a young angelic girl draped in cloth, and holding out a large basin. Her eyes are covered by the cloth, with only the curling hair falling out. You reach your head into the basin and see that even this one, as large as it is, is filled with blood.");
+            }
+          },
+          {
+            input: "look door leading west",
+            result: function () {
+              print("You peek through the keyhole and see a strange creature lumbering around a large room. In the center of the room looks to be a staircase leading down. The creature is tall, but hunched over, a large, glowing pack strapped to its back. Its arms stretch down to the floor and with every step the shackles on its wrist grind against the stone floor. Its mouth is agape and a blue fluid drips out slowly. Its clothes are tattered rags and whatever hair this creature may have once had has fallen out. It begins to move towards you, its glowing bright blue eyes seem fixated on the key hole. It lets out a long, low howl and tries to pick up its pace. You recoil in fear and hear the large thud of the creature slamming into the doorway.");
+              shardKeeper.introSound.play();
+              print("Are you sure you want to enter? Use: open door leading west");
+            }
+          },
+          {
+            input: "look stairs leading north",
+            result: function () {
+              print("A grand marble staircase extends upwards from behind the throne. The granite walls are speckled with torches giving way to darkness as the stairs furl upwards inevitablly meeting in the middle, somewhere above.");
+            }
+          },
+          {
+            input: "look dead crow",
+            result: function () {
+              print("You approach the crow slowly. It's head is still arcing slowly from side to side, it's eyes slowly transforming into a bright blue hue. Its feathers are ragged and worn. Its chest, bald from over pruning. The claws, worn down to stumps. What happened to this bird?");
+            }
+          },
+          {
+            input: "look small door",
+            result: function () {
+              print("While looking through the alcoves that line the walls you come across a small, rectangular door with no lock. You crack the door open and peer inside. It seems to be another small library, similar to the first that you found.");
+            }
+          },
+          {
+            input: "open small door",
+            result: function () {
               moveThroughDoor.play();
-              currentRoom = gameData.rooms[12];
-              gameData.rooms[12].description();
-            } else (print("You jiggle the latch but the door won't budge. Must be a key around here somewhere."));
-          }
-        },
-        {
-          input: "look door leading north",
-          result: {
-            function() {
-              print("In an alcove behind the throne you find a slender oaken door with golden hinges. You jiggle the handle, but the door won't butdge.");
+              currentRoom = gameData.rooms[9];
+              gameData.rooms[9].description();
             }
-          }
-        },
-        {
-          input: "look scroll",
-          result: function () {
-            print("The scroll looks to be the oldest thing you ever seen. Upon opening you see something scrawled in ancient text. You'll need to find a way to decipher this.");
-          }
-        },
-        {
-          input: "take scroll",
-          result: function () {
-            if (throneScroll.owned == false) {
-              print("You place the scroll delicately in your bag.");
-              pickUpNew.play();
-              updateInvDisplay("scroll");
-              player.inventory.push("strange scroll");
-              throneScroll.owned = true;
-            } else (print("You've already taken the scroll."));
-          }
-        },
-        {
-          input: "look column",
-          result: function () {
-            print("Tall marble columns line either side of the red carpet. Looking closer you see the columns look to have had large sections taken out of them. Some small, as if a stray blade sliced the marble. Others seem large, like an explosion had slammed into it.");
-          }
-        },
-        {
-          input: "look doors leading outside",
-          result: function () {
-            print("Birds continue to slam their heads into the door. It sounds as if a hailstorm is raging all around you. The sounds drown out any small noises. Feeling like something might be behind you, you turn around, but there is nothing.");
-          }
-        },
-        {
-          input: "look red aisle runner",
-          result: function () {
-            print("A beautiful red carpet runs central to the room leading down to the throne. The carpet is pockmarked with feathers and blood.");
-          }
-        },
-        {
-          input: "look alter",
-          result: function () {
-            print("A large alter similar to one you'd seen in the hallway. It looks to be a statue of a young angelic girl draped in cloth, and holding out a large basin. Her eyes are covered by the cloth, with only the curling hair falling out. You reach your head into the basin and see that even this one, as large as it is, is filled with blood.");
-          }
-        },
-        {
-          input: "look door leading west",
-          result: function () {
-            print("You peek through the keyhole and see a strange creature lumbering around a large room. In the center of the room looks to be a staircase leading down. The creature is tall, but hunched over, a large, glowing pack strapped to its back. Its arms stretch down to the floor and with every step the shackles on its wrist grind against the stone floor. Its mouth is agape and a blue fluid drips out slowly. Its clothes are tattered rags and whatever hair this creature may have once had has fallen out. It begins to move towards you, its glowing bright blue eyes seem fixated on the key hole. It lets out a long, low howl and tries to pick up its pace. You recoil in fear and hear the large thud of the creature slamming into the doorway.");
-            shardKeeper.introSound.play();
-            print("Are you sure you want to enter? Use: open door leading west");
-          }
-        },
-        {
-          input: "look stairs leading north",
-          result: function () {
-            print("A grand marble staircase extends upwards from behind the throne. The granite walls are speckled with torches giving way to darkness as the stairs furl upwards inevitablly meeting in the middle, somewhere above.");
-          }
-        },
-        {
-          input: "look dead crow",
-          result: function () {
-            print("You approach the crow slowly. It's head is still arcing slowly from side to side, it's eyes slowly transforming into a bright blue hue. Its feathers are ragged and worn. Its chest, bald from over pruning. The claws, worn down to stumps. What happened to this bird?");
-          }
-        },
-        {
-          input: "look small door",
-          result: function () {
-            print("While looking through the alcoves that line the walls you come across a small, rectangular door with no lock. You crack the door open and peer inside. It seems to be another small library, similar to the first that you found.");
-          }
-        },
-        {
-          input: "open small door",
-          result: function () {
-            moveThroughDoor.play();
-            currentRoom = gameData.rooms[9];
-            gameData.rooms[9].description();
-          }
-        },
-        {
-          input: "climb stairs leading north",
-          result: function () {
-            moveThroughStairs.play();
-            currentRoom = gameData.rooms[10];
-            gameData.rooms[10].description();
-            console.log(Dialogue.dialogues);
-          }
-        },
+          },
+          {
+            input: "climb stairs leading north",
+            result: function () {
+              moveThroughStairs.play();
+              currentRoom = gameData.rooms[10];
+              gameData.rooms[10].description();
+              console.log(Dialogue.dialogues);
+            }
+          },
         ] //end of commands
       },
       {
@@ -863,112 +886,114 @@ $(document).ready(function () {
           }, 22000);
         },
         commands: [{
-          input: "look pedestal",
-          result: function () {
-            if (cipher.owned === true) {
-              print("The pedestal seems to be made out of living wood. A vine curls along the stand ending in two small leaves basking in the moonlight streaming in from above. On the pedestal sits a dark book bound in a rough, black skin. A strange rune lays in the center of the book, with an unreadable text swirling below it. You reach over and open the book. On the first page you find a key to the strange text laid out in scrawled handwriting by some dutiful notetaker. It seems to be a cipher. The rest of the book is in the old writing you found in the scroll. ");
-            } else {
-              print("The pedestal seems to be made out of living wood. A vine curls along the stand ending in two small leaves basking in the moonlight streaming in from above. On the pedestal sits a dark book bound in a rough, black skin. A strange rune lays in the center of the book, with a strange text swirling below it. You reach over and open the book. On the first page you find a key to the strange text laid out in scrawled handwriting by some dutiful notetaker. It seems to be a cipher. You wonder what use this book might be.");
+            input: "look pedestal",
+            result: function () {
+              if (cipher.owned === true) {
+                print("The pedestal seems to be made out of living wood. A vine curls along the stand ending in two small leaves basking in the moonlight streaming in from above. On the pedestal sits a dark book bound in a rough, black skin. A strange rune lays in the center of the book, with an unreadable text swirling below it. You reach over and open the book. On the first page you find a key to the strange text laid out in scrawled handwriting by some dutiful notetaker. It seems to be a cipher. The rest of the book is in the old writing you found in the scroll. ");
+              } else {
+                print("The pedestal seems to be made out of living wood. A vine curls along the stand ending in two small leaves basking in the moonlight streaming in from above. On the pedestal sits a dark book bound in a rough, black skin. A strange rune lays in the center of the book, with a strange text swirling below it. You reach over and open the book. On the first page you find a key to the strange text laid out in scrawled handwriting by some dutiful notetaker. It seems to be a cipher. You wonder what use this book might be.");
+              }
             }
-          }
-        },
-        {
-          input: "take cipher",
-          result: function () {
-            if (cipher.owned == false) {
-              cipher.owned = true;
-              player.inventory.push("cipher");
-              updateInvDisplay("Cipher");
-              pickUpNew.play();
-              print("You gently pick up the book. The text begins to glow a faint blue but subsides. You feel a strange courage welling up within you.");
-            } else {
-              print("You've already taken the cipher");
+          },
+          {
+            input: "take cipher",
+            result: function () {
+              if (cipher.owned == false) {
+                cipher.owned = true;
+                player.inventory.push("cipher");
+                updateInvDisplay("Cipher");
+                pickUpNew.play();
+                print("You gently pick up the book. The text begins to glow a faint blue but subsides. You feel a strange courage welling up within you.");
+              } else {
+                print("You've already taken the cipher");
+              }
             }
-          }
-        },
-        {
-          input: "take robe",
-          result: function () {
-            if (cultistRobe.owned == false) {
-              cultistRobe.owned = true;
-              player.inventory.push("Cultist Disguise");
-              pickUpNew.play();
-              updateInvDisplay("Cultist Robes - Armor");
-              print("You struggle to pull the robes off of the dead cultist. Luckly the robe's color is already one similar to the color of blood. No one should notice, you hope. Equip with 'equip cultist disguise'.");
-            } else { print("You've already taken the cultists robes."); }
-          }
-        },
-        {
-          input: "look bookshelves",
-          result: function () {
-            if (cipher.owned === true) {
-              print("These books somehow seem older than the other books you've seen thus far. Most are bound in an unfamiliar black leather that warms your hands when you hold them. None of the books seem to have titles on the spine, or on the front. After flipping through a few you find most to only have the first few pages written in, and the rest are blank. You decipher an excerpt from one: 'The demonic influence radiates from the shards. Nothing can contain them. If we are to protect this world from the cults that spring up around where these evil seeds are sown, we must destroy them. Only Rain knows how we'll break this curse.' You close the book.");
-            } else {
-              print("These books somehow seem older than the other books you've seen thus far. Most are bound in an unfamiliar black leather that warms your hands when you hold them. None of the books seem to have titles on the spine, or on the front. After flipping through a few you find most to only have the first few pages written in, and the rest are blank. You need some sort of cipher.");
+          },
+          {
+            input: "take robe",
+            result: function () {
+              if (cultistRobe.owned == false) {
+                cultistRobe.owned = true;
+                player.inventory.push("Cultist Disguise");
+                pickUpNew.play();
+                updateInvDisplay("Cultist Robes - Armor");
+                print("You struggle to pull the robes off of the dead cultist. Luckly the robe's color is already one similar to the color of blood. No one should notice, you hope. Equip with 'equip cultist disguise'.");
+              } else {
+                print("You've already taken the cultists robes.");
+              }
             }
-          }
-        },
-        {
-          input: "look note",
-          result: function () {
-            print("You find a small note laying on one of the bookshelves. It reads: 'Cassius, I know you tried to follow in the ways of Umbril but ultimately your heritage betrays you. You are the true keeper of the shard and I do not dispute that. You must see the error of your ways. Should we destroy it, we may well have nothing left to fight for. I have sat next to the shard for many nights praying to Umbril for guidance and to lose that would be devistating.'");
-          }
-        },
-        {
-          input: "look wall writing",
-          result: function () {
-            print("The writing on the wall is written in blood. Small drops that have yet to dry are running down to the floor. It reads: 'All is lost without th...' It doesn't seem like the writer had time to finish.");
-          }
-        },
-        {
-          input: "look corpse",
-          result: function () {
-            print("After examining the body you find that the corpse still seems fresh. Its eyes has yet to turn the blueish hue you'd seen in the birds eyes. Its hands are curled violently as if he'd been struggling to hold onto something during his demise. He is dressed in grey and red robes with multiple puncture marks in the chest, and back. It seems like whoever this was, he was assassinated. You wonder for a moment if the robe would be any use to you in case you run into any cultists that are living.");
-          }
-        },
-        {
-          input: "look smouldering scroll",
-          result: function () {
-            print("Within the bookshelves you find a small pile of embers but they are cool to the touch. It's a scroll. I'd like to rewrite this, sorry.");
-          }
-        },
-        {
-          input: "take smouldering scroll",
-          result: function () {
-            fireBall.playerHas = true;
-            print("There should be something better written here but the gist is that you can now sling fireballs. Whoopee!");
-          }
-        },
-        {
-          input: "look sky light",
-          result: function () {
-            print("Light streams in from a small dome in the ceiling. Standing in the light calms you. You stand for a moment, soaking in the light before realizing that the light is a different color than the light coming from the windows in other rooms. Whatever is making this light, it's inside the building.");
-          }
-        },
-        {
-          input: "back to the grand hall",
-          result: function () {
-            moveThroughDoor.play();
-            currentRoom = gameData.rooms[8];
-            if (player.armorName == "Cultist Disguise") {
-              Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
-              print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. He is silent.");
-              var continueButton = document.createElement("BUTTON");   // Create a <button> element
-              continueButton.innerHTML = "Speak"; //Gives the button text
-              continueButton.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
-              $(continueButton).insertBefore("#placeholder"); //Places the button in the text stream
-              continueButton.addEventListener("click", function () {
-                continueButton.disabled = true;
-                continueButton.classList.add("disabled_button");
-                conversation("Unknown Brother", "player");
-                print("The robed figure exits the room.");
+          },
+          {
+            input: "look bookshelves",
+            result: function () {
+              if (cipher.owned === true) {
+                print("These books somehow seem older than the other books you've seen thus far. Most are bound in an unfamiliar black leather that warms your hands when you hold them. None of the books seem to have titles on the spine, or on the front. After flipping through a few you find most to only have the first few pages written in, and the rest are blank. You decipher an excerpt from one: 'The demonic influence radiates from the shards. Nothing can contain them. If we are to protect this world from the cults that spring up around where these evil seeds are sown, we must destroy them. Only Rain knows how we'll break this curse.' You close the book.");
+              } else {
+                print("These books somehow seem older than the other books you've seen thus far. Most are bound in an unfamiliar black leather that warms your hands when you hold them. None of the books seem to have titles on the spine, or on the front. After flipping through a few you find most to only have the first few pages written in, and the rest are blank. You need some sort of cipher.");
+              }
+            }
+          },
+          {
+            input: "look note",
+            result: function () {
+              print("You find a small note laying on one of the bookshelves. It reads: 'Cassius, I know you tried to follow in the ways of Umbril but ultimately your heritage betrays you. You are the true keeper of the shard and I do not dispute that. You must see the error of your ways. Should we destroy it, we may well have nothing left to fight for. I have sat next to the shard for many nights praying to Umbril for guidance and to lose that would be devistating.'");
+            }
+          },
+          {
+            input: "look wall writing",
+            result: function () {
+              print("The writing on the wall is written in blood. Small drops that have yet to dry are running down to the floor. It reads: 'All is lost without th...' It doesn't seem like the writer had time to finish.");
+            }
+          },
+          {
+            input: "look corpse",
+            result: function () {
+              print("After examining the body you find that the corpse still seems fresh. Its eyes has yet to turn the blueish hue you'd seen in the birds eyes. Its hands are curled violently as if he'd been struggling to hold onto something during his demise. He is dressed in grey and red robes with multiple puncture marks in the chest, and back. It seems like whoever this was, he was assassinated. You wonder for a moment if the robe would be any use to you in case you run into any cultists that are living.");
+            }
+          },
+          {
+            input: "look smouldering scroll",
+            result: function () {
+              print("Within the bookshelves you find a small pile of embers but they are cool to the touch. It's a scroll. I'd like to rewrite this, sorry.");
+            }
+          },
+          {
+            input: "take smouldering scroll",
+            result: function () {
+              fireBall.playerHas = true;
+              print("There should be something better written here but the gist is that you can now sling fireballs. Whoopee!");
+            }
+          },
+          {
+            input: "look sky light",
+            result: function () {
+              print("Light streams in from a small dome in the ceiling. Standing in the light calms you. You stand for a moment, soaking in the light before realizing that the light is a different color than the light coming from the windows in other rooms. Whatever is making this light, it's inside the building.");
+            }
+          },
+          {
+            input: "back to the grand hall",
+            result: function () {
+              moveThroughDoor.play();
+              currentRoom = gameData.rooms[8];
+              if (player.armorName == "Cultist Disguise") {
+                Dialogue.load("Unknown Brother", "dialogue_files/brother_1.txt");
+                print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. He is silent.");
+                var continueButton = document.createElement("BUTTON"); // Create a <button> element
+                continueButton.innerHTML = "Speak"; //Gives the button text
+                continueButton.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
+                $(continueButton).insertBefore("#placeholder"); //Places the button in the text stream
+                continueButton.addEventListener("click", function () {
+                  continueButton.disabled = true;
+                  continueButton.classList.add("disabled_button");
+                  conversation("Unknown Brother", "player");
+                  print("The robed figure exits the room.");
 
-              })
-            } else if (player.armorName != "Cultist Disguise") {
-              print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. You draw away slowly and close the door quietly, as not to rouse suspicion.");
+                })
+              } else if (player.armorName != "Cultist Disguise") {
+                print("You see a robed figure standing ominously still in the room. His hand slowly moving up and down the pockmarked column. You draw away slowly and close the door quietly, as not to rouse suspicion.");
+              }
             }
-          }
-        },
+          },
         ]
       },
       {
@@ -989,107 +1014,107 @@ $(document).ready(function () {
           }
         },
         commands: [{
-          input: "look bed",
-          result: function () {
-            print("You look over the largest bed you've ever seen. A tall, pearl white canopy extends upwards towards the ceilng, capped with golden finials. Golden drapes glisten gently in the torch light. You pull the drapes back gently to find the bedding tousled into a messy lump. Whoever slept here didn't have the time to make the bed. Upon the pillow, a silver serving tray, with half a breakfast molding. Looking underneath you see a small chest with a skull emblazened on it.");
-            gameData.rooms[10].look.push("small chest");
+            input: "look bed",
+            result: function () {
+              print("You look over the largest bed you've ever seen. A tall, pearl white canopy extends upwards towards the ceilng, capped with golden finials. Golden drapes glisten gently in the torch light. You pull the drapes back gently to find the bedding tousled into a messy lump. Whoever slept here didn't have the time to make the bed. Upon the pillow, a silver serving tray, with half a breakfast molding. Looking underneath you see a small chest with a skull emblazened on it.");
+              gameData.rooms[10].look.push("small chest");
+            }
+          },
+          {
+            input: "look silver serving tray" || "look serving tray" || "look tray",
+            result: function () {
+              print("What once was a breakfast suited for nobility is now rotten, and molding. Beside it, a yellow parchment, delicately folded in half. You open the letter.");
+              print("Sire, please do not alert the Queen to what I am now about to write. While doing my rounds last night I came upon your brother having a conversation with a man who is known about the town to be a shady character. This may be, and probably is nothing but there's nothing going on in this castle that you shouldn't be privy to.", "manaColor");
+              print("As you set the letter down you notice a brass key laying on tray. Upon the handle, the royal crest.");
+            }
+          },
+          {
+            input: "take key",
+            result: function () {
+              print("You swiftly pocket the key.");
+              butlersKey.owned = true;
+              updateInvDisplay("butlers key");
+            }
+          },
+          {
+            input: "look frantic cultist",
+            result: function () {
+              print("You look over at the cultist as he paces he room. At seemingly random intervals he pulls open a drawer and mutters to himself inaudiably. He seems to be searching for something. He's staying far from the door to the small antechamber on the right side of the room. Periodically, scratches and screams erupt from the door before being replaced be a slow, agonizing moan into nothing. The cultist looks over to you.");
+              print("'You gonna help? Or what?'", "manaColor");
+            }
+          },
+          {
+            input: "look vase",
+            result: function () {
+              print("Dead roses fold over the edges of the vase, each black rose dropping gnarled petals upon the dresser. The vase itself is decorated with a scene that encircles the bulb of the hydria. You turn the vase delecately, trying to examine the entire scene, while petals rain down.");
+              print("A man stands over a vast field, mountains standing tall in the background. The field is full of men with spears. Next, the man stands over a large purple pool that rests atop a mountain. He is inside a decorated throne room, not unlike the one in this castle, but the back wall is black with two red eyes dominating the darkness. Lastly the man is in bed, surrounded by loved ones. He's holding his stomach in pain.");
+            }
+          },
+          {
+            input: "look dresser",
+            result: function () {
+              if (theOriginOfRain.owned == false) {
+                print("Old oaken dresser. The corners are dull from years of wear. A beautiful vase dipicting a scene rests atop it. You open the top drawer to find a bundle of stained clothing. But, by the looks of them they were once beautiful, and made from a good cloth. You sift through the clothing for a short time and come across a book not unlike the cipher you found in the library. Bound in a black leather, the book has no title on the spine, or in the front. As you hold it closer to examine it, brilliant letters begin to form: ");
+                print("The Origin of Rain", "yellow");
+                pickUpNew.play();
+                player.inventory.push("The origin of Rain");
+                theOriginOfRain.owned = true;
+                updateInvDisplay("The Origin of Rain");
+              } else(print("Old oaken dresser. The corners are dull from years of wear. A beautiful vase dipicting a scene rests atop it."));
+            }
+          },
+          {
+            input: "look painting",
+            result: function () {
+              print("A simple painting of a rainy field. There are boars giving birth to a human child. Human women surround them, rejoicing. What could that mean?");
+            }
+          },
+          {
+            input: "back to the grand hall",
+            result: function () {
+              moveThroughDoor.play();
+              currentRoom = gameData.rooms[8];
+              print("You climb down the stairs slowly. As you round the final stairs you find the grand hall to be empty. The onslaught of the crows pounding against the main gates continues.");
+            }
+          },
+          {
+            input: "look small antechamber",
+            result: function () {
+              print("Something inside is growling and scratching at the door. It seems in pain. Periodically it screeches and pounds against the door, the frame doesn't look like it can hold on much longer.");
+            }
+          },
+          {
+            input: "look end table",
+            result: function () {
+              print("A dusty end table filled with half burnt candles. No one cared to clean up after themselves. Inbetween two melted candles you notice a ripped piece of parchment. You look back at the cultist who seems distracted his distraught search. You open it carefully: ");
+              print("When he finally returns, we will be acosted by the crows. Do not let them in. When we weather his storm we will be blessed by him. When we are the sole survivors we will fall into his graces and be made whole in his eyes. Do not lose faith. We've lost many, but those who remain are strong enough to survive his embrace", ".blue-text");
+            }
+          },
+          {
+            input: "speak",
+            result: function () {
+              conversation("Frantic Cultist", "player_1");
+            }
+          },
+          {
+            input: "open small antechamber",
+            result: function () {
+              combat(player, antechamber_withered);
+              print("The cultist looks at you with admiration.");
+              print("I didn't think you'd be able to do that! Those things are way more difficult to fight than highly flammable birds.", "manaColor");
+            }
+          },
+          {
+            input: "look small chest",
+            result: function () {
+              if (serum.owned == false) {
+                print("You open the small chest carefully. The inside is lined with a fine purple velvet and in the center lays a small vial filled with a viscous blue liquid. As you slide it into your bag the cultist takes notice.");
+                print("That's what you came up here for? What now? Another one for the torture eh? What a shame.", 'manaColor');
+                player.inventory.push("serum");
+                serum.owned = true;
+              } else(print("The chest is empty."));
+            }
           }
-        },
-        {
-          input: "look silver serving tray" || "look serving tray" || "look tray",
-          result: function () {
-            print("What once was a breakfast suited for nobility is now rotten, and molding. Beside it, a yellow parchment, delicately folded in half. You open the letter.");
-            print("Sire, please do not alert the Queen to what I am now about to write. While doing my rounds last night I came upon your brother having a conversation with a man who is known about the town to be a shady character. This may be, and probably is nothing but there's nothing going on in this castle that you shouldn't be privy to.", "manaColor");
-            print("As you set the letter down you notice a brass key laying on tray. Upon the handle, the royal crest.");
-          }
-        },
-        {
-          input: "take key",
-          result: function () {
-            print("You swiftly pocket the key.");
-            butlersKey.owned = true;
-            updateInvDisplay("butlers key");
-          }
-        },
-        {
-          input: "look frantic cultist",
-          result: function () {
-            print("You look over at the cultist as he paces he room. At seemingly random intervals he pulls open a drawer and mutters to himself inaudiably. He seems to be searching for something. He's staying far from the door to the small antechamber on the right side of the room. Periodically, scratches and screams erupt from the door before being replaced be a slow, agonizing moan into nothing. The cultist looks over to you.");
-            print("'You gonna help? Or what?'", "manaColor");
-          }
-        },
-        {
-          input: "look vase",
-          result: function () {
-            print("Dead roses fold over the edges of the vase, each black rose dropping gnarled petals upon the dresser. The vase itself is decorated with a scene that encircles the bulb of the hydria. You turn the vase delecately, trying to examine the entire scene, while petals rain down.");
-            print("A man stands over a vast field, mountains standing tall in the background. The field is full of men with spears. Next, the man stands over a large purple pool that rests atop a mountain. He is inside a decorated throne room, not unlike the one in this castle, but the back wall is black with two red eyes dominating the darkness. Lastly the man is in bed, surrounded by loved ones. He's holding his stomach in pain.");
-          }
-        },
-        {
-          input: "look dresser",
-          result: function () {
-            if (theOriginOfRain.owned == false) {
-              print("Old oaken dresser. The corners are dull from years of wear. A beautiful vase dipicting a scene rests atop it. You open the top drawer to find a bundle of stained clothing. But, by the looks of them they were once beautiful, and made from a good cloth. You sift through the clothing for a short time and come across a book not unlike the cipher you found in the library. Bound in a black leather, the book has no title on the spine, or in the front. As you hold it closer to examine it, brilliant letters begin to form: ");
-              print("The Origin of Rain", "yellow");
-              pickUpNew.play();
-              player.inventory.push("The origin of Rain");
-              theOriginOfRain.owned = true;
-              updateInvDisplay("The Origin of Rain");
-            } else (print("Old oaken dresser. The corners are dull from years of wear. A beautiful vase dipicting a scene rests atop it."));
-          }
-        },
-        {
-          input: "look painting",
-          result: function () {
-            print("A simple painting of a rainy field. There are boars giving birth to a human child. Human women surround them, rejoicing. What could that mean?");
-          }
-        },
-        {
-          input: "back to the grand hall",
-          result: function () {
-            moveThroughDoor.play();
-            currentRoom = gameData.rooms[8];
-            print("You climb down the stairs slowly. As you round the final stairs you find the grand hall to be empty. The onslaught of the crows pounding against the main gates continues.");
-          }
-        },
-        {
-          input: "look small antechamber",
-          result: function () {
-            print("Something inside is growling and scratching at the door. It seems in pain. Periodically it screeches and pounds against the door, the frame doesn't look like it can hold on much longer.");
-          }
-        },
-        {
-          input: "look end table",
-          result: function () {
-            print("A dusty end table filled with half burnt candles. No one cared to clean up after themselves. Inbetween two melted candles you notice a ripped piece of parchment. You look back at the cultist who seems distracted his distraught search. You open it carefully: ");
-            print("When he finally returns, we will be acosted by the crows. Do not let them in. When we weather his storm we will be blessed by him. When we are the sole survivors we will fall into his graces and be made whole in his eyes. Do not lose faith. We've lost many, but those who remain are strong enough to survive his embrace", ".blue-text");
-          }
-        },
-        {
-          input: "speak",
-          result: function () {
-            conversation("Frantic Cultist", "player_1");
-          }
-        },
-        {
-          input: "open small antechamber",
-          result: function () {
-            combat(player, antechamber_withered);
-            print("The cultist looks at you with admiration.");
-            print("I didn't think you'd be able to do that! Those things are way more difficult to fight than highly flammable birds.", "manaColor");
-          }
-        },
-        {
-          input: "look small chest",
-          result: function () {
-            if (serum.owned == false) {
-              print("You open the small chest carefully. The inside is lined with a fine purple velvet and in the center lays a small vial filled with a viscous blue liquid. As you slide it into your bag the cultist takes notice.");
-              print("That's what you came up here for? What now? Another one for the torture eh? What a shame.", 'manaColor');
-              player.inventory.push("serum");
-              serum.owned = true;
-            } else (print("The chest is empty."));
-          }
-        }
           //end commands
         ]
       },
@@ -1105,8 +1130,7 @@ $(document).ready(function () {
           print("Fight the shardkeeper.");
           print("Turn back");
         },
-        commands: [
-          {
+        commands: [{
             input: "fight the shardkeeper",
             result: function () {
               combat(player, weakenedShardKeeper);
@@ -1144,7 +1168,7 @@ $(document).ready(function () {
                 print("You brace yourself for a moment before pulling the serum out of your bag slowly. The viscous blue liquid bubbles angrily. You hold your breath, and hurl the vial at the men. The shardkeeper lets out an frenzied howl and charges the men. They're only able to let out screams as the monster tears into them. You spring out from the boxes as the keeper is preoccupied and make your way briskly down the stairs.");
                 currentRoom = gameData.rooms[8];
                 print(currentRoom.description);
-              } else (print("Invalid response."));
+              } else(print("Invalid response."));
             }
           },
           {
@@ -1217,7 +1241,7 @@ $(document).ready(function () {
       },
       {
         name: "Royal Dressing Room", //12
-        look: ["cloak", "wardrobe", "hunting garb", "dresser", "cheval mirror", "ornate rug"],
+        look: ["cloak", "wardrobe", "hunting garb", "dresser", "cheval mirror", "ornate rug", "back to the grand hall"],
         description: function () {
           print("----- Royal Dressing Room -----", "goldColor");
           print("You enter the room slowly, peeking around the door. In the room, examining a large, marble bust of the king is one of the cultists. In an attempt to be confident you approach the man but as you draw near his arm flings out, and stiff arms you in the chest. He slowly turns to face you, revealing the strange man who spoke to you after you woke.");
@@ -1235,8 +1259,7 @@ $(document).ready(function () {
         swordTaken: false,
         manaPotTaken: false,
         noteShown: false,
-        commands: [
-          {
+        commands: [{
             input: "look cloak",
             result: function () {
               print("A cloak is hanging by a hook drilled into the cold, white marble of the dressing room. The cloak is made from a leather finer than you've ever felt. It is rimmed in thick wolves fur and carved into the center, the royal crest. It looks warm, and inviting.");
@@ -1304,7 +1327,7 @@ $(document).ready(function () {
               print("I am your god Jack", "chrColor");
               print("Suddenly you are shot like an arrow down the room, careening towards the light.");
               print("As you fly the voices assault you, peeling your consciousness back until it finds what it is looking for.");
-              var continueButton = document.createElement("BUTTON");   // Create a <button> element
+              var continueButton = document.createElement("BUTTON"); // Create a <button> element
               continueButton.innerHTML = "Relent"; //Gives the button text
               continueButton.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
               $(continueButton).insertBefore("#placeholder"); //Places the button in the text stream
@@ -1321,7 +1344,7 @@ $(document).ready(function () {
                 print("Her screaming gets louder.");
                 print("You try to cover your ears but it does nothing to stop the screams.");
                 print("They continue until your mother wont scream any more.");
-                var keepGoing = document.createElement("BUTTON");   // Create a <button> element
+                var keepGoing = document.createElement("BUTTON"); // Create a <button> element
                 keepGoing.innerHTML = "Relent"; //Gives the button text
                 keepGoing.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
                 $(keepGoing).insertBefore("#placeholder"); //Places the button in the text stream
@@ -1345,6 +1368,14 @@ $(document).ready(function () {
             }
           },
           {
+            input: "back to the grand hall",
+            result: function () {
+              moveThroughDoor.play();
+              currentRoom = gameData.rooms[8];
+              print("You are back in the grand hall.");
+            }
+          },
+          {
             input: 'open wardrobe',
             result: function () {
               print("You open the dresser and glance around the bright green silken coats and ties. Out of the corner of your eye you notice a glass vial protruding from one of the pockets. You lift it carefully and examine the contents. A deep navy hued liquid swirls and plays with the ambient light of the room in a way you've never seen. Holding your torch up to the liquid you notice that the light exits the vial with a greater intensity than it entered.");
@@ -1364,7 +1395,7 @@ $(document).ready(function () {
               if (currentRoom.swordTaken == false) {
                 print("In the corner of the room, tucked into a small alcove you see a bundle of gear, clearly dropped by hurried hands. Most of the clothing here is simply thin, flamboyantly colored silk, not useful to you. Leaning on the corner of the marbled brick walls you see a hunting sabre, sheathed in an almost black leather.")
                 currentRoom.look.push('hunting sabre');
-              } else (print("In the corner of the room, tucked into a small alcove you see a bundle of gear, clearly dropped by hurried hands. Most of the clothing here is simply thin, flamboyantly colored silk, not useful to you."));
+              } else(print("In the corner of the room, tucked into a small alcove you see a bundle of gear, clearly dropped by hurried hands. Most of the clothing here is simply thin, flamboyantly colored silk, not useful to you."));
             }
           },
           {
@@ -1381,7 +1412,7 @@ $(document).ready(function () {
                 print("You got the royal sabre! Equip with 'equip royal sabre'");
                 royalSabre.owned = true;
                 currentRoom.swordTaken = true;
-              } else (print("There are no more swords to take."));
+              } else(print("There are no more swords to take."));
             }
           },
           {
@@ -1398,7 +1429,7 @@ $(document).ready(function () {
                 currentRoom.healthPotTaken = true;
                 player.healthPotNum = player.healthPotNum + 1;
                 refreshPlayerStats();
-              } else (print("You dig around some more, but find nothing of value."))
+              } else(print("You dig around some more, but find nothing of value."))
             }
           },
           {
@@ -1429,7 +1460,50 @@ $(document).ready(function () {
             }
           }
         ]
-      } //end of room 12 commands
+      }, //end of room 12 commands
+      {
+        name: 'cramped hallway', //13
+        look: ['door leading east, sconce'],
+        description: function () {
+          print("You awake in a cold sweat. The room is tight, and dark. Thick stone everywhere you look suffocates you. Screams and manical laughter subdued by the thick walls dances all around you. Fear electrocutes you and a wild panic takes over your mind. You scream with the chorus and try to run through the darkness. It doesn\'t take long for you to slam into a wall, and fall to the floor. You sit for a moment, dazed and terrified. You tell yourself to calm down, you\'ll find your way out of this. That\'s when you notice the dark shape of a torch laying on the ground.");
+          print("To take an item type 'take [item name]'", "intColor");
+        },
+        commands: [{
+            input: 'look old door',
+            result: function () {
+              print("A large oak door lays before you. The screams still echoing around you, you lean closer trying to hear what may be on the other side. Ear glued to the door, your hand reaches down to grasp the latch. The door opens freely. Try typing 'open old door' to find out whats on the other side.");
+            }
+          },
+          {
+            input: 'look torch',
+            result: function () {
+              print("The torch lays lifeless on the ground.");
+            }
+          },
+          {
+            input: 'take torch',
+            result: function () {
+              if (torch.owned == false) {
+                print("Looking closer at the torch you find a flint and steel placed nearby, as if by a delicate hand. The hair on the back of your head stands up. You light the torch and the room blooms with light. Taking another look, you find that you're in a small, windowless room with one door on the western side. Try typing 'Look old door' to look closer. Or, try 'consider torch' to look at it.");
+                player.inventory.push("torch");
+                torch.owned = true;
+                updateInvDisplay("torch");
+                pickUpNew.play();
+              } else(print("You've already picked up the torch."));
+            }
+          },
+          {
+            input: 'open old door',
+            result: function () {
+              currentRoom = gameData.rooms[5];
+              player.travelHistory.push(currentRoom);
+              currentRoom.description();
+              moveThroughDoor.play();
+            }
+          },
+        ]
+
+      }, //end of room 13
     ]
   }; //end of gameData
 
@@ -1439,8 +1513,12 @@ $(document).ready(function () {
   function attachListeners() {
     //  Event listeners
     document.getElementById('useWeapon').addEventListener("click", useWeapon, false);
-    document.getElementById('useFireball').addEventListener("click", function () { useDamageSpell(fireBall) }, false);
-    document.getElementById('useIce').addEventListener("click", function () { useDamageSpell(iceShard) }, false);
+    document.getElementById('useFireball').addEventListener("click", function () {
+      useDamageSpell(fireBall)
+    }, false);
+    document.getElementById('useIce').addEventListener("click", function () {
+      useDamageSpell(iceShard)
+    }, false);
     document.getElementById('useHealthPot').addEventListener("click", useHealthPot, false);
     document.getElementById('backToGame').addEventListener("click", backToGame, false);
     document.getElementById('startGame').addEventListener("click", startGame, false);
@@ -1451,11 +1529,13 @@ $(document).ready(function () {
     $("<p class='text-center " + color + "'>" + input + "</p>").insertBefore("#placeholder");
     //reset textbox
     $("#commandline").val("");
-    $("html, body").animate({ scrollTop: $(document).height() }, 200);
+    $("html, body").animate({
+      scrollTop: $(document).height()
+    }, 200);
   }
 
   function dialogueButton(input, speaker) {
-    var name = document.createElement("BUTTON");   // Create a <button> element
+    var name = document.createElement("BUTTON"); // Create a <button> element
     name.innerHTML = input; //Gives the button text
     name.classList.add("dialogue_button"); //Gives the button the dialogue_button CSS style
     $(name).insertBefore("#placeholder"); //Places the button in the text stream
@@ -1463,8 +1543,7 @@ $(document).ready(function () {
       conversation(speaker, "player_1");
       name.disabled = true;
       name.classList.add("disabled_button");
-    }
-    )
+    })
   }
 
   attachListeners();
@@ -1491,16 +1570,46 @@ $(document).ready(function () {
         }
       }
 
-      
+
       //BEGIN SHIT THAT NEEDS TO GO
       //skip to castle
       if (input == "skip") {
         currentRoom = gameData.rooms[12];
       }
 
-      if(input == "give mace"){
+      if (input == "give mace") {
         Object.assign(player, steelMace);
       }
+
+      //fight testing to be removed
+      if (input == "fight") {
+        var testRat1 = new rat("Large Rat 1", 50, 50, 0.1,
+          function () {
+            combatPrint("You recieved 50 gold and 50xp!");
+          }, 50, "The large rat looks up to you from the corner of the room. Its teeth are barred.", 5);
+        var testRat2 = new rat("Large Rat 2", 50, 50, 0.1,
+          function () {
+            combatPrint("You recieved 50 gold and 50xp!");
+          }, 50, "The large rat looks up to you from the corner of the room. Its teeth are barred.", 5);
+        steelMace.owned = true;
+        claymore.owned = true;
+        combat(player, testRat1, testRat2, "rats");
+      }
+
+      if (input == "single fight") {
+        combat(player, fieldrat, null, null);
+      }
+
+      if (input == 'god mode') {
+        player.agility = 100;
+        player.intelligence = 100;
+        player.strength = 100;
+        Object.assign(player, claymore);
+        Object.assign(player, aeleasbulwark);
+        Object.assign(player, rainsPlate);
+      }
+
+      //END SHIT THAT NEEDS TO GO
 
       //audio commands
       if (input == "stop audio") {
@@ -1518,7 +1627,7 @@ $(document).ready(function () {
         print("You open up the cipher, and begin work on the scroll. After some time you work out the message. It reads: 'Thaddius on the ways of man: We must follow in the footsteps of Rain and follow his three rules, which are as follows. One: Do not succumb to the powers of idols. This serves only to cause war. Two: Do not war against another man. This serves only to empower Umbril and his creatures. Three: Do not give into the influences Umbril. This serves only to end mankind.' ", "parchmentColor");
         return;
       }
-      if (input == "use cipher on note" && cipher.owned === true && noteUnderRug.owned === true && noteUnderRug.deciphered === false) {
+      if (input == "use cipher on undeciphered note" && cipher.owned === true && noteUnderRug.owned === true && noteUnderRug.deciphered === false) {
         print("You open up the cipher, and begin work on the note. After some time you work out the message. It reads: 'Sire, I've put together that contraption you requested. Should you ever need access to it, you only need to turn your likeness until it faces east. I do hope it serves you well. P.S. - Since I'm already going to go through the trouble of encrypting this message, I feel like this would be a good time to ask for a small raise in my pay? My girl will be coming into school age soon and I'd like to send her somewhere nice.", "parchmentColor");
         print("You consider showing the note to the old man.");
         noteUnderRug.deciphered = true;
@@ -1613,11 +1722,6 @@ $(document).ready(function () {
 
       //use Commands..maybe
 
-      //fight testing to be removed
-      if (input == "fight") {
-        combat(player, largeRat);
-      }
-
 
       //consider commands
       if (input == "consider old sword" && oldSword.owned === true) {
@@ -1655,6 +1759,9 @@ $(document).ready(function () {
       player.pointsToSpend = player.pointsToSpend + xpPoints;
       print("You've hit level " + player.level + "!", "yellow");
       toLevelUp.shift();
+      player.agility = player.agility + 1;
+      player.strength = player.strength + 1;
+      player.intelligence = player.intelligence + 1;
     }
   }
 
@@ -1672,37 +1779,71 @@ $(document).ready(function () {
   //checks to see if the enemy has already attacked. Player goes first.
   var hasAttacked = true;
   //prints out combat to combat div
+
+  //BEGIN MULTI BATTLE TEST
+
+
+
   function scrollSmoothToBottom(id) {
     var div = document.getElementById(id);
     $('#' + id).animate({
       scrollTop: div.scrollHeight - div.clientHeight
     }, 500);
   }
+
   function combatPrint(input, color) {
     $("#combatOutput").append("<p class='text-center'" + color + ">" + input + "</p>");
     scrollSmoothToBottom("combat");
   }
   //  Combat section
   //checks if the game is over by comparing health
+
   function gameOverCheck() {
     if (player.health <= 0) {
       combatPrint("You lose. Refresh to try again.");
       return true;
-    } else if (enemy.health <= 0) {
-      combatPrint("You've defeated the " + enemy.name + ".");
-      combatPrint("You gain " + enemy.xp + "XP!");
-      player.xp = player.xp + enemy.xp;
-      levelUpCheck(player.xp);
-      refreshPlayerStats();
-      player.gold = player.gold + enemy.goldReward;
-      refreshPlayerGold();
-      $("#backToGame").fadeIn(1000);
-      battleVictory.play();
-      enemy.death.play();
-      enemy.loot();
-      return true;
     }
-    return false;
+    if (doubleFight == true) {
+      console.log("Double fight end game check was made.");
+      if (firstEnemy.health <= 0 && secondEnemy.health <= 0) {
+        isGameOver = true; //to be removed
+        combatPrint("You've defeated the " + groupName + ".");
+        var xpGain = firstEnemy.xp + secondEnemy.xp;
+        combatPrint("You gain " + xpGain + "XP!");
+        player.xp = player.xp + xpGain;
+        levelUpCheck(player.xp);
+        refreshPlayerStats();
+        player.gold = player.gold + firstEnemy.goldReward + secondEnemy.goldReward;
+        refreshPlayerGold();
+        $("#backToGame").fadeIn(1000);
+        battleVictory.play();
+        firstEnemy.death.play();
+        firstEnemy.loot();
+        secondEnemy.loot();
+        return true;
+      }
+      return false;
+    }
+
+    if (doubleFight == false) {
+      console.log("Single fight end game check was made.");
+      if (firstEnemy.health <= 0) {
+        isGameOver = true; //to be removed
+        combatPrint("You've defeated the " + firstEnemy.name + ".");
+        combatPrint("You gain " + firstEnemy.xp + "XP!");
+        player.xp = player.xp + firstEnemy.xp;
+        levelUpCheck(player.xp);
+        refreshPlayerStats();
+        player.gold = player.gold + firstEnemy.goldReward;
+        refreshPlayerGold();
+        $("#backToGame").fadeIn(1000);
+        battleVictory.play();
+        firstEnemy.death.play();
+        firstEnemy.loot();
+        return true;
+      }
+      return false;
+    }
   }
 
   //returns the player to the main game
@@ -1715,7 +1856,9 @@ $(document).ready(function () {
     battleMusic.pause();
     battleMusic.currentTime = 0;
     currentSong.play();
-    $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+    $("html, body").animate({
+      scrollTop: $(document).height()
+    }, 1000);
   }
 
   //takes in the maxmum and minimum damage a given move can inflict and returns a random value between those ranges.
@@ -1736,15 +1879,20 @@ $(document).ready(function () {
 
   //checks enemy object vulnerability and compares it to the current damage type the player is performing.
   function checkForDamageType(damageTypeAttacking, enemyDamageType) {
-    for (var i = 0; i < enemyDamageType.vulnerability.length; i++) {
-        if (damageTypeAttacking === enemyDamageType.vulnerability[i][0]) {
-          var output = {
-            vulnerabilityName: enemyDamageType.vulnerability[i][0],
-            additionalDamage: enemyDamageType.vulnerability[i][1]
-          }
-          return output;
-        }
+    var output = {
+      isTrue: false,
+      vulnerabilityname: 0,
+      additionalDamage: 0
     }
+    for (var i = 0; i < enemyDamageType.vulnerability.length; i++) {
+      if (damageTypeAttacking === enemyDamageType.vulnerability[i][0]) {
+        output.vulnerabilityName = enemyDamageType.vulnerability[i][0];
+        output.additionalDamage = enemyDamageType.vulnerability[i][1];
+        output.isTrue = true;
+        return output;
+      }
+    }
+    return output.isTrue = false;
   }
   //loops through player inventory for any given value and returns a boolean.
   function inventorySearch(input) {
@@ -1760,19 +1908,54 @@ $(document).ready(function () {
   function dodgeCheck(dodgeChance) {
     var randomNumber = Math.random();
     if (dodgeChance <= randomNumber) {
-      console.log(dodgeChance);
-      console.log(randomNumber);
+      //console.log(dodgeChance);
+      //console.log(randomNumber);
       return false;
     } else {
       return true;
     }
   }
 
+  function nextTurn() {
+    console.log("The turn counter is: " + turnCounter);
+    checkTheDead(); //Enemy can still attack on the turn that it's died.
+    console.log("This is the selected weapon " + document.getElementById("inventory").selectedIndex);
+    if (turnCounter >= 0) {
+      if (eval(turnOrder[turnCounter][0]).isPlayer === true) {
+        playerTurn = true;
+        combatPrint("It is your turn.");
+      } else if (eval(turnOrder[turnCounter][0]).isPlayer === false) {
+        enemyTurn(eval(turnOrder[turnCounter][0]).indentifier);
+      }
+    } else {
+      combatPrint("This turn is finished.");
+      combatPrint("New turn! Be ready!");
+      turnOrder = [];
+      determineTurnRoll();
+    }
+  }
 
-  function enemyTurn() {
+  function determineTurnRoll() {
+    for (var i = 0; i < combatants.length; i++) {
+      var agiRoll = Math.floor(Math.random() * 10 + combatants[i].agility);
+      console.log(combatants[i].name + " has a roll of " + agiRoll);
+      combatants[i].turnRoll = agiRoll;
+      turnOrder.push([combatants[i].indentifier, combatants[i].turnRoll]);
+      turnOrder.sort(function (a, b) {
+        return a[1] - b[1]
+      });
+    }
+    turnCounter = turnOrder.length - 1;
+    nextTurn();
+  }
+
+
+  function enemyTurn(enemy) {
+    enemy = eval(enemy);
+    console.log(enemy.name + " is attacking.");
     if (gameOverCheck() === false) {
-      var didPlayerDodge = dodgeCheck(player.agility * .01 / 2);
-      var didPlayerBlock = dodgeCheck(player.shieldBlockChance * .01 / 2);
+      var didPlayerDodge = dodgeCheck(player.agility * 0.01 / 2);
+      var didPlayerBlock = dodgeCheck(player.shieldBlockChance * 0.01 / 2);
       if (didPlayerDodge == false && didPlayerBlock == false) {
         enemyMove = calcEnemyMove(enemy);
         enemyDamage = calcDamage(enemy.moves[enemyMove][1], 1);
@@ -1789,35 +1972,85 @@ $(document).ready(function () {
         calcHealthBars("playerHealth", player.health);
         refreshPlayerStats();
         enemy.sounds.play();
-        hasAttacked = true;
+        turnCounter--;
+        checkTheDead();
+        setTimeout(function () {
+          nextTurn();
+        }, 1000);
       } else if (didPlayerDodge == true && didPlayerBlock == false) {
         combatPrint(enemy.name + " tries to attack but you dodge out of the way!");
         enemy.sounds.play();
-        hasAttacked = true;
+        turnCounter--;
+        checkTheDead();
+        setTimeout(function () {
+          nextTurn();
+        }, 1000);
       } else if (didPlayerDodge == false && didPlayerBlock == true) {
         combatPrint(enemy.name + " tries to attack but you block just in time!");
         enemy.sounds.play();
         //insert some blocking sounds here!
-        hasAttacked = true;
+        turnCounter--;
+        checkTheDead();
+        setTimeout(function () {
+          nextTurn();
+        }, 1000);
       } else {
         combatPrint("You parry your opponent doing some extra damage!");
         combatPrint("You deal an extra " + player.agility / 2 + " damage!");
         combatPrint("Now's your time to strike!");
         //insert some cool parrying sounds here!
         enemy.health = enemy.health - player.agility / 2;
-        hasAttacked = true;
         enemy.sounds.play();
+        turnCounter--;
+        checkTheDead();
+        setTimeout(function () {
+          nextTurn();
+        }, 1000);
+      }
+    }
+  }
+
+
+  function whoWillPlayerAttack() {
+    if (document.getElementById("attackInterface").selectedIndex == 0) { //maybe use this for inventory!!!????
+      combatPrint("You must decide on who to attack!");
+    } else if (document.getElementById("attackInterface").selectedIndex == 1) {
+      toAttack = firstEnemy;
+      return toAttack;
+    } else if (document.getElementById("attackInterface").selectedIndex == 2) {
+      toAttack = secondEnemy;
+      return toAttack;
+    }
+  }
+
+  function checkTheDead() {
+    for (var i = 0; i < combatants.length - 1; i++) {
+      if (combatants[i].health <= 0) {
+        combatPrint(combatants[i].name + " has died!");
+        combatants.splice(i, 1);
+        turnCounter--;
+      }
+    }
+    for (var k = 0; k < turnOrder.length - 1; k++) {
+      if (turnOrder[k].health <= 0) {
+        turnOrder.splice(i, 1);
       }
     }
   }
 
   function useWeapon() {
-    if (hasAttacked === false) {
+    whoWillPlayerAttack();
+    var enemy = toAttack;
+    if(enemy.health <= 0){
+      combatPrint("You've already killed " + enemy.name);
+      return false;
+    }
+    if (playerTurn === false) {
       return combatPrint("You are still recovering from your attack.");
     }
     if (
       gameOverCheck() === false &&
-      hasAttacked === true
+      playerTurn === true
     ) {
       if (dodgeCheck(enemy.dodgeChance) == false) {
         playerDamage = calcDamage(player.weaponStats, 1);
@@ -1833,16 +2066,22 @@ $(document).ready(function () {
           playerRealDamage
         );
         var damageTypeCheck = checkForDamageType(player.weaponDamageType, enemy);
-        if (damageTypeCheck.additionalDamage > 0) {
+        if (damageTypeCheck.isTrue == true) {
           combatPrint(
             "Your enemy is weak against " + player.weaponDamageType + "! Your " + player.weaponName + " deals an extra " + damageTypeCheck.additionalDamage + " damage!"
           );
           enemy.health = enemy.health - damageTypeCheck.additionalDamage;
         }
-        calcHealthBars("enemyHealth", enemy.health);
+        if (document.getElementById("attackInterface").selectedIndex == 1) {
+          calcHealthBars("enemyHealth1", enemy.health);
+        } else if (document.getElementById("attackInterface").selectedIndex == 2) {
+          calcHealthBars("enemyHealth2", enemy.health);
+        }
         player.weaponSound.play();
-        setTimeout(enemyTurn, 1000);
-        hasAttacked = false;
+        playerTurn = false;
+        turnCounter--;
+        checkTheDead();
+        nextTurn();
       } else {
         combatPrint(
           "You attack " +
@@ -1851,11 +2090,15 @@ $(document).ready(function () {
           player.weaponName +
           " but they smoothly dodge the attack!"
         );
-        setTimeout(enemyTurn, 1000);
-        hasAttacked = false;
+        playerTurn = false;
+        checkTheDead();
+        turnCounter--;
+        setTimeout(function () {
+          nextTurn();
+        }, 1000);
       }
     } else {
-      combatPrint("The game is over.");
+      combatPrint("The fight has ended.");
     }
   }
 
@@ -1918,21 +2161,69 @@ $(document).ready(function () {
     }
   }
 
+  function createOption(name, value, where) {
+    var select = document.getElementById(where);
+
+    var newOption = document.createElement("option");
+    var newOptionValue = document.createTextNode(name);
+
+    newOption.appendChild(newOptionValue);
+    newOption.value = value;
+    select.insertBefore(newOption, select.lastChildNode);
+  }
+
+  //Might be useful for inventory
+  $('#inventory').change(function () {
+    val = $("#inventory option:selected").html();
+    //console.log(val);
+    selectElement = document.querySelector('#inventory'); 
+    output = selectElement.value;
+    console.log(output);
+    combatPrint("You pull out your " + val);
+    Object.assign(player, eval(output));
+  });
+
   //combat function
-  function combat(player, enemyFighting) {
+  function combat(player, enemy1, enemy2, group) {
+    if (group) {
+      groupName = group;
+    }
     $('#console').fadeOut(0);
     $(".combatMenu").fadeIn(50);
     $("#combat").fadeIn(50);
     $("#combatWrapper").fadeIn(50);
-    enemy = enemyFighting;
-    combatPrint(enemy.greeting);
-    if (enemy.attackFirst === true) {
-      enemyTurn();
+    combatants.push(player);
+    firstEnemy = enemy1;
+    firstEnemy.indentifier = "firstEnemy";
+    combatants.push(firstEnemy);
+
+    for(var inv = 0; inv < weaponList.length; inv++){
+      if(weaponList[inv].owned == true){
+      createOption(weaponList[inv].weaponName,weaponList[inv].identifier, "inventory");
+      }
+    }
+
+    createOption(firstEnemy.name, "firstEnemy", "attackInterface"); //These two lines fill the "select enemy to attack" drop down.
+    combatPrint(enemy1.greeting);
+    doubleFight = false;
+    if (enemy2 != null) {
+      secondEnemy = enemy2;
+      secondEnemy.indentifier = "secondEnemy";
+      combatants.push(secondEnemy);
+      combatPrint(enemy2.greeting);
+      createOption(secondEnemy.name, "secondEnemy", "attackInterface");
+      $("#enemyHealth2").fadeIn(50);
+      document.getElementById("enemyHealth2").style.height = enemy2.health + "px";
+      setTimeout(secondEnemy.introSound.play(), 1500);
+      doubleFight = true;
     }
     currentSong.pause();
-    enemy.introSound.play();
+    enemy1.introSound.play();
     battleMusic.play();
-    document.getElementById("enemyHealth").style.height = enemy.health + "px";
+    $("#enemyHealth1").fadeIn(50);
+    document.getElementById("enemyHealth1").style.height = enemy1.health + "px";
+
+    determineTurnRoll();
   }
   //COMBAT END
 
@@ -1995,10 +2286,12 @@ $(document).ready(function () {
     console.log(Dialogue.dialogues);
     $("body").removeClass("forrest-bg");
     $(".backbutton").fadeOut(50);
-    $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+    $("html, body").animate({
+      scrollTop: $(document).height()
+    }, 1000);
   });
 
 });
- //END CONVERSATION
+//END CONVERSATION
 
- //END DOCUMENT
+//END DOCUMENT
