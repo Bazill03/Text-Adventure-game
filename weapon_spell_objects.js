@@ -2,6 +2,7 @@
 
 var fists = {
   weaponName: "fists",
+  identifier: "fists",
   weaponStats: 1,
   weaponDamageType: "blunt",
   weaponSound: punchSound
@@ -9,6 +10,7 @@ var fists = {
 
 var oldSword = {
   weaponName: "old sword",
+  identifier: "oldSword",
   weaponStats: 5,
   weaponDamageType: "slash",
   owned: false,
@@ -22,6 +24,7 @@ var oldSword = {
 
 var woodenMallet = {
   weaponName: "wooden mallet",
+  identifier: "woodenMallet",
   weaponStats: 3,
   weaponDamageType: "blunt",
   owned: false,
@@ -35,6 +38,7 @@ var woodenMallet = {
 
 var royalSabre = {
   weaponName: "Royal Sabre",
+  identifier: "royalSabre",
   owned: false,
   weaponCondition: "A royal sabre. To be changed at a later date.",
   findText: "Teach the player how to equip.",
@@ -48,6 +52,7 @@ var royalSabre = {
 
 var steelMace = {
   weaponName: "Steel mace",
+  identifier: "steelMace",
   owned: false,
   weaponCondition: "Candle light glints off of every polished surface. Truely a powerful weapon.",
   findText: "You wrap your fingers around the leather hilt of the mace. Every possible angle seems impossibly polished. Judging by the condition of the weapon you guess that this mace is something someone is very proud of. It was well taken care of.",
@@ -61,6 +66,7 @@ var steelMace = {
 
 var claymore = {
   weaponName: "Claymore",
+  identifier: "claymore",
   weaponStats: 35,
   owned: false,
   weaponDamageType: "slash",
@@ -78,6 +84,45 @@ var makeshiftShield = {
   shieldDescription: "What once was an old pot lid is now the only thing between you, and the gnashing teeth of a charging withered.",
   owned: false
 };
+
+var aeleasbulwark = {
+  shieldStats: 20,
+  shieldBlockChance: 20,
+  shieldName: "Aelea's Bulwark",
+  shieldDescription: "A wall of solid golden light that emits from your wrist at your time of greatest need.",
+  owned: false
+}
+//armor
+var rags = {
+  armorName: "rags",
+  armorStats: 0,
+  armorDescription: "You look over your 'rags' despairingly. You feel cold, and vulnerable."
+};
+
+var cultistRobe = {
+  armorName: "Cultist Disguise",
+  owned: false,
+  armorCondition: "Bloody and full of stab wounds. No one should notice.",
+  armorStats: 0,
+  armorDescription: "The robes of the followers of Thaddius. Cultists will believe you are one of their brothers."
+};
+
+var leatherChest = {
+  armorName: "leather vest",
+  owned: false,
+};
+
+var chainMail = {
+  stats: 10,
+  owned: false,
+  description: "You look over your 'chainmail' with pride." //To be replaced by cooler text with context.
+};
+
+var rainsPlate = {
+  stats: 50,
+  owned: false,
+  description: "A sturdy white and gold plate armor. The chest is emblazened with the royal crest. You are now an elite warrior"
+}
 
 
 //spells
@@ -194,32 +239,8 @@ noteUnderRug = {
   
 }
 
-//armor
-var rags = {
-  armorName: "rags",
-  armorStats: 0,
-  armorDescription: "You look over your 'rags' despairingly. You feel cold, and vulnerable."
-};
-
-var cultistRobe = {
-  armorName: "Cultist Disguise",
-  owned: false,
-  armorCondition: "Bloody and full of stab wounds. No one should notice.",
-  armorStats: 0,
-  armorDescription: "The robes of the followers of Thaddius. Cultists will believe you are one of their brothers."
-};
-
-var leatherChest = {
-  armorName: "leather vest",
-  owned: false,
-};
-
-var chainMail = {
-  stats: 10,
-  owned: false,
-  description: "You look over your 'chainmail' with pride." //To be replaced by cooler text with context.
-};
-
 var smallHallwayBarrel = {
   opened: false
 };
+
+var weaponList = [fists,oldSword,woodenMallet,royalSabre,steelMace,claymore];
