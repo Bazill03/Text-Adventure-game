@@ -306,6 +306,11 @@ pre {
   color: #278783;
 }
 
+/*Begin Stats*/
+#levelUpMenu {
+  display: none;
+}
+
 /*audio controls*/
 footer {
   bottom: 0;
