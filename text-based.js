@@ -1522,6 +1522,7 @@ $(document).ready(function () {
     document.getElementById('useHealthPot').addEventListener("click", useHealthPot, false);
     document.getElementById('backToGame').addEventListener("click", backToGame, false);
     document.getElementById('startGame').addEventListener("click", startGame, false);
+    document.getElementById('useStun').addEventListener("click", stunSpell, false);
   }
 
   //prints out input to screen
@@ -1928,8 +1929,12 @@ $(document).ready(function () {
         enemyTurn(eval(turnOrder[turnCounter][0]).indentifier);
       }
     } else {
-      combatPrint("This turn is finished.");
-      combatPrint("New turn! Be ready!");
+      setTimeout(function () {
+        combatPrint("This turn is finished.");
+      }, 500);
+      setTimeout(function () {
+        combatPrint("New turn! Be ready!");
+      }, 500);
       turnOrder = [];
       determineTurnRoll();
     }
@@ -1949,10 +1954,16 @@ $(document).ready(function () {
     nextTurn();
   }
 
-
   function enemyTurn(enemy) {
     enemy = eval(enemy);
     console.log(enemy.name + " is attacking.");
+    if(enemy.stunned > 0){
+      combatPrint(enemy.name + " is stunned and loses its chance to attack!");
+      enemy.stunned = enemy.stunned - 1;
+      turnCounter--;
+      nextTurn();
+      return false;
+    }
     if (gameOverCheck() === false) {
       var didPlayerDodge = dodgeCheck(player.agility * 0.01 / 2);
       var didPlayerBlock = dodgeCheck(player.shieldBlockChance * 0.01 / 2);
@@ -2102,8 +2113,41 @@ $(document).ready(function () {
     }
   }
 
+  function stunSpell(){
+    whoWillPlayerAttack();
+    var enemy = toAttack;
+    if (playerTurn === false) {
+      return combatPrint("You are still recovering from your attack.");
+    }
+    if (
+      gameOverCheck() === false &&
+      playerTurn === true &&
+      player.mana >= stun.manaCost &&
+      stun.playerHas === true
+    ) {
+      combatPrint("You send out an electric shock paralyzing the " + enemy.name);
+      enemy.stunned = stun.stats;
+      player.mana = player.mana - stun.manaCost;
+      turnCounter--;
+      playerTurn = false;
+      stun.sound.play();
+      calcHealthBars("playerMana", player.mana);
+      setTimeout(function () {
+        nextTurn();
+      }, 1000);
+      } else {
+        combatPrint("You don't have enough mana, or don't have that spell.");
+      }
+  }
+
   function useDamageSpell(spellName) {
-    if (hasAttacked === false) {
+    whoWillPlayerAttack();
+    var enemy = toAttack;
+    if(enemy.health <= 0){
+      combatPrint("You've already killed " + enemy.name);
+      return false;
+    }
+    if (playerTurn === false) {
       return combatPrint("You are still recovering from your attack.");
     }
     if (
@@ -2133,11 +2177,18 @@ $(document).ready(function () {
         );
         enemy.health = enemy.health - damageTypeCheck.additionalDamage;
       }
-      calcHealthBars("enemyHealth", enemy.health);
+      if (document.getElementById("attackInterface").selectedIndex == 1) {
+        calcHealthBars("enemyHealth1", enemy.health);
+      } else if (document.getElementById("attackInterface").selectedIndex == 2) {
+        calcHealthBars("enemyHealth2", enemy.health);
+      }
       calcHealthBars("playerMana", player.mana);
       spellName.sound.play();
-      setTimeout(enemyTurn, 1000);
-      hasAttacked = false;
+      playerTurn = false;
+      turnCounter--;
+      setTimeout(function () {
+        nextTurn();
+      }, 1000);
     } else {
       combatPrint("You do not have enough mana or do not have the spell.");
     }

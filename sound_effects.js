@@ -26,6 +26,7 @@ var donkeyBraying = new Audio("soundeffects/donkey-braying.mp3");
 var clipClop = new Audio("soundeffects/clipclop.mp3");
 var echoingScreams = new Audio("soundeffects/326813__mrose6__echoed-screams.wav");
 var jumpScare = new Audio("soundeffects/371709__sapisvr__echo-jumpscare.wav");
+var electricShock = new Audio("soundeffects/315918__benjaminharveydesign__electric-zap.aiff");
 
 //claymore
 var swordAttackSound = new Audio("soundeffects/35213__abyssmal__slashkut.wav");

@@ -228,6 +228,11 @@ pre {
   background: #248092;
 }
 
+#useStun {
+  background: #55146e;
+  color: white;
+}
+
 #useHealthPot {
   background: #932424;
 }

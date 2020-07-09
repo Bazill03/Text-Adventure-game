@@ -58,6 +58,8 @@ class rat {
     this.greeting = greeting;
     this.attackFirst = false;
     this.isPlayer = false;
+    //debuffs
+    this.stunned = 0;
     this.moveNum = 2;
     this.moves = [
       ["bite", 2],
@@ -85,6 +87,8 @@ class withered {
     this.goldReward = goldReward;
     this.indentifier = null;
     this.isPlayer = false;
+    //defuffs
+    this.stunned = 0;
     this.turnRoll = 0;
     this.attackFirst = true;
     this.moveNum = 2;

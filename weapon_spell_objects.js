@@ -142,6 +142,16 @@ var fireBall = {
   castText: "You sling the fireball for "
 };
 
+var stun = {
+  name: "stun",
+  playerHas: true,
+  stats: 2,
+  damageType: "stun",
+  manaCost: 25,
+  owned: true,
+  sound: electricShock,
+};
+
 var iceShard = {
   name: "ice shard",
   playerHas: true,
