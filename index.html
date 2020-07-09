@@ -88,7 +88,8 @@
     <div id="combat">
       <div id="playerHealth"></div>
       <div id="playerMana"></div>
-      <div id="enemyHealth"></div>
+      <div id="enemyHealth1"></div>
+      <div id="enemyHealth2"></div>
       <div id="combatOutput">
         <p class="text-center combatOutputText"></p>
       </div>
@@ -99,6 +100,12 @@
       <button type="button" class="combatButton" id="useIce">Use ice shard</button>
       <button type="button" class="combatButton" id="useManaPot">Use mana potion</button>
       <button type="button" class="combatButton" id="useHealthPot">Use Health Potion</button>
+      <select id="attackInterface">  
+        <option>Choose who to attack</option>
+      </select>
+      <select id="inventory">  
+        <option>Inventory</option>
+      </select>
       <button type="button" class="combatButton" id="backToGame">Back to game</button>
   </div>
     </div>
@@ -112,6 +119,16 @@
     <div class="conversationMenu text-center"></div>
     <div class="backbutton">
       <button type="button" class"combatButton" id="goodbye">Good-Bye</button>
+    </div>
+  </div>
+  <div class="conversationWrapper">
+    <div id="statsMenu">
+      <button type="button" class="strUpButton" id="useWeapon">Use weapon</button>
+      <button type="button" class="strDownButton" id="useFireball">Use fireball</button>
+      <button type="button" class="" id="useIce">Use ice shard</button>
+      <button type="button" class="combatButton" id="useManaPot">Use mana potion</button>
+      <button type="button" class="combatButton" id="useHealthPot">Use Health Potion</button>
+      <button type="button" class="combatButton" id="backToGame">Back to game</button>
     </div>
   </div>
 </body>
