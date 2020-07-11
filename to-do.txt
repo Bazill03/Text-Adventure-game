@@ -11,6 +11,11 @@ Much smoother transitions between combat and dialogue.
 //TODO FEATURE: battles with more than one enemy, maybe a party system? Make friends and all that?
 ------
 
+Royal Wardrobe
+------
+Can get multiple mana potions.
+
+
 UI bugs
 -------
 Everything about the UI does not scale correctly to the screen.
@@ -20,7 +25,7 @@ You must also scroll down for every command.
 
 Thaddius' Shrine:
 ------------
-Description prints out entire function. Pretty ugly.
+
 ------------
 
 Room 2:
@@ -80,8 +85,9 @@ Firefox: Title is broken. [The character encoding of the HTML document was not d
 
 Ideas:
 ------
+Whenever a new block of text is added to the screen, it should glow for half a second.
 Text should have a border so some kind to more easily differentiante descriptions.
-Look description should have another color for doors not yet entered. [May be difficult to implement.]
+Look description should have another color for doors not yet entered. [May be difficult to implement.][Maybe keep an array of rooms player has entered. Cycle through that array looking for room numbers.]
 A list of available commands appears on the right side of the screen. [Could be very difficult to implement.]
 ------
 
@@ -94,3 +100,4 @@ Fixed:
   Text spoken to the player should have another text color. [At least I think this is added.]
   Speak not working [requires web server otherwise pulling the dialogue file will be an invalid CORS request]
   It is possible to receive an item twice.[Just used if statements. It was only ever a problem because I'm a problem.]
+  Description prints out entire function. Pretty ugly. [Fixed.]

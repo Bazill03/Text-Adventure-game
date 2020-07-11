@@ -152,6 +152,16 @@ var stun = {
   sound: electricShock,
 };
 
+var explosion = {
+  name: "explosion",
+  playerHas: true,
+  stats: 15,
+  damageType: "fire",
+  manaCost: 30,
+  owned: true,
+  sound: fireBallSounds
+};
+
 var iceShard = {
   name: "ice shard",
   playerHas: true,

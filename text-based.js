@@ -1,4 +1,3 @@
-
 var combatants = [];
 var turnOrder = [];
 var agiRoll;
@@ -1523,6 +1522,7 @@ $(document).ready(function () {
     document.getElementById('backToGame').addEventListener("click", backToGame, false);
     document.getElementById('startGame').addEventListener("click", startGame, false);
     document.getElementById('useStun').addEventListener("click", stunSpell, false);
+    document.getElementById('useExplosion').addEventListener("click", useExplosion, false);
   }
 
   //prints out input to screen
@@ -1563,12 +1563,7 @@ $(document).ready(function () {
 
       //prints out user inventory
       if (input == "inventory") {
-        if (player.inventory < 1) {
-          print("You have nothing.");
-        } else {
-          print("You rifle through your bags finding: ");
-          print(player.inventory);
-        }
+        enterInventoryMenu();
       }
 
 
@@ -1608,6 +1603,8 @@ $(document).ready(function () {
         Object.assign(player, claymore);
         Object.assign(player, aeleasbulwark);
         Object.assign(player, rainsPlate);
+        refreshPlayerStats();
+        refreshPlayerEffecttingStats();
       }
 
       //END SHIT THAT NEEDS TO GO
@@ -1640,6 +1637,8 @@ $(document).ready(function () {
         $("<p class='text-center blue-text'>" + "You glance around the room finding:" + "</p>").insertBefore("#placeholder").fadeIn(1000);
         $("<p class='text-center blue-text'>" + currentRoom.look + "</p>").insertBefore("#placeholder").fadeIn(1000);
       }
+
+
 
       //formats the command
       var input_words = input.split(/\s+/); // ["open", "old", "door"]
@@ -1857,6 +1856,7 @@ $(document).ready(function () {
     battleMusic.pause();
     battleMusic.currentTime = 0;
     currentSong.play();
+    $("option").remove(".toBeDestroyed");
     $("html, body").animate({
       scrollTop: $(document).height()
     }, 1000);
@@ -1928,7 +1928,7 @@ $(document).ready(function () {
       } else if (eval(turnOrder[turnCounter][0]).isPlayer === false) {
         enemyTurn(eval(turnOrder[turnCounter][0]).indentifier);
       }
-    } else {
+    } else if (turnCounter == 0 || turnCounter == -1) {
       setTimeout(function () {
         combatPrint("This turn is finished.");
       }, 500);
@@ -1937,6 +1937,8 @@ $(document).ready(function () {
       }, 500);
       turnOrder = [];
       determineTurnRoll();
+    } else {
+      return false;
     }
   }
 
@@ -1957,7 +1959,7 @@ $(document).ready(function () {
   function enemyTurn(enemy) {
     enemy = eval(enemy);
     console.log(enemy.name + " is attacking.");
-    if(enemy.stunned > 0){
+    if (enemy.stunned > 0) {
       combatPrint(enemy.name + " is stunned and loses its chance to attack!");
       enemy.stunned = enemy.stunned - 1;
       turnCounter--;
@@ -2052,7 +2054,7 @@ $(document).ready(function () {
   function useWeapon() {
     whoWillPlayerAttack();
     var enemy = toAttack;
-    if(enemy.health <= 0){
+    if (enemy.health <= 0) {
       combatPrint("You've already killed " + enemy.name);
       return false;
     }
@@ -2113,7 +2115,7 @@ $(document).ready(function () {
     }
   }
 
-  function stunSpell(){
+  function stunSpell() {
     whoWillPlayerAttack();
     var enemy = toAttack;
     if (playerTurn === false) {
@@ -2135,15 +2137,50 @@ $(document).ready(function () {
       setTimeout(function () {
         nextTurn();
       }, 1000);
+    } else {
+      combatPrint("You don't have enough mana, or don't have that spell.");
+    }
+  }
+
+  function useExplosion() {
+    if (playerTurn === false) {
+      return combatPrint("You are still recovering from your attack.");
+    }
+    if (
+      gameOverCheck() === false &&
+      playerTurn === true &&
+      player.mana >= explosion.manaCost &&
+      explosion.playerHas === true
+    ) {
+      var actualStats = player.intelligence / 2 + explosion.stats;
+      combatPrint("You deal " + actualStats + " damage all enemies in a blinding flash!");
+      firstEnemy.health = firstEnemy.health - actualStats;
+      if(secondEnemy){
+      secondEnemy.health = secondEnemy.health - actualStats;
+    }
+      spellEffeciency = Math.floor(player.intelligence / 5);
+      realManaCost = explosion.manaCost - spellEffeciency;
+      if (realManaCost <= 0) {
+        player.mana = player.mana - 5;
       } else {
-        combatPrint("You don't have enough mana, or don't have that spell.");
+        player.mana = player.mana - realManaCost;
       }
+      turnCounter--;
+      playerTurn = false;
+      explosion.sound.play();
+      calcHealthBars("playerMana", player.mana);
+      setTimeout(function () {
+        nextTurn();
+      }, 1000);
+    } else {
+      combatPrint("You don't have enough mana, or don't have that spell.");
+    }
   }
 
   function useDamageSpell(spellName) {
     whoWillPlayerAttack();
     var enemy = toAttack;
-    if(enemy.health <= 0){
+    if (enemy.health <= 0) {
       combatPrint("You've already killed " + enemy.name);
       return false;
     }
@@ -2220,6 +2257,7 @@ $(document).ready(function () {
 
     newOption.appendChild(newOptionValue);
     newOption.value = value;
+    newOption.classList.add("toBeDestroyed");
     select.insertBefore(newOption, select.lastChildNode);
   }
 
@@ -2227,7 +2265,7 @@ $(document).ready(function () {
   $('#inventory').change(function () {
     val = $("#inventory option:selected").html();
     //console.log(val);
-    selectElement = document.querySelector('#inventory'); 
+    selectElement = document.querySelector('#inventory');
     output = selectElement.value;
     console.log(output);
     combatPrint("You pull out your " + val);
@@ -2248,9 +2286,9 @@ $(document).ready(function () {
     firstEnemy.indentifier = "firstEnemy";
     combatants.push(firstEnemy);
 
-    for(var inv = 0; inv < weaponList.length; inv++){
-      if(weaponList[inv].owned == true){
-      createOption(weaponList[inv].weaponName,weaponList[inv].identifier, "inventory");
+    for (var inv = 0; inv < weaponList.length; inv++) {
+      if (weaponList[inv].owned == true) {
+        createOption(weaponList[inv].weaponName, weaponList[inv].identifier, "inventory");
       }
     }
 
@@ -2342,7 +2380,14 @@ $(document).ready(function () {
     }, 1000);
   });
 
+  //END CONVERSATION
+  //BEGIN INVENTORY MENU
+  //Enter inventory menu
+  function enterInventoryMenu() {
+    $('#console').fadeOut(50);
+    $('inventoryMenuWrapper').fadeIn(50);
+  }
+
 });
-//END CONVERSATION
 
 //END DOCUMENT

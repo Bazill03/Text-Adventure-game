@@ -178,6 +178,7 @@ pre {
 }
 
 #enemyHealth1 {
+  display: none;
   background: #932424;
   width: 10px;
   height: 100px;
@@ -186,6 +187,7 @@ pre {
 }
 
 #enemyHealth2 {
+  display: none;
   background: #932424;
   width: 10px;
   height: 100px;
@@ -230,6 +232,11 @@ pre {
 
 #useStun {
   background: #55146e;
+  color: white;
+}
+
+#useExplosion {
+  background: #6b420b;
   color: white;
 }
 
@@ -309,6 +316,48 @@ pre {
 /*Begin Stats*/
 #levelUpMenu {
   display: none;
+}
+
+/*Begin Menu*/
+#inventoryMenuWrapper {
+  display: none;
+  border: 2px solid white;
+  width: 80%;
+  height: 80%;
+  margin: auto;
+  background-color: black;
+}
+
+#spellList {
+  border: 2px solid white;
+  width: 33%;
+  height: 33%;
+  background-color: black;
+  margin: auto;
+}
+
+#itemList {
+  border: 2px solid white;
+  width: 33%;
+  height: 33%;
+  background-color: black;
+  margin: auto;
+}
+
+#bookList {
+  border: 2px solid white;
+  width: 33%;
+  height: 33%;
+  background-color: black;
+  margin: auto;
+}
+
+#roomList {
+  border: 2px solid white;
+  width: 33%;
+  height: 33%;
+  background-color: black;
+  margin: auto;
 }
 
 /*audio controls*/
