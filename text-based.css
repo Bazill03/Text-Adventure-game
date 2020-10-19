@@ -38,6 +38,34 @@ pre {
   color: white;
 }
 
+#questBar{
+  border: 2px solid white;
+  border-radius: 10px;
+  height: 70%;
+  width: 10%;
+  float: right;
+  position: fixed;
+  margin-top: 10px;
+  right: 20px;
+}
+
+#questBanner{
+  color: white;
+  margin: auto;
+  padding: 10px;
+  text-decoration: underline;
+}
+
+.questTitleClass{
+  color: white;
+}
+
+.questObjectivesClass{
+  color: white;
+  list-style-type: square;
+
+}
+
 .textBox {
   margin: auto;
   display: block;
@@ -305,6 +333,10 @@ pre {
   color: #9b931d;
 }
 
+.white{
+  color: white;
+}
+
 .healthColor {
   color: #771536;
 }
@@ -313,10 +345,43 @@ pre {
   color: #278783;
 }
 
-/*Begin Stats*/
+.underline {
+  text-decoration: underline;
+}
+
+.auto-margin{
+  margin: auto;
+}
+
+/*Begin Level Up Menu */
 #levelUpMenu {
   display: none;
+  margin: auto;
 }
+
+#strButton{
+  background:#a3132b;
+  color: white;
+}
+
+#intButton{
+  background: #09b3bf;
+  color: white;
+}
+
+#agiButton{
+  background: #86a304;
+  color: white;
+}
+
+#chrButton {
+  background: #cc39b6;
+  color: white;
+}
+
+
+/*Begin Stats*/
+
 
 /*Begin Menu*/
 #inventoryMenuWrapper {
