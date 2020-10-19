@@ -20,6 +20,7 @@
   <script src="sound_effects.js"></script>
   <script src="enemy_objects.js"></script>
   <script src="text-based.js"></script>
+  <script src="quests.js"></script>
   <script src="weapon_spell_objects.js"></script>
 </head>
 
@@ -84,6 +85,9 @@
 
 
     </div>
+    <div id="questBar">
+      <h2 id="questBanner">Quests</h2>
+    </div>
     <div id="combatWrapper">
     <div id="combat">
       <div id="playerHealth"></div>
@@ -123,19 +127,17 @@
       <button type="button" class="combatButton" id="goodbye">Good-Bye</button>
     </div>
   </div>
-  <div class="conversationWrapper">
-    <div id="levelUpMenu">
-      <button type="button" class="strButton" id="strUpButton">Strength</button>
-      <button type="button" class="strButton" id="strDownButton">Strength</button>
-      <button type="button" class="intButton" id="intUpButton">Use ice shard</button>
-      <button type="button" class="intButton" id="intDownButton">Use mana potion</button>
-      <button type="button" class="agiButton" id="agiUpButton">Use Health Potion</button>
-      <button type="button" class="agiButton" id="agiDownButton">Back to game</button>
-      <button type="button" class="chrButton" id="chrUpButton">Use Health Potion</button>
-      <button type="button" class="chrButton" id="chrDownButton">Back to game</button>
-    </div>
+  <div id="levelUpMenu">
+    <h2 class="yellow">Level Up! Choose your stats!</h2>
+    <p class="underline white-text auto-margin">Points remaining</p> 
+    <p id="pointsRemaining" class="white-text auto-margin"></p>
+    <button type="button" id="strButton">Strength</button>
+    <button type="button" id="intButton">Intelligence</button>
+    <button type="button" id="agiButton">Agility</button>
+    <button type="button" id="chrButton">Charisma</button>
+    <button type="button" id="levelUpDoneButton">Done</button>
   </div>
-  <div class = "inventoryMenuWrapper">
+  <div id = "inventoryMenuWrapper">
     <div id = "spellList">
 
     </div>
