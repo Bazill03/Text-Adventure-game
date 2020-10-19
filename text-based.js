@@ -112,6 +112,43 @@ $(document).ready(function () {
   refreshPlayerEffecttingStats();
   refreshPlayerStats(); //intitializes players stat display.
 
+  
+  //QUEST HERE
+  currentQuests = [];
+
+  function questAdd(quest){
+    currentQuests.push(quest);
+  }
+
+  function displayQuests() {
+    var questBarDOM = document.getElementById("questBar");
+    for(var i = 0; i < currentQuests.length; i++){
+        Object.keys(currentQuests[i]).forEach(function(key,index){
+          console.log(key);
+          if(key == "questTitle"){
+            //displays Quest Titles
+            var questTitleDOM = document.createElement("h4");
+            questTitleDOM.innerText = currentQuests[i].questTitle;
+            questTitleDOM.classList.add("questTitleClass");
+            questBarDOM.append(questTitleDOM);
+        }
+
+          
+          //displays quest objectives
+          var questObjectiveDOM = document.createElement("p");
+          questObjectiveDOM.classList.add("questObjectiveClass");
+          questObjectiveDOM.innerText = key;
+          questBarDOM.append(questObjectiveDOM);
+
+          
+
+        });
+      }
+    }
+  
+  questAdd(huntDownTheNecromancer);
+  displayQuests();
+
 
   function startGame() {
     loopOneSong(tavernSounds);
@@ -737,7 +774,7 @@ $(document).ready(function () {
       },
       {
         name: "Grand Hall", //8
-        look: ["throne", "column", "doors leading outside", "red aisle runner", "alter", "dead crow", 'stairs leading north', 'small door', 'door leading north'],
+        look: ["throne", "column", "doors leading outside", "red aisle runner", "alter", "dead crow", 'stairs leading north', 'small door', 'door leading north', 'door leading east'],
         description: "You slowly peek open the door. On the other side looks to be a throne room. It's much brighter here compared to the other rooms. You quickly extinguish your torch and hide behind one of the many columns that line the room. The ceilings here are tall and even minute sounds echo profoundly. The throne at the end of the room is large, and made of materials you've yet seen. Outside the window, a murder of crows caws ominously, desparate for food. Suddenly, something seems to slam against the large, oak doors that make up the entrance to the throne room. You hide in fear but after some time a crow slams into the window hard enough to break a small hole in the glass, and falls dead to the throne room floor. The slamming on the door continues, picking up speed as more and more birds charge into the door. Soon the orchestra of birds is so loud it consumes you. You glance around hesitantly, waiting for the figures to return. After some time you become sure enough to get a better look around the room.",
         butlersDoor: {
           locked: true
@@ -749,6 +786,34 @@ $(document).ready(function () {
               gameData.rooms[4].look.push("scroll");
             }
           },
+	  {
+	   input: 'look door leading east',
+	   result: function(){
+		print("You glace upon the door leading east. It's a small, three quarters wide door made of unstained maple. The iron door latch is cold to the touch. Next to the door is a large wooden club.");
+		gameData.rooms[4].look.push("bludgeon");
+	   }
+	  },
+	{
+		input: 'look bludgeon',
+		result: function(){
+			print("A large wooden club rests against the door frame. Several nails have been punched through the recieving end giving the weapon a menacing look.");
+		}
+	},
+		{
+		input: 'take bludgeon',
+		result: function(){
+              if (bludgeon.owned == false) {
+                bludgeon.owned = true;
+                player.inventory.push("bludgeon");
+                updateInvDisplay("bludgeon");
+                pickUpNew.play();
+		            print("You hold the bludgeon firmly in your hand, then place it in your inventory.");
+		            print("You got the bludgeon! It deals only blunt damage. Useful against enemies that can't be killed with a sword!","goldColor");
+              } else {
+                print("You've already taken the bludgeon");
+              }
+		}
+		},
           {
             input: "use key on door leading north",
             result: function () {
@@ -1744,6 +1809,13 @@ $(document).ready(function () {
         print(serum.condition);
       }
 
+        //To be removed
+        if(input == 'levelup'){
+          levelUpCheck(200);
+          print("Woot");
+        }
+
+
       //reset textbox
       $("#commandline").val("");
     }
@@ -1753,17 +1825,27 @@ $(document).ready(function () {
   var toLevelUp = [200, 1000, 2000, 5000, 8000, 12000];
   var xpPoints = 5;
 
+  function levelUpTime(){
+    $('#console').fadeOut(50);
+    $("#levelUpMenu").fadeIn(100);
+    $("#pointsRemaining").html(String(player.pointsToSpend));
+  }
+
+  function doneLeveling(){
+    $('#console').fadeIn(50);
+    $("#levelUpMenu").fadeOut(100);
+  }
+
   function levelUpCheck(xp) {
     if (toLevelUp[0] <= xp) {
       player.level = player.level + 1;
       player.pointsToSpend = player.pointsToSpend + xpPoints;
       print("You've hit level " + player.level + "!", "yellow");
       toLevelUp.shift();
-      player.agility = player.agility + 1;
-      player.strength = player.strength + 1;
-      player.intelligence = player.intelligence + 1;
+      levelUpTime();
     }
   }
+
 
   //COMBAT HERE
   //player damage before being rounded down
@@ -1973,6 +2055,9 @@ $(document).ready(function () {
         enemyMove = calcEnemyMove(enemy);
         enemyDamage = calcDamage(enemy.moves[enemyMove][1], 1);
         var enemyRealDamage = Math.floor(enemyDamage) - player.armorStats;
+        if(enemyRealDamage < 0){
+          enemyRealDamage = 1;
+        }
         player.health = player.health - enemyRealDamage;
         combatPrint(
           enemy.name +
@@ -2065,6 +2150,15 @@ $(document).ready(function () {
       gameOverCheck() === false &&
       playerTurn === true
     ) {
+	if(player.weaponDamageType == enemy.immune){
+	print("The enemy is immune to your attack!");
+        playerTurn = false;
+        checkTheDead();
+        turnCounter--;
+        setTimeout(function () {
+          nextTurn();
+        }, 1000);
+	}
       if (dodgeCheck(enemy.dodgeChance) == false) {
         playerDamage = calcDamage(player.weaponStats, 1);
         addedStatDamage = Math.floor(player.strength / 3);
