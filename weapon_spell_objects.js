@@ -8,6 +8,21 @@ var fists = {
   weaponSound: punchSound
 };
 
+var bludgeon = {
+
+  weaponName: "bludgeon",
+  identifier: "bludgeon",
+  weaponStats: 5,
+  weaponDamageType: "blunt",
+  owned: false,
+  weaponSound: swordAttackSound,
+  weaponCondition: "Broken and mangled. You should find a replacement soon.",
+  findText: "You lift up the broken sword, your mind flashing through the countless battles it must have been through. No doubt this once great weapon has now dilapidated into rust, and decay. What mighty warrior would cast aside a relic? What mighty foe made sure he didn't have a choice? (Equip with 'equip old sword'.)",
+  lookText: "You approach the table carefully. You see an old, rusted sword, chipped from years of battle. Any defense at all would help stave off the fear. Try 'take sword'.",
+  reqStrength: 3,
+  canWieldShield: true
+}
+
 var oldSword = {
   weaponName: "old sword",
   identifier: "oldSword",
@@ -255,8 +270,8 @@ noteUnderRug = {
   owned: false,
   deciphered: false,
   condition: "A note you found under the rug.",
-  read: "A note you found under the rug in the royal dressing room. It reads: Some shit."
-  
+  read: "A note you found under the rug in the royal dressing room. It reads: Easternly the King gazed upon his kingdom. He saw that it was bathed in hues of blue.."
+
 }
 
 var smallHallwayBarrel = {
