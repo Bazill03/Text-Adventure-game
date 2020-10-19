@@ -108,6 +108,37 @@ class withered {
   }
 }
 
+class skeleton {
+  constructor(name,health,goldReward,dodgeChance,loot,xp,greeting, agility){
+    this.name = name;
+    this.health = health;
+    this.agility = agility;
+    this.goldReward = goldReward;
+    this.indentifier = null;
+    this.isPlayer = false;
+    //defuffs
+    this.stunned = 0;
+    this.turnRoll = 0;
+    this.attackFirst = true;
+    this.moveNum = 2;
+    this.moves = [
+      ["smash", 6],
+      ["headbutt", 9]
+    ];
+    this.vulnerability = ["blunt", 3];
+    this.immune = "slash";
+    this.dodgeChance = dodgeChance;
+    this.loot = loot;
+    this.sounds = witheredAttackSound;
+    this.introSound = witheredIntroSound;
+    this.death =  witheredDeathSound;
+    this.xp = xp;
+    this.greeting = greeting;
+    this.turnRoll = 0;
+  }
+}
+
+
 var antechamber_withered = {
   name: "withered",
   greeting: "You open the antechamber door, brancing yourself for impact only to find the sad creature huddled into the alcove. It sits in the fetal position, its arms wrapped tight around its knees. With the door open, you're finally able to make out what it's speaking. 'I was great once...', it mumbles in a raspy, desert dry voice. It looks up at you. It's mouth opens wide and claws extend from it's hand. 'I was great once!' it screams as it lunges towards you.",
