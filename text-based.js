@@ -10,7 +10,7 @@ var groupName;
 var isGameOver = false; //bool allows me to see if gameOverCheck function has been run, or where it has broken.
 var doubleFight = true;
 
-var fieldrat = new rat("Field Rat", 12, 0, 0.1,
+var fieldrat = new skeleton("Field Rat", 12, 0, 0.1,
     function() {
         combatPrint("You recieved 0 gold and 50xp!");
     }, 5, "The large rat looks up to you from the corner of the room. Its teeth are barred.", 5);
@@ -18,6 +18,16 @@ var fieldrat = new rat("Field Rat", 12, 0, 0.1,
 $(document).ready(function() {
     //move this elsewhere later.
     var makeStrong = document.createElement("STRONG");
+
+    //prints out input to screen
+    function print(input, color) {
+        $("<p class='text-center " + color + "'>" + input + "</p>").insertBefore("#placeholder");
+        //reset textbox
+        $("#commandline").val("");
+        $("html, body").animate({
+            scrollTop: $(document).height()
+        }, 200);
+    }
 
     var input = $("#commandline").val().toLowerCase();
     $("#console").fadeIn(1500);
@@ -120,36 +130,48 @@ $(document).ready(function() {
         currentQuests.push(quest);
     }
 
-    function displayQuests() {
-        var questBarDOM = document.getElementById("questBar");
+    function questProgress(objectiveToCheck) {
         for (var i = 0; i < currentQuests.length; i++) {
-            Object.keys(currentQuests[i]).forEach(function(key, index) {
-                console.log(key);
-                if (key == "questTitle") {
-                    //displays Quest Titles
-                    var questTitleDOM = document.createElement("h4");
-                    questTitleDOM.innerText = currentQuests[i].questTitle;
-                    questTitleDOM.classList.add("questTitleClass");
-                    questBarDOM.append(questTitleDOM);
-                }
-
-
-                //displays quest objectives
-                var questObjectiveDOM = document.createElement("p");
-                questObjectiveDOM.classList.add("questObjectiveClass");
-                questObjectiveDOM.innerText = key;
-                questBarDOM.append(questObjectiveDOM);
-
-
-
-            });
+            if (currentQuests[i].progress[objectiveToCheck] < currentQuests[i].objectives[objectiveToCheck]) {
+                currentQuests[i].progress[objectiveToCheck]++;
+                combatPrint("You made quest progress!");
+            }
+            if (currentQuests[i].progress[objectiveToCheck] == currentQuests[i].objectives[objectiveToCheck]) {
+                print("You completed: " + currentQuests[i].questTitle + "!", "goldColor");
+            }
         }
     }
 
-    questAdd(huntDownTheNecromancer);
+    function checkQuestComplete(quest) {
+
+    }
+
+    function displayQuests() {
+        var questBarDOM = document.getElementById("questBar");
+        for (var i = 0; i < currentQuests.length; i++) {
+            //displays Quest Titles
+            var questTitleDOM = document.createElement("h4");
+            questTitleDOM.innerText = currentQuests[i].questTitle;
+            questTitleDOM.classList.add("questTitleClass");
+            questBarDOM.append(questTitleDOM);
+
+            for (var k = 0; k < currentQuests[i].objectivesText.length; k++) {
+                //displays quest objectives
+                var questObjectiveDOM = document.createElement("p");
+                questObjectiveDOM.classList.add("questObjectiveClass");
+                questObjectiveDOM.innerText = currentQuests[i].objectivesText[k];
+                questBarDOM.append(questObjectiveDOM);
+
+            }
+
+        }
+    }
+
+    questAdd(garbageQuest);
     displayQuests();
 
 
+    //BEGIN STORY OBJECT
     function startGame() {
         loopOneSong(tavernSounds);
         document.getElementById('startGame').disabled = true;
@@ -1545,6 +1567,7 @@ $(document).ready(function() {
                 },
                 //Maybe the player should have to light the sconce.
                 skeletonsDefeated: false,
+                skeleHealth: 40,
                 commands: [{
                         input: 'look skeletons',
                         result: function() {
@@ -1555,7 +1578,20 @@ $(document).ready(function() {
                     {
                         input: 'look sconce',
                         result: function() {
-                            print("A sconce hangs upon the hallway wall. It is encased in beautiful silver filigree. It throws light all across the hallway, but it otherwise not of much use.");
+                            //FIX DESC
+                            print("A sconce hangs upon the hallway wall. It is encased in beautiful silver filigree. It throws light all across the hallway. Someone with skill in magic could throw this fire. Maybe say something better here.");
+                        }
+                    },
+                    {
+                        input: 'throw fire',
+                        result: function() {
+                            if (player.intelligence >= 7) {
+                                //TODO Throw fire at skeletons to reduce their health before battle.
+                                currentRoom.skeleHealth = 20;
+                            } else {
+                                //FIx DESC
+                                print("You hold your hands up to the fire and try to manipulate it but you come away with warm hands and embarassment. The skeletons still gaze into you, though somehow more judgementally this time.");
+                            }
                         }
                     },
                     {
@@ -1579,11 +1615,11 @@ $(document).ready(function() {
                     {
                         input: "attack",
                         result: function() {
-                            var hallwaySkeletonOne = new skeleton("Skeleton 1", 50, 50, 0.1,
+                            var hallwaySkeletonOne = new skeleton("Skeleton 1", skeleHealth, 50, 0.1,
                                 function() {
                                     combatPrint("You recieved 50 gold and 50xp!");
                                 }, 50, "The skeletons become alight with green, swirling energy. It twistes and turns around the bones creating muscles. The skeleton comes alive and assumes a combative stance.", 5);
-                            var hallwaySkeletonTwo = new skeleton("Skeleton 2", 50, 50, 0.1,
+                            var hallwaySkeletonTwo = new skeleton("Skeleton 2", skeleHealth, 50, 0.1,
                                 function() {
                                     combatPrint("You recieved 50 gold and 50xp!");
                                 }, 50, "The second skeleton, not to be outdone by the first skeleton does the same, but like, moreso.", 5);
@@ -1638,15 +1674,7 @@ $(document).ready(function() {
         document.getElementById('levelUpDoneButton').addEventListener("click", doneLeveling, false);
     }
 
-    //prints out input to screen
-    function print(input, color) {
-        $("<p class='text-center " + color + "'>" + input + "</p>").insertBefore("#placeholder");
-        //reset textbox
-        $("#commandline").val("");
-        $("html, body").animate({
-            scrollTop: $(document).height()
-        }, 200);
-    }
+
 
     function dialogueButton(input, speaker) {
         var name = document.createElement("BUTTON"); // Create a <button> element
@@ -2003,6 +2031,8 @@ $(document).ready(function() {
                 firstEnemy.death.play();
                 firstEnemy.loot();
                 secondEnemy.loot();
+                questProgress(firstEnemy.questObjectiveTitle);
+                questProgress(secondEnemy.questObjectiveTitle);
                 return true;
             }
             return false;
@@ -2023,6 +2053,7 @@ $(document).ready(function() {
                 battleVictory.play();
                 firstEnemy.death.play();
                 firstEnemy.loot();
+                questProgress(firstEnemy.questObjectiveTitle);
                 return true;
             }
             return false;
@@ -2078,6 +2109,7 @@ $(document).ready(function() {
         }
         return output.isTrue = false;
     }
+
     //loops through player inventory for any given value and returns a boolean.
     function inventorySearch(input) {
         for (var i = 0; i < player.inventory.length + 1; i++) {
@@ -2092,14 +2124,13 @@ $(document).ready(function() {
     function dodgeCheck(dodgeChance) {
         var randomNumber = Math.random();
         if (dodgeChance <= randomNumber) {
-            //console.log(dodgeChance);
-            //console.log(randomNumber);
             return false;
         } else {
             return true;
         }
     }
 
+    //resets turn array and uses the determineturnroll function to fill it
     function nextTurn() {
         console.log("The turn counter is: " + turnCounter);
         checkTheDead(); //Enemy can still attack on the turn that it's died.
@@ -2125,6 +2156,7 @@ $(document).ready(function() {
         }
     }
 
+    //determines the rolls of each enemy, including the player.
     function determineTurnRoll() {
         for (var i = 0; i < combatants.length; i++) {
             var agiRoll = Math.floor(Math.random() * 10 + combatants[i].agility);
@@ -2311,6 +2343,9 @@ $(document).ready(function() {
         }
     }
 
+    //PLAYER SPELLS
+
+    //stuns the enemy for 2 turns or whatever is contained in stun.stats
     function stunSpell() {
         whoWillPlayerAttack();
         var enemy = toAttack;
@@ -2338,6 +2373,7 @@ $(document).ready(function() {
         }
     }
 
+    //AOE damage to each enemy the player is battling.
     function useExplosion() {
         if (playerTurn === false) {
             return combatPrint("You are still recovering from your attack.");
@@ -2348,6 +2384,8 @@ $(document).ready(function() {
             player.mana >= explosion.manaCost &&
             explosion.playerHas === true
         ) {
+
+            //players stats given int modifiers
             var actualStats = player.intelligence / 2 + explosion.stats;
             combatPrint("You deal " + actualStats + " damage all enemies in a blinding flash!");
             firstEnemy.health = firstEnemy.health - actualStats;
@@ -2373,6 +2411,7 @@ $(document).ready(function() {
         }
     }
 
+    //Catch all function for Ice and Fire bolt spells.
     function useDamageSpell(spellName) {
         whoWillPlayerAttack();
         var enemy = toAttack;
@@ -2427,6 +2466,7 @@ $(document).ready(function() {
         }
     }
 
+    //Player uses a health pot. Does not consume turn.
     function useHealthPot() {
         if (hasAttacked === false) {
             return combatPrint("You are still recovering from your attack.");
@@ -2445,6 +2485,8 @@ $(document).ready(function() {
         }
     }
 
+
+    //Don't really remember what this does. Probably useful though.
     function createOption(name, value, where) {
         var select = document.getElementById(where);
 
@@ -2458,9 +2500,9 @@ $(document).ready(function() {
     }
 
     //Might be useful for inventory
+    //Allows player to change weapons mid fight.
     $('#inventory').change(function() {
         val = $("#inventory option:selected").html();
-        //console.log(val);
         selectElement = document.querySelector('#inventory');
         output = selectElement.value;
         console.log(output);
@@ -2469,6 +2511,7 @@ $(document).ready(function() {
     });
 
     //combat function
+    //does lots of UI shit including audio and sets up multi battle or single battles.
     function combat(player, enemy1, enemy2, group) {
         if (group) {
             groupName = group;

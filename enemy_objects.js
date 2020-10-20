@@ -79,6 +79,7 @@ class rat {
         this.loot = loot;
         this.xp = xp;
         this.turnRoll = 0;
+        this.questObjectiveTitle = "ratMob";
     }
 }
 
@@ -109,6 +110,7 @@ class withered {
         this.xp = xp;
         this.greeting = greeting;
         this.turnRoll = 0;
+        this.questObjectiveTitle = "witheredMob";
     }
 }
 
@@ -139,6 +141,7 @@ class skeleton {
         this.xp = xp;
         this.greeting = greeting;
         this.turnRoll = 0;
+        this.questObjectiveTitle = "skeletonMob";
     }
 }
 
