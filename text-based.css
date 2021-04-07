@@ -1,382 +1,403 @@
 body {
-  background-color: #000;
-  width: 100%;
-  height: 100%;
-  margin: 0;
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    margin: 0;
 }
 
 .forrest-bg {
-  background-image: url("background-images/forrest-bg.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+    background-image: url("background-images/forrest-bg.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .blue-text {
-  color: rgb(22, 100, 129);
+    color: rgb(22, 100, 129);
 }
 
 .red-text {
-  color: rgb(144, 77, 68);
+    color: rgb(144, 77, 68);
 }
 
 #title-text {
-  color: red;
-  border-color: black;
-  border-bottom-color: red;
+    color: red;
+    border-color: black;
+    border-bottom-color: red;
 }
 
 p {
-  color: white;
+    color: white;
 }
 
 #message_help {
-  display: none;
+    display: none;
 }
 
 pre {
-  color: white;
+    color: white;
 }
 
-#questBar{
-  border: 2px solid white;
-  border-radius: 10px;
-  height: 70%;
-  width: 10%;
-  float: right;
-  position: fixed;
-  margin-top: 10px;
-  right: 20px;
+#questTitle {
+    border: 2px solid white;
+    border-radius: 10px;
+    height: 70%;
+    width: 10%;
+    float: right;
+    position: fixed;
+    margin-top: 10px;
+    right: 20px;
 }
 
-#questBanner{
-  color: white;
-  margin: auto;
-  padding: 10px;
-  text-decoration: underline;
+#questBar {
+    height: 70%;
+    width: 10%;
+    float: right;
+    position: fixed;
+    margin-top: 10px;
+    right: 20px;
 }
 
-.questTitleClass{
-  color: white;
+#questBanner {
+    color: white;
+    margin: auto;
+    padding: 10px;
+    text-decoration: underline;
 }
 
-.questObjectivesClass{
-  color: white;
-  list-style-type: square;
+.questTitleClass {
+    color: white;
+}
 
+.questObjectivesClass {
+    color: white;
+    list-style-type: square;
 }
 
 .textBox {
-  margin: auto;
-  display: block;
-  margin-bottom: 50px;
+    margin: auto;
+    display: block;
+    margin-bottom: 50px;
 }
 
 .output {
-  display: none;
-  width: 50%;
-  margin: auto;
+    display: none;
+    width: 50%;
+    margin: auto;
 }
+
 
 /* Container for flex box */
+
 .container {
-  width: 100%;
-  margin: 0;
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
+    width: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
 }
 
+
 /* Begin player stats */
+
 .yellow {
-  color: #9b931d;
+    color: #9b931d;
 }
 
 .healthColor {
-  color: #771536;
+    color: #771536;
 }
 
 .manaColor {
-  color: #278783;
+    color: #278783;
 }
 
 .xpColor {
-  color: #1a5477;
+    color: #1a5477;
 }
 
 .strColor {
-  color: #a3132b;
+    color: #a3132b;
 }
 
 .chrColor {
-  color: #cc39b6;
+    color: #cc39b6;
 }
 
-.parchmentColor{
-  color: #b59d5b;
+.parchmentColor {
+    color: #b59d5b;
 }
 
 .agiColor {
-  color: #86a304;
+    color: #86a304;
 }
 
 .intColor {
-  color: #09b3bf;
+    color: #09b3bf;
 }
 
 .goldColor {
-  color: #cccc00;
+    color: #cccc00;
 }
 
 .player_stats {
-  flex-grow: 1;
-  text-align: left;
-  float: left;
-  position: fixed;
-  left: 5%;
+    flex-grow: 1;
+    text-align: left;
+    float: left;
+    position: fixed;
+    left: 5%;
 }
 
+
 /* begin main console */
+
 #console {
-  display: none;
-  flex-grow: 3;
-  text-align: center;
-  height: 60%;
+    display: none;
+    flex-grow: 3;
+    text-align: center;
+    height: 60%;
 }
 
 .dialogue_button {
-  color: #cccc00;
-  background-color: #636363;
-  border-radius: 3px;
-  border: none;
-  margin: auto;
-  width: 30%;
-  margin-top: 1%;
-  margin-bottom: 1%;
-
+    color: #cccc00;
+    background-color: #636363;
+    border-radius: 3px;
+    border: none;
+    margin: auto;
+    width: 30%;
+    margin-top: 1%;
+    margin-bottom: 1%;
 }
 
 .disabled_button {
-  background-color: black;
-  color: #771536;
+    background-color: black;
+    color: #771536;
 }
 
+
 /*Begin Combat */
+
 .combatWrapper {
-  margin: auto;
-  width: 100%;
-  display: none;
+    margin: auto;
+    width: 100%;
+    display: none;
 }
 
 #combat {
-  border: 1px solid white;
-  width: 100%;
-  height: 300px;
-  background: black;
-  margin: auto;
-  margin-top: 50px;
-  overflow: auto;
-  display: none;
+    border: 1px solid white;
+    width: 100%;
+    height: 300px;
+    background: black;
+    margin: auto;
+    margin-top: 50px;
+    overflow: auto;
+    display: none;
 }
 
 .combatMenu {
-  border: 1px solid white;
-  width: 70%;
-  height: 100px;
-  background: black;
-  margin: auto;
-  margin-top: 50px;
-  display: none;
+    border: 1px solid white;
+    width: 70%;
+    height: 100px;
+    background: black;
+    margin: auto;
+    margin-top: 50px;
+    display: none;
 }
 
 #playerHealth {
-  background: #932424;
-  width: 10px;
-  height: 200px;
-  position: absolute;
-  left: 410px;
+    background: #932424;
+    width: 10px;
+    height: 200px;
+    position: absolute;
+    left: 410px;
 }
 
 #playerMana {
-  background: #248092;
-  width: 10px;
-  height: 100px;
-  position: absolute;
-  left: 395px;
+    background: #248092;
+    width: 10px;
+    height: 100px;
+    position: absolute;
+    left: 395px;
 }
 
 #enemyHealth1 {
-  display: none;
-  background: #932424;
-  width: 10px;
-  height: 100px;
-  position: absolute;
-  right: 410px;
+    display: none;
+    background: #932424;
+    width: 10px;
+    height: 100px;
+    position: absolute;
+    right: 410px;
 }
 
 #enemyHealth2 {
-  display: none;
-  background: #932424;
-  width: 10px;
-  height: 100px;
-  position: absolute;
-  right: 450px;
+    display: none;
+    background: #932424;
+    width: 10px;
+    height: 100px;
+    position: absolute;
+    right: 450px;
 }
 
 #enemyMana {
-  background: #248092;
-  width: 10px;
-  height: 200px;
-  position: absolute;
-  right: 395px;
-  top: 50px;
+    background: #248092;
+    width: 10px;
+    height: 200px;
+    position: absolute;
+    right: 395px;
+    top: 50px;
 }
 
+
 /* Combat buttons */
+
 .combatButton {
-  margin-top: 5px;
-  background: gray;
-  border: none;
-  display: inline-block;
-  text-decoration: none;
+    margin-top: 5px;
+    background: gray;
+    border: none;
+    display: inline-block;
+    text-decoration: none;
 }
 
 #useWeapon {
-  background: #932424;
-  margin-left: 5px;
+    background: #932424;
+    margin-left: 5px;
 }
 
 #useFireball {
-  background: #248092;
+    background: #248092;
 }
 
 #useIce {
-  background: #248092;
+    background: #248092;
 }
 
 #useManaPot {
-  background: #248092;
+    background: #248092;
 }
 
 #useStun {
-  background: #55146e;
-  color: white;
+    background: #55146e;
+    color: white;
 }
 
 #useExplosion {
-  background: #6b420b;
-  color: white;
+    background: #6b420b;
+    color: white;
 }
 
 #useHealthPot {
-  background: #932424;
+    background: #932424;
 }
 
 #backToGame {
-  float: right;
-  margin-right: 5px;
-  display: none;
+    float: right;
+    margin-right: 5px;
+    display: none;
 }
 
+
 /*begin conversation menus*/
+
 .conversationWrapper {
-  margin: auto;
-  width: 100%;
-  display: none;
-  color: white;
+    margin: auto;
+    width: 100%;
+    display: none;
+    color: white;
 }
 
 .conversation {
-  border: 1px solid white;
-  width: 100%;
-  height: 300px;
-  background: black;
-  color: white;
-  margin: auto;
-  margin-top: 50px;
-  overflow: auto;
-  display: none;
+    border: 1px solid white;
+    width: 100%;
+    height: 300px;
+    background: black;
+    color: white;
+    margin: auto;
+    margin-top: 50px;
+    overflow: auto;
+    display: none;
 }
 
 .conversationMenu {
-  border: 1px solid white;
-  width: 70%;
-  height: 100px;
-  background: black;
-  color: white;
-  margin: auto;
-  margin-top: 50px;
-  display: none;
+    border: 1px solid white;
+    width: 70%;
+    height: 100px;
+    background: black;
+    color: white;
+    margin: auto;
+    margin-top: 50px;
+    display: none;
 }
 
 .convoButton {
-  background: black;
-  border: none;
-  margin-top: 5px;
+    background: black;
+    border: none;
+    margin-top: 5px;
 }
 
 .convoButton:hover {
-  border: 1px solid white;
+    border: 1px solid white;
 }
 
 .backbutton {
-  display: none;
+    display: none;
 }
 
 #goodbye {
-  background: black;
-  margin: 0 auto;
-  color: white;
+    background: black;
+    margin: 0 auto;
+    color: white;
 }
 
 .yellow {
-  color: #9b931d;
+    color: #9b931d;
 }
 
-.white{
-  color: white;
+.white {
+    color: white;
 }
 
 .healthColor {
-  color: #771536;
+    color: #771536;
 }
 
 .manaColor {
-  color: #278783;
+    color: #278783;
 }
 
 .underline {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
-.auto-margin{
-  margin: auto;
+.auto-margin {
+    margin: auto;
 }
+
 
 /*Begin Level Up Menu */
+
 #levelUpMenu {
-  display: none;
-  margin: auto;
+    display: none;
+    margin: auto;
 }
 
-#strButton{
-  background:#a3132b;
-  color: white;
+#strButton {
+    background: #a3132b;
+    color: white;
 }
 
-#intButton{
-  background: #09b3bf;
-  color: white;
+#intButton {
+    background: #09b3bf;
+    color: white;
 }
 
-#agiButton{
-  background: #86a304;
-  color: white;
+#agiButton {
+    background: #86a304;
+    color: white;
 }
 
 #chrButton {
-  background: #cc39b6;
-  color: white;
+    background: #cc39b6;
+    color: white;
 }
 
 
@@ -384,51 +405,54 @@ pre {
 
 
 /*Begin Menu*/
+
 #inventoryMenuWrapper {
-  display: none;
-  border: 2px solid white;
-  width: 80%;
-  height: 80%;
-  margin: auto;
-  background-color: black;
+    display: none;
+    border: 2px solid white;
+    width: 80%;
+    height: 80%;
+    margin: auto;
+    background-color: black;
 }
 
 #spellList {
-  border: 2px solid white;
-  width: 33%;
-  height: 33%;
-  background-color: black;
-  margin: auto;
+    border: 2px solid white;
+    width: 33%;
+    height: 33%;
+    background-color: black;
+    margin: auto;
 }
 
 #itemList {
-  border: 2px solid white;
-  width: 33%;
-  height: 33%;
-  background-color: black;
-  margin: auto;
+    border: 2px solid white;
+    width: 33%;
+    height: 33%;
+    background-color: black;
+    margin: auto;
 }
 
 #bookList {
-  border: 2px solid white;
-  width: 33%;
-  height: 33%;
-  background-color: black;
-  margin: auto;
+    border: 2px solid white;
+    width: 33%;
+    height: 33%;
+    background-color: black;
+    margin: auto;
 }
 
 #roomList {
-  border: 2px solid white;
-  width: 33%;
-  height: 33%;
-  background-color: black;
-  margin: auto;
+    border: 2px solid white;
+    width: 33%;
+    height: 33%;
+    background-color: black;
+    margin: auto;
 }
 
+
 /*audio controls*/
+
 footer {
-  bottom: 0;
-  width: 100%;
-  float: bottom;
-  position: fixed;
+    bottom: 0;
+    width: 100%;
+    float: bottom;
+    position: fixed;
 }
