@@ -104,8 +104,8 @@ $(document).ready(function() {
     }
 
     function refreshPlayerEffecttingStats() {
-        player.health = Math.floor(player.strength / 2) + 98;
-        player.mana = Math.floor(player.intelligence * 1.5) + 93;
+        player.health = Math.floor((player.strength / 2) ** 2) + 94;
+        player.mana = Math.floor((player.intelligence / 2) ** 2) + 99;
     }
 
     function refreshPlayerGold() {
@@ -132,15 +132,21 @@ $(document).ready(function() {
 
     function questProgress(objectiveToCheck) {
         for (var i = 0; i < currentQuests.length; i++) {
-            if (currentQuests[i].progress[objectiveToCheck] < currentQuests[i].objectives[objectiveToCheck]) {
-                currentQuests[i].progress[objectiveToCheck]++;
-                combatPrint("You made quest progress!");
+            for (var k = 0; k < currentQuests[0].objectives.length; k++) {
+                if (currentQuests[i].progress[k][0] == objectiveToCheck && currentQuests[i].progress[k][1] < currentQuests[i].objectives[k][1]) {
+                    currentQuests[i].progress[k][1]++;
+                    combatPrint("You made quest progress!");
+                    currentQuests[i].objectiveNumber--;
+                    displayQuests();
+                }
             }
-            if (currentQuests[i].progress[objectiveToCheck] == currentQuests[i].objectives[objectiveToCheck]) {
+            if (currentQuests[i].progress[objectiveToCheck] == currentQuests[i].objectives[objectiveToCheck] && currentQuests[i].objectiveNumber == 0) {
                 print("You completed: " + currentQuests[i].questTitle + "!", "goldColor");
+                currentQuests[i].completed = true;
+                currentQuests[i].reward();
+                levelUpCheck();
                 currentQuests.splice(i, 1);
                 displayQuests();
-
             }
         }
     }
@@ -152,6 +158,7 @@ $(document).ready(function() {
     function displayQuests() {
         var questBarDOM = document.getElementById("questBar");
         questBarDOM.innerText = ""; // Clears quest titles to be refilled.
+
         for (var i = 0; i < currentQuests.length; i++) {
             //displays Quest Titles
             var questTitleDOM = document.createElement("h4");
@@ -161,10 +168,13 @@ $(document).ready(function() {
 
             for (var k = 0; k < currentQuests[i].objectivesText.length; k++) {
                 //displays quest objectives
-                var questObjectiveDOM = document.createElement("p");
-                questObjectiveDOM.classList.add("questObjectiveClass");
-                questObjectiveDOM.innerText = currentQuests[i].objectivesText[k];
-                questBarDOM.append(questObjectiveDOM);
+                //Checks quest 0(i), objective 0(k),1 which should always be the number of mobs to kill.
+                if (currentQuests[i].progress[k][1] != currentQuests[0].objectives[k][1]) {
+                    var questObjectiveDOM = document.createElement("p");
+                    questObjectiveDOM.classList.add("questObjectiveClass");
+                    questObjectiveDOM.innerText = currentQuests[i].objectivesText[k];
+                    questBarDOM.append(questObjectiveDOM);
+                }
 
             }
 
@@ -1728,17 +1738,27 @@ $(document).ready(function() {
                     function() {
                         combatPrint("You recieved 50 gold and 50xp!");
                     }, 50, "The large rat looks up to you from the corner of the room. Its teeth are barred.", 5);
-                var testRat2 = new rat("Large Rat 2", 10, 10, 0.1,
+                var testSkeleton1 = new skeleton("Skeleton 1", 10, 10, 0.1,
                     function() {
                         combatPrint("You recieved 50 gold and 50xp!");
-                    }, 50, "The large rat looks up to you from the corner of the room. Its teeth are barred.", 5);
+                    }, 50, "The skeletons bones clink and clang. Spooky.", 5);
                 steelMace.owned = true;
                 claymore.owned = true;
-                combat(player, testRat1, testRat2, "rats");
+                combat(player, testRat1, null, "rat");
             }
 
             if (input == "single fight") {
                 combat(player, fieldrat, null, null);
+            }
+
+            if (input == "skele fight") {
+                var randomSkeleton = new skeleton("Skeleton", 10, 10, 0.1,
+                    function() {
+                        combatPrint("You recieved 50 gold and 50xp!");
+                    }, 50, "Oof. Them bones look dry.", 5);
+                steelMace.owned = true;
+                claymore.owned = true;
+                combat(player, randomSkeleton, null, null);
             }
 
             if (input == 'god mode') {
@@ -1754,7 +1774,8 @@ $(document).ready(function() {
 
             //To be removed
             if (input == 'levelup') {
-                levelUpCheck(200);
+                player.xp += 200;
+                levelUpCheck();
                 print("Woot");
             }
 
@@ -1914,8 +1935,8 @@ $(document).ready(function() {
         $("#levelUpMenu").fadeOut(100);
     }
 
-    function levelUpCheck(xp) {
-        if (toLevelUp[0] <= xp) {
+    function levelUpCheck() {
+        if (toLevelUp[player.level] <= player.xp) {
             player.level = player.level + 1;
             player.pointsToSpend = player.pointsToSpend + xpPoints;
             print("You've hit level " + player.level + "!", "yellow");
