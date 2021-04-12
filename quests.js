@@ -13,38 +13,35 @@
         questTitle: "Hunt Down The Necromancer",
         completed: false,
         objectivesText: [
-            "Kill 5 Skeletons",
+            "Kill Skeletons",
             "Kill the Necromancer"
         ],
-        objectives: {
-            "skeletonMob": 5,
-            "necromancerMob": 1,
-        },
-        progress: {
-            "skeletonMob": 0,
-            "necromancerMob": 0,
-        }
+        objectivesText: [
+            ["Kill Skeleton(s)", 0],
+            ["Kill Necromancer", 0]
+        ],
+        objectives: [
+            ["skeletonMob", 5],
+            ["necromancerMob", 1]
+        ]
     }
 
+    //Delete this at some point
     var garbageQuest = {
         questTitle: "Test Quest",
         completed: false,
         objectiveNumber: 2,
         reward: function() {
-            console.log("Reward function was run.");
             print("You got 200 xp!");
             player.xp = player.xp + 200;
         },
         objectivesText: [
-            "Kill 1 Rat",
-            "Kill 1 Skeleton"
+            ["Kill Rat(s)", 0],
+            ["Kill Skeleton(s)", 0],
+            ["Enter the Portal", 1]
         ],
         objectives: [
-            ["ratMob", 1],
+            ["ratMob", 15],
             ["skeletonMob", 1]
-        ],
-        progress: [
-            ["ratMob", 0],
-            ["skeletonMob", 0]
         ]
     }

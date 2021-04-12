@@ -67,11 +67,13 @@ pre {
 
 .questTitleClass {
     color: white;
+    margin-left: 3%;
 }
 
-.questObjectivesClass {
+.questObjectiveClass {
     color: white;
     list-style-type: square;
+    margin-left: 5%;
 }
 
 .textBox {
@@ -409,42 +411,54 @@ pre {
 #inventoryMenuWrapper {
     display: none;
     border: 2px solid white;
-    width: 80%;
-    height: 80%;
+    width: 60%;
+    height: 50%;
     margin: auto;
+    position: fixed;
     background-color: black;
+    /*display: grid;*/
+    grid-template-columns: 50% 50%;
+    grid-row: auto auto;
 }
 
 #spellList {
     border: 2px solid white;
-    width: 33%;
-    height: 33%;
+    padding: 5%;
+    width: 25%;
+    height: 25%;
     background-color: black;
     margin: auto;
+    display: flex;
 }
 
 #itemList {
     border: 2px solid white;
-    width: 33%;
-    height: 33%;
+    padding: 5%;
+    width: 25%;
+    height: 25%;
     background-color: black;
     margin: auto;
+    display: flex;
 }
 
 #bookList {
     border: 2px solid white;
-    width: 33%;
-    height: 33%;
+    padding: 5%;
+    width: 25%;
+    height: 25%;
     background-color: black;
     margin: auto;
+    display: flex;
 }
 
 #roomList {
     border: 2px solid white;
-    width: 33%;
-    height: 33%;
+    padding: 5%;
+    width: 25%;
+    height: 25%;
     background-color: black;
     margin: auto;
+    display: flex;
 }
 
 

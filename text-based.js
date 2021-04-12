@@ -1,3 +1,9 @@
+//A whole slew of nonsense.
+//Written by Zachary English
+
+//Main text-based code file. 
+//Needs to be cleaned.
+
 var combatants = [];
 var turnOrder = [];
 var agiRoll;
@@ -22,15 +28,14 @@ $(document).ready(function() {
     //prints out input to screen
     function print(input, color) {
         $("<p class='text-center " + color + "'>" + input + "</p>").insertBefore("#placeholder");
-        //reset textbox
         $("#commandline").val("");
+        //reset textbox
         $("html, body").animate({
             scrollTop: $(document).height()
         }, 200);
     }
 
-    var input = $("#commandline").val().toLowerCase();
-    $("#console").fadeIn(1500);
+
 
     //Audio start
     allAudio = [tavernSounds, outsideTavern, witheredAttackSound, witheredIntroSound, witheredDeathSound, ratDeathSound, ratAttackSound, shardKeeperIntroSound, shardKeeperAttackSounds, wings, walkingThroughGrassAudio, donkeyBraying, clipClop, echoingScreams, jumpScare, swordAttackSound, claymoreAttackSound, maceAttackSound, fireBallSounds, healthPotSound, punchSound, woodenWeaponSound, battleMusic, battleVictory, song1, song2, pickUpNew, unlockDoor, moveThroughDoor, moveThroughStairs];
@@ -133,8 +138,8 @@ $(document).ready(function() {
     function questProgress(objectiveToCheck) {
         for (var i = 0; i < currentQuests.length; i++) {
             for (var k = 0; k < currentQuests[0].objectives.length; k++) {
-                if (currentQuests[i].progress[k][0] == objectiveToCheck && currentQuests[i].progress[k][1] < currentQuests[i].objectives[k][1]) {
-                    currentQuests[i].progress[k][1]++;
+                if (currentQuests[i].objectives[k][0] == objectiveToCheck && currentQuests[i].objectives[k][1] > 0) {
+                    currentQuests[i].objectives[k][1]--;
                     combatPrint("You made quest progress!");
                     currentQuests[i].objectiveNumber--;
                     displayQuests();
@@ -151,10 +156,6 @@ $(document).ready(function() {
         }
     }
 
-    function checkQuestComplete(quest) {
-
-    }
-
     function displayQuests() {
         var questBarDOM = document.getElementById("questBar");
         questBarDOM.innerText = ""; // Clears quest titles to be refilled.
@@ -169,19 +170,23 @@ $(document).ready(function() {
             for (var k = 0; k < currentQuests[i].objectivesText.length; k++) {
                 //displays quest objectives
                 //Checks quest 0(i), objective 0(k),1 which should always be the number of mobs to kill.
-                if (currentQuests[i].progress[k][1] != currentQuests[0].objectives[k][1]) {
+                if (currentQuests[i].objectives[k][1] != 0) {
+                    var splitObjective = currentQuests[i].objectivesText[k][0].split(" ");
                     var questObjectiveDOM = document.createElement("p");
                     questObjectiveDOM.classList.add("questObjectiveClass");
-                    questObjectiveDOM.innerText = currentQuests[i].objectivesText[k];
+                    questObjectiveDOM.innerText = splitObjective[0] + " " + currentQuests[i].objectives[k][1] + " " + splitObjective[1];
+                    questBarDOM.append(questObjectiveDOM);
+                } else if (currentQuests[i].objectivesText[k][1] == 1) {
+                    var questObjectiveDOM = document.createElement("p");
+                    questObjectiveDOM.classList.add("questObjectiveClass");
+                    questObjectiveDOM.innerText = currentQuests[i].objectivesText[k][0];
                     questBarDOM.append(questObjectiveDOM);
                 }
-
             }
-
         }
     }
 
-    questAdd(garbageQuest);
+    questAdd(huntDownTheNecromancer);
     displayQuests();
 
 
@@ -1660,8 +1665,6 @@ $(document).ready(function() {
         ]
     }; //end of gameData
 
-    //places the player in the starting room.
-    currentRoom = gameData.rooms[0];
 
     function attachListeners() {
         //  Event listeners
@@ -1702,7 +1705,17 @@ $(document).ready(function() {
         })
     }
 
+    //Some setup
+
+    //places the player in the starting room.
+    currentRoom = tavern;
+
+    var input = $("#commandline").val().toLowerCase();
+    $("#console").fadeIn(1500);
+
     attachListeners();
+
+
 
 
     $("#commandline").keypress(function(e) {
@@ -1806,24 +1819,18 @@ $(document).ready(function() {
 
             //prints out look items in room
             if (input.match(/look$/)) {
-                $("<p class='text-center blue-text'>" + "You glance around the room finding:" + "</p>").insertBefore("#placeholder").fadeIn(1000);
-                $("<p class='text-center blue-text'>" + currentRoom.look + "</p>").insertBefore("#placeholder").fadeIn(1000);
+                $("<p class='text-center blue-text'>" + "You glance around the room finding:" + "</p>").insertBefore("#placeholder");
+                $("<p class='text-center blue-text'>" + currentRoom.lookArray + "</p>").insertBefore("#placeholder");
             }
-
-            //Change this to be able to search objects instead of calling functions in one large object.
-            //formats the command
-            var input_words = input.split(/\s+/); // ["open", "old", "door"]
-            var command = input_words[0]; // "open"
-            var noun = input_words.slice(1).join(" "); // "old door"
 
             //prints out look descriptions
-            if (input.match(/look\s+/) || /open\s+/ || /take\s+/ || /use\s+/) {
-                for (var i = 0; i < roomCmd.length; i++) {
-                    if (input === roomCmd[i].input) {
-                        roomCmd[i].result();
-                    }
-                }
-            }
+            //if (input.match(/look\s+/) || /open\s+/ || /take\s+/ || /use\s+/) {
+            //    for (var i = 0; i < roomCmd.length; i++) {
+            //        if (input === roomCmd[i].input) {
+            //            roomCmd[i].result();
+            //        }
+            //   }
+            //}
 
             //checking what weapon is equipped
             if (input == "equipped") {
@@ -1897,22 +1904,35 @@ $(document).ready(function() {
             //consider commands
             if (input == "consider old sword" && oldSword.owned === true) {
                 print(oldSword.condition);
-            } else if (input == "consider torch" && torch.owned === true) {
-                print(torch.condition);
-            } else if (input == "consider skeleton key" && skeleKey.owned === true) {
-                print(skeleKey.condition);
             } else if (input == "consider potion" && healthPot.owned === true) {
                 print(healthPot.condition);
-            } else if (input == "consider scroll" && throneScroll.owned === true) {
-                print(throneScroll.condition);
             } else if (input == "consider cipher" && cipher.owned === true) {
                 print(cipher.condition);
             } else if (input === " consider robe" && cultistRobe.owned === true) {
                 print(cultistRobe.condition);
             } else if (input === "consider scrawled writings" && scrawledWritings.owned === true) {
                 print(scrawledWritings.condition);
-            } else if (input == "consider serum" && serum.owned === true) {
-                print(serum.condition);
+            }
+
+            $("#commandline").val("");
+
+            //Main input parser
+            //formats the command
+            var input_words = input.split(/\s+/); // ["look", "underneath", "royal", "bed"]
+            //If the user considers an item.
+            if (input_words[0] == "consider") {
+                whatToConsider = input_words.splice(1).join("");
+                action = input_words[0];
+                objects[whatToConsider][action]();
+            } else if (input_words[1] == "underneath" || input_words[1] == "above") {
+                var command = input_words[0]; // "look"
+                var secondaryCommand = input_words[1]; //"underneath"
+                var noun = input_words.slice(2).join(""); // "royalbed"
+                currentRoom[command][secondaryCommand][noun](); //"look underneath royalbed"
+            } else {
+                var command = input_words[0]; // "look"
+                var noun = input_words.slice(1).join(""); // "royalbed"
+                currentRoom[noun][command](); //Executes input. "royalbed look"
             }
 
             //reset textbox
@@ -2648,7 +2668,7 @@ $(document).ready(function() {
     //Enter inventory menu
     function enterInventoryMenu() {
         $('#console').fadeOut(50);
-        $('inventoryMenuWrapper').fadeIn(50);
+        $('#inventoryMenuWrapper').fadeIn(50);
     }
 
 });

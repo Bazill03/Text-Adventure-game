@@ -1,3 +1,9 @@
+General Tests and Tasks
+------
+Go through combat with a fine tooth comb.
+Organize everything into separate files
+------
+
 General Issues:
 -------
 Much smoother transitions between combat and dialogue.
@@ -10,6 +16,13 @@ Much smoother transitions between combat and dialogue.
 //TODO FEATURE Idea: read books? After translated? Work more on the lore of the world.
 //TODO FEATURE: battles with more than one enemy, maybe a party system? Make friends and all that?
 ------
+
+Quest:
+-------
+//TODO if player completes one objective, the quest is complete.
+
+-------
+
 
 Royal Wardrobe
 ------
@@ -59,7 +72,8 @@ Combat need an overhaul.
 Enemy health likes to perch itself in the title to get a better view of the action.
 If player is dealt negative damage because of armor, the damage should be changed to 0. Or 1. Or 2. Haven't decided.
 Spell and Melee damage should be elevated based on current stats.
-
+Turn counter somehow ends up at -2. This breaks combat.
+Back to game button & some previous combat text is preserved for next combat. This is bad.
 -------
 
 Stat overhaul
