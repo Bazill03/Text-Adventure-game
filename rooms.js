@@ -100,5 +100,10 @@ var outsidetavern = {
             print("Alright, ya boys ready?", "healthColor");
             print("From here on destinations will be included in your look command. Try that now.");
         })
+    },
+    town: {
+        look: function(){
+            print("The town you grew up in. A small farming hamlet. Probably no more than 100 people live here. Your father, and your fathers father lived just down the street from where you stand. Your mother passed years ago but you've held your own the best you could.");
+        }
     }
 }
